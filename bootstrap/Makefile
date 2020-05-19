@@ -112,21 +112,22 @@ pmufw_distclean:
 dt: $(DTB)
 	@echo "Compiled Device Tree Blob"
 
-$(DTB): $(DTS)
+$(DTB): .dt_gen FORCE
 	@mkdir -p $(O)/phy_os
 	$(EXPORT_DTC_PATH) && \
-		cpp -I $(DT_LOC) -E -P -x assembler-with-cpp $< | \
+		cpp -I $(DT_LOC) -E -P -x assembler-with-cpp $(DTS) | \
 		dtc -I dts -O dtb -o $@ -
 	@cp $@ $(KERN_DTB)
 
-$(DTS): FORCE
+.dt_gen:
 	$(HSI) $(DT_HSI_FLAGS)
+	@touch $@
 
 dt_clean:
 	@rm -f $(DTB) $(KERN_DTB)
 
 dt_distclean:
-	@rm -rf $(DT_LOC)
+	@rm -rf $(DT_LOC) .dt_gen
 
 #==========================================
 # BOOT.bin generation 

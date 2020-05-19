@@ -9,5 +9,6 @@ pmufw/
 dt/
 .pmufw_gen
 .fsbl_gen
+.dt_gen
 .Xil
 
