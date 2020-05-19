@@ -1,0 +1,13 @@
+#
+# Auto-generated files
+#
+
+boot_bin/
+fsbl/
+hw_plat/
+pmufw/
+dt/
+.pmufw_gen
+.fsbl_gen
+.Xil
+
