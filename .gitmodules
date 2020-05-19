@@ -1,0 +1,16 @@
+[submodule "software/atf"]
+	path = software/atf
+	url = https://github.com/ict-accel-team/arm-trusted-firmware
+	branch = xilinx-v2019.1-nf-dev
+[submodule "software/uboot"]
+	path = software/uboot
+	url = https://github.com/ict-accel-team/u-boot-xlnx
+	branch = xilinx-v2019.1-nf-dev
+[submodule "software/linux"]
+	path = software/linux
+	url = https://github.com/ict-accel-team/linux-xlnx
+	branch = xilinx-v2019.1-nf-dev
+[submodule "bootstrap/dt-gen"]
+	path = bootstrap/dt-gen
+	url = https://github.com/ict-accel-team/device-tree-xlnx
+	branch = xilinx-v2019.1-nf-dev
