@@ -53,7 +53,7 @@ BIF_FILE := $(BOOT_BIN_LOC)/boot_gen.bif
 BOOT_GEN_FLAGS := -arch zynqmp -packagename xczu19eg \
 	-w on -image $(BIF_FILE) -log info
 
-ifneq ($(O), )
+ifneq ($(O),)
 BOOT_BIN := $(O)/BOOT.bin
 KERN_DTB := $(O)/phy_os/system.dtb
 endif
@@ -145,12 +145,12 @@ boot_bin_clean:
 	@rm -f $(BOOT_BIN)
 
 boot_bin_distclean:
-	@rm -rf $(BIF_FILE) $(BOOT_BIN_LOC)
+	@rm -rf $(BOOT_BIN_LOC)
 
 #===========================================
 # directory clean
 #===========================================
-bootstrap_clean: fsbl_distclean boot_bin_distclean
+bootstrap_clean: fsbl_distclean pmufw_distclean dt_distclean boot_bin_distclean
 	@rm -rf .Xil $(BOOT_STRAP_LOC)/hw_plat
 	@echo "bootstrap directory is cleaned"
 
