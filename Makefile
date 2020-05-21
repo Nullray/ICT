@@ -226,17 +226,6 @@ endif
 #==========================================
 # Hardware Design
 #==========================================
-hdf $(HW_DESIGN_HDF):
-	@echo "Generating HDF file for Vivado project..."
-	@mkdir -p $(HW_PLATFORM)
-	$(MAKE) -C ./hardware VIVADO=$(VIVADO_BIN) O=$(HW_PLATFORM) hdf
-
-hdf_clean:
-	$(MAKE) -C ./hardware $@
-
-#==========================================
-# Hardware Design
-#==========================================
 vivado_prj: FORCE
 	@echo "Executing $(HW_ACT) for Vivado project..."
 	@mkdir -p $(HW_PLATFORM)
