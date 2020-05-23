@@ -16,9 +16,9 @@ then
 	echo -e "	[destination_device = pl] ../../hw_plat/system.bit" >> $BIF_FILE
 fi
 	echo -e "	[destination_cpu = a53-0, exception_level = el-3, trustzone] ../../software/arm-atf/bl31.elf\n" >> $BIF_FILE
-if [ "$2" = "y" ];
+if [ "$3" = "y" ];
 then
-	echo -e "	[destination_cpu = a53-0, exception_level = el-1, trustzone] ../../software/$3_os/bl32.elf\n" >> $BIF_FILE
+	echo -e "	[destination_cpu = a53-0, exception_level = el-1, trustzone] ../../software/$4_os/bl32.elf\n" >> $BIF_FILE
 fi
-	echo -e "	[destination_cpu = a53-0, exception_level = el-2] ../../software/arm-uboot/u-boot.elf" >> $BIF_FILE
+echo -e "	[destination_cpu = a53-0, exception_level = el-2] ../../software/arm-uboot/$2/u-boot.elf" >> $BIF_FILE
 echo "}" >> $BIF_FILE

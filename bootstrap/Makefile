@@ -54,8 +54,8 @@ BOOT_GEN_FLAGS := -arch zynqmp -packagename xczu19eg \
 	-w on -image $(BIF_FILE) -log info
 
 ifneq ($(O),)
-BOOT_BIN := $(O)/BOOT.bin
-KERN_DTB := $(O)/phy_os/system.dtb
+BOOT_BIN := $(O)/$(OS)/BOOT.bin
+KERN_DTB := $(O)/system.dtb
 endif
 BOOT_BIN ?= $(BOOT_BIN_LOC)/BOOT.bin
 KERN_DTB ?= $(DT_LOC)/system.dtb
@@ -68,7 +68,6 @@ BOOT_GEN_FLAGS += -o $(BOOT_BIN)
 # ZynqMP FSBL compilation 
 #==========================================
 fsbl: $(FSBL_BIN)
-	@echo "Compiled FSBL"
 
 $(FSBL_BIN): .fsbl_gen FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(FSBL_LOC)
@@ -79,7 +78,7 @@ $(FSBL_BIN): .fsbl_gen FORCE
 	@touch $@
 
 fsbl_clean:
-	$(EXPORT_CC_PATH) && $(MAKE) -C $(FSBL_LOC) clean
+	$(MAKE) -C $(FSBL_LOC) clean
 	@rm -f $(FSBL_BIN)
 
 fsbl_distclean:
@@ -89,7 +88,6 @@ fsbl_distclean:
 # PMU Firware (PMUFW) compilation 
 #==========================================
 pmufw: $(PMUFW_BIN)
-	@echo "Compiled PMU Firmware"
 
 $(PMUFW_BIN): .pmufw_gen FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(PMUFW_LOC)
@@ -100,7 +98,7 @@ $(PMUFW_BIN): .pmufw_gen FORCE
 	@touch $@
 
 pmufw_clean:
-	$(EXPORT_CC_PATH) && $(MAKE) -C $(PMUFW_LOC) clean
+	$(MAKE) -C $(PMUFW_LOC) clean
 	@rm -f $(PMUFW_BIN)
 
 pmufw_distclean:
@@ -110,10 +108,9 @@ pmufw_distclean:
 # Device Tree Source and Blob compilation 
 #==========================================
 dt: $(DTB)
-	@echo "Compiled Device Tree Blob"
 
 $(DTB): .dt_gen FORCE
-	@mkdir -p $(O)/phy_os
+	@mkdir -p $(O)
 	$(EXPORT_DTC_PATH) && \
 		cpp -I $(DT_LOC) -E -P -x assembler-with-cpp $(DTS) | \
 		dtc -I dts -O dtb -o $@ -
@@ -127,30 +124,20 @@ dt_clean:
 	@rm -f $(DTB) $(KERN_DTB)
 
 dt_distclean:
-	@rm -rf $(DT_LOC) .dt_gen
+	@rm -rf $(DT_LOC) .dt_gen $(KERN_DTB)
 
 #==========================================
 # BOOT.bin generation 
 #==========================================
 boot_bin: $(BOOT_BIN)
-	@echo "Generated BOOT.bin image"
 
 $(BOOT_BIN): $(BIF_FILE)
 	@cd $(BOOT_BIN_LOC) && $(BOOT_GEN) $(BOOT_GEN_FLAGS)
 
 $(BIF_FILE): FORCE
-	@bash $(BIF_GEN) $(WITH_BIT) $(WITH_TOS) $(TOS)
-
-boot_bin_clean:
-	@rm -f $(BOOT_BIN)
+	@bash $(BIF_GEN) $(WITH_BIT) $(OS) \
+		$(WITH_TOS) $(TOS)
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)
-
-#===========================================
-# directory clean
-#===========================================
-bootstrap_clean: fsbl_distclean pmufw_distclean dt_distclean boot_bin_distclean
-	@rm -rf .Xil $(BOOT_STRAP_LOC)/hw_plat
-	@echo "bootstrap directory is cleaned"
 

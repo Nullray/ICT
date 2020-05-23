@@ -2,7 +2,6 @@
 VIVADO_VERSION ?= 2019.1
 VIVADO_TOOL_BASE ?= /opt/Xilinx_$(VIVADO_VERSION)
 
-
 # Vivado and SDK tool executable binary location
 VIVADO_TOOL_PATH := $(VIVADO_TOOL_BASE)/Vivado/$(VIVADO_VERSION)/bin
 SDK_TOOL_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/bin
@@ -24,60 +23,39 @@ BOOT_GEN_BIN := $(SDK_TOOL_PATH)/bootgen
 
 # TODO: Optional Trusted OS
 TOS := 
-BL32 := $(TOS)
-obj-tos-y := $(foreach obj,$(TOS),$(obj).tos)
-obj-tos-clean-y := $(foreach obj,$(TOS),$(obj).tos.clean)
-obj-tos-dist-y := $(foreach obj,$(TOS),$(obj).tos.dist)
 
-# TODO: Linux kernel (i.e., Physical machine, Dom0, DomU)
-# Default value is phys_os if not specified in command line
-OS_KERN := phys_os
-obj-os-y := $(foreach obj,$(OS_KERN),$(obj).os)
-obj-os-clean-y := $(foreach obj,$(OS_KERN),$(obj).os.clean)
-obj-os-dist-y := $(foreach obj,$(OS_KERN),$(obj).os.dist)
+# Linux kernel (i.e., Physical machine, Dom0, DomU)
+OS_KERN := phy_os
 
-obj-dt-y := $(foreach obj,$(OS_KERN),$(obj).dt)
-obj-dt-clean-y := $(foreach obj,$(OS_KERN),$(obj).dt.clean)
-obj-dt-dist-y := $(foreach obj,$(OS_KERN),$(obj).dt.dist)
+obj-sw-y := $(foreach obj,$(OS_KERN),$(obj).sw)
+obj-sw-clean-y := $(foreach obj,$(OS_KERN),$(obj).sw.clean)
+obj-sw-dist-y := $(foreach obj,$(OS_KERN),$(obj).sw.dist)
 
 # Temporal directory to hold hardware design output files 
 # (i.e., bitstream, hardware definition file (HDF))
 HW_PLATFORM := $(shell pwd)/hw_plat
 BITSTREAM := $(HW_PLATFORM)/system.bit
-HW_DESIGN_HDF := $(HW_PLATFORM)/system.hdf
-
-HW_PLAT_TEMP := $(shell pwd)/bootstrap/hw_plat
-
-# Object files to generate BOOT.bin
-BL2_BIN := ./bootstrap/fsbl/bl2.elf
-PMU_FW := ./bootstrap/pmufw/pmufw.elf
-BL31_BIN := ./software/arm-atf/bl31.elf
-BL33_BIN := ./software/arm-uboot/u-boot.elf
-
-BOOT_BIN_OBJS := $(BL31_BIN) $(BL33_BIN) $(BL2_BIN) $(PMU_FW)
+SYS_HDF := $(HW_PLATFORM)/system.hdf
 
 ifneq (${TOS},)
-BOOTBIN_WITH_TOS := y
+WITH_TOS := y
 endif
-BOOTBIN_WITH_TOS ?= n
+WITH_TOS ?= n
 
-BOOTBIN_WITH_BIT ?= n
-ifeq (${BOOTBIN_WITH_BIT},y)
-BOOT_BIN_OBJS += $(BITSTREAM)
-endif
+WITH_BIT ?= n
 
 # Temporal directory to save all image files for porting
 INSTALL_LOC := $(shell pwd)/ready_for_download
 
 # FLAGS for sub-directory Makefile
-ATF_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) TOS=$(TOS) INSTALL_LOC=$(INSTALL_LOC)
-UBOOT_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) DTC_LOC=$(DTC_LOC) INSTALL_LOC=$(INSTALL_LOC)
+ATF_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) TOS=$(TOS)
+UBOOT_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) DTC_LOC=$(DTC_LOC)
 KERNEL_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) INSTALL_LOC=$(INSTALL_LOC)
 
 # Device Tree Compiler (DTC)
 DTC_LOC := /opt/dtc
 
-# HW_ACT list
+# FPGA_ACT list
 #==========================================
 # prj_gen: Creating Vivado project and generating hardware 
 #          definition file (HDF)
@@ -90,80 +68,147 @@ DTC_LOC := /opt/dtc
 #          the synth.dcp
 #==========================================
 # Default Vivado GUI launching flags if not specified in command line
-HW_ACT ?= none
-HW_VAL ?= none
+FPGA_ACT ?= 
+FPGA_VAL ?= 
 
 .PHONY: FORCE
 
-#==========================================
-# Generation of BL31 (i.e., ARM Trusted Firmware (ATF)) 
-# and optional BL32 Trusted OS (e.g., OP-TEE) 
-#==========================================
-atf $(BL31_BIN): $(obj-tos-y) FORCE
-	@echo "Compiling ARM Trusted Firmware..."
-	$(MAKE) -C ./software $(ATF_COMPILE_FLAGS) atf
+sw: $(obj-sw-y)
 
-atf_clean: $(obj-tos-clean-y) FORCE
-	$(MAKE) -C ./software $(ATF_COMPILE_FLAGS) $@
+sw_clean: $(obj-sw-clean-y)
 
-atf_distclean: $(obj-tos-dist-y) FORCE
-	$(MAKE) -C ./software $(ATF_COMPILE_FLAGS) $@
+sw_distclean: $(obj-sw-dist-y)
+	@rm -rf software/arm-linux software/arm-uboot \
+		bootstrap/.Xil
+
+fpga: $(SYS_HDF) $(BITSTREAM)
+
+fpga_clean:
+	@rm -f $(SYS_HDF) $(BITSTREAM)
+
+fpga_distclean:
+	$(MAKE) -C ./fpga vivado_prj_clean
+
+%.sw: FORCE
+ifneq ($(patsubst %.sw,%,$@),domU)
+	$(MAKE) $(patsubst %.sw,%.uboot,$@)
+	$(MAKE) $(patsubst %.sw,%.bootbin,$@)
+endif
+ifeq ($(patsubst %.sw,%,$@),dom0)
+	$(MAKE) xen
+endif
+	$(MAKE) $(patsubst %.sw,%.os,$@)
+	@echo "All required images of $(patsubst %.sw,%,$@) are generated"
+
+%.sw.clean:
+ifneq ($(patsubst %.sw.clean,%,$@),domU)
+	$(MAKE) $(patsubst %.sw.clean,%.bootbin.clean,$@)
+	$(MAKE) $(patsubst %.sw.clean,%.uboot.clean,$@)
+endif
+ifeq ($(patsubst %.sw.clean,%,$@),dom0)
+	$(MAKE) xen_clean
+endif
+	$(MAKE) $(patsubst %.sw.clean,%.os.clean,$@)
+
+%.sw.dist:
+ifneq ($(patsubst %.sw.dist,%,$@),domU)
+	$(MAKE) $(patsubst %.sw.dist,%.bootbin.dist,$@)
+	$(MAKE) $(patsubst %.sw.dist,%.uboot.dist,$@)
+endif
+ifeq ($(patsubst %.sw.dist,%,$@),dom0)
+	$(MAKE) xen_distclean
+endif
+	$(MAKE) $(patsubst %.sw.dist,%.os.dist,$@)
 
 #==========================================
-# Generation of BL33 image, including U-Boot,
-# Linux kernel for virtual and non-virtual 
-# environment, and optional Xen hypervisor
+# U-Boot Compilation
 #==========================================
-uboot $(BL33_BIN): phy_os.dt FORCE
+%.uboot: dt FORCE
 	@echo "Compiling U-Boot..."
-	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) uboot
+	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) \
+		OS=$(patsubst %.uboot,%,$@) uboot
 
-uboot_clean:
-	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) $@
+%.uboot.clean: dt_clean
+	$(MAKE) -C ./software \
+		OS=$(patsubst %.uboot.clean,%,$@) uboot_clean
 
-uboot_distclean:
-	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) $@
+%.uboot.dist: dt_distclean
+	$(MAKE) -C ./software \
+		OS=$(patsubst %.uboot.dist,%,$@) uboot_distclean
 
+#==========================================
+# Generation of Device Tree Blob
+#==========================================
+dt: $(SYS_HDF) FORCE
+	@echo "Compiling Device Tree..."
+	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
+		HSI=$(HSI_BIN) O=$(INSTALL_LOC) $@
+
+dt_clean:
+	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
+
+dt_distclean:
+	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
+
+#==========================================
+# Linux kernel compilation 
+#==========================================
 %.os: FORCE
 	@mkdir -p $(INSTALL_LOC)
 	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os,%,$@) linux
 
-%.os.clean: FORCE
-	$(MAKE) -C ./software \
-		OS=$(patsubst %.os.clean,%,$@) linux_clean 
-	@rm -f $(INSTALL_LOC)/$(patsubst %.os.clean,%,$@)/Image 
+%.os.clean:
+	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
+		OS=$(patsubst %.os.clean,%,$@) linux_clean
 
-%.os.dist: FORCE
-	$(MAKE) -C ./software \
+%.os.dist:
+	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os.dist,%,$@) linux_distclean
 
 #==========================================
-# Generation of physical os Device Tree Blob
+# BOOT.bin generation
 #==========================================
-phy_os.dt: FORCE
-	@echo "Compiling Device Tree..."
-	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
-		HSI=$(HSI_BIN) O=$(INSTALL_LOC) dt
+%.bootbin: atf fsbl pmufw FORCE
+	@echo "Generating BOOT.bin image..."
+	@mkdir -p $(INSTALL_LOC)/$(patsubst %.bootbin,%,$@)
+	$(MAKE) -C ./bootstrap BOOT_GEN=$(BOOT_GEN_BIN) \
+		WITH_BIT=$(WITH_BIT) OS=$(patsubst %.bootbin,%,$@) \
+		WITH_TOS=$(WITH_TOS) TOS=$(TOS) \
+		O=$(INSTALL_LOC) boot_bin
 
-phy_os.dt.clean:
-	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
-		O=$(INSTALL_LOC) dt_clean 
+%.bootbin.clean: atf_clean fsbl_clean pmufw_clean
+	@rm -f $(INSTALL_LOC)/$(patsubst %.bootbin.clean,%,$@)/BOOT.bin
 
-phy_os.dt.dist:
-	$(MAKE) -C ./bootstrap dt_distclean
+%.bootbin.dist: atf_distclean fsbl_distclean pmufw_distclean
+	$(MAKE) -C ./bootstrap boot_bin_distclean
+	@rm -rf $(INSTALL_LOC)/$(patsubst %.bootbin.dist,%,$@)
+
+#==========================================
+# Generation of BL31 (i.e., ARM Trusted Firmware (ATF)) 
+# and optional BL32 Trusted OS (e.g., OP-TEE) 
+#==========================================
+atf: FORCE
+	@echo "Compiling ARM Trusted Firmware..."
+	$(MAKE) -C ./software $(ATF_COMPILE_FLAGS) \
+		TOS=$(TOS) $@
+
+atf_clean: FORCE
+	$(MAKE) -C ./software TOS=$(TOS) $@
+
+atf_distclean: FORCE
+	$(MAKE) -C ./software TOS=$(TOS) $@
 
 #==========================================
 # Generation of Xilinx FSBL (BL2)
 #==========================================
-fsbl $(BL2_BIN): $(HW_DESIGN_HDF) FORCE
+fsbl: FORCE
 	@echo "Compiling FSBL..."
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(ELF_GCC_PATH) \
-		HSI=$(HSI_BIN) INSTALL_LOC=$(INSTALL_LOC) fsbl
+		HSI=$(HSI_BIN) $@ 
 
 fsbl_clean:
-	$(MAKE) -C ./bootstrap COMPILER_PATH=$(ELF_GCC_PATH) \
-		INSTALL_LOC=$(INSTALL_LOC) $@
+	$(MAKE) -C ./bootstrap $@
 
 fsbl_distclean:
 	$(MAKE) -C ./bootstrap $@
@@ -171,72 +216,31 @@ fsbl_distclean:
 #==========================================
 # Generation of PMU Firmware (PMUFW)
 #==========================================
-pmufw $(PMU_FW): $(HW_DESIGN_HDF) FORCE
+pmufw: FORCE
 	@echo "Compiling PMU Firmware..."
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) \
-		HSI=$(HSI_BIN) INSTALL_LOC=$(INSTALL_LOC) pmufw
+		HSI=$(HSI_BIN) $@ 
 
 pmufw_clean:
-	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) \
-		INSTALL_LOC=$(INSTALL_LOC) $@ 
+	$(MAKE) -C ./bootstrap $@ 
 
 pmufw_distclean:
 	$(MAKE) -C ./bootstrap $@
 
-#==========================================
-# Generation of BOOT.bin
-#==========================================
-boot_bin: $(BOOT_BIN_OBJS) 
-	@echo "Generating BOOT.bin image..."
-	@mkdir -p $(INSTALL_LOC)
-	$(MAKE) -C ./bootstrap BOOT_GEN=$(BOOT_GEN_BIN) WITH_BIT=$(BOOTBIN_WITH_BIT) \
-		WITH_TOS=$(BOOTBIN_WITH_TOS) TOS=$(TOS)\
-		O=$(INSTALL_LOC) $@
-
-boot_bin_clean:
-	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
-
-#==========================================
-# Clean for bootstrap directory
-#==========================================
-bootstrap_clean: FORCE
-	$(MAKE) -C ./bootstrap $@
-
-#==========================================
+#==============================================
 # Intermediate files between HW and SW design
-#==========================================
-#ifneq ($(wildcard $(HW_DESIGN_HDF)), )
-#$(HW_DESIGN_HDF): FORCE 
-#	@echo "Hardware definition file is ready"
-#	@mkdir -p $(HW_PLAT_TEMP)
-#	@cp $(HW_DESIGN_HDF) $(HW_PLAT_TEMP)
-#else
-#$(HW_DESIGN_HDF): FORCE
-#	$(error No hardware definition file, please inform your hardware design team to upload it)
-#endif
+#==============================================
+$(SYS_HDF): FORCE
+	$(MAKE) FPGA_ACT=prj_gen vivado_prj 
 
-ifneq ($(wildcard $(BITSTREAM)), )
 $(BITSTREAM): FORCE
-	@echo "Hardware bitstream file is ready"
-else
-$(BITSTREAM): FORCE
-	$(error No bitstream file, please inform your hardware design team to upload it)
-endif
+	$(MAKE) FPGA_ACT=run_syn vivado_prj 
+	$(MAKE) FPGA_ACT=bit_gen vivado_prj
 
 #==========================================
-# Hardware Design
+# FPGA Design Flow
 #==========================================
 vivado_prj: FORCE
-	@echo "Executing $(HW_ACT) for Vivado project..."
 	@mkdir -p $(HW_PLATFORM)
-	$(MAKE) -C ./hardware VIVADO=$(VIVADO_BIN) HW_ACT=$(HW_ACT) HW_VAL="$(HW_VAL)" O=$(HW_PLATFORM) $@
-
-vivado_prj_clean:
-	$(MAKE) -C ./hardware $@
-
-#==========================================
-# Generated image clean
-#==========================================
-image_clean:
-	@rm -rf $(HW_PLATFORM) $(INSTALL_LOC)
+	$(MAKE) -C ./fpga VIVADO=$(VIVADO_BIN) FPGA_ACT=$(FPGA_ACT) FPGA_VAL="$(FPGA_VAL)" O=$(HW_PLATFORM) $@
 

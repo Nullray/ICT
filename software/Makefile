@@ -14,7 +14,10 @@ ATF_LOC := $(SW_LOC)/arm-atf
 include scripts/atf.mk
 ATF_CROSS_COMPILE_FLAGS += BUILD_BASE=$(ATF_LOC)
 
-ifneq (${TOS},)
+ifneq (${TOS},) 
+obj-tos-y := $(foreach obj,$(TOS),$(obj).tos)
+obj-tos-clean-y := $(foreach obj,$(TOS),$(obj).tos.clean)
+obj-tos-dist-y := $(foreach obj,$(TOS),$(obj).tos.dist)
 ATF_CROSS_COMPILE_FLAGS += SPD=$(TOS)d
 endif
 
@@ -25,16 +28,14 @@ BL31_BIN := $(ATF_LOC)/bl31.elf
 UBOOT_SRC :=$(SW_LOC)/uboot
 UBOOT_LOC := $(SW_LOC)/arm-uboot
 include scripts/uboot.mk
-UBOOT_CROSS_COMPILE_FLAGS += KBUILD_OUTPUT=$(UBOOT_LOC)
-
-UBOOT_CONFIGED := $(UBOOT_LOC)/.config
-
-UBOOT_BIN := $(UBOOT_LOC)/u-boot.elf
+UBOOT_CROSS_COMPILE_FLAGS += KBUILD_OUTPUT=$(UBOOT_LOC)/$(OS)
 
 # BL33: Linux kernel image
 KERN_SRC := $(SW_LOC)/linux
 KERN_LOC := $(SW_LOC)/arm-linux
 include scripts/kernel.mk
+KERN_CROSS_COMPILE_FLAGS += O=$(KERN_LOC)/$(OS)
+
 KERN_IMAGE_GEN := $(KERN_LOC)/$(OS)/arch/$(KERN_PLAT)/boot/Image
 
 ifneq (${INSTALL_LOC},)
@@ -49,31 +50,31 @@ KERN_IMAGE := $(KERN_INSTALL_LOC)/Image
 #==================================
 # ARM Trusted Firmware compilation 
 #==================================
-atf $(ATF_ELF): FORCE
+atf: $(obj-tos-y) FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(ATF_SRC) \
 		$(ATF_CROSS_COMPILE_FLAGS) $(ATF_TARGET)
 	@cp $(ATF_ELF) $(BL31_BIN)
 
-atf_clean:
-	$(MAKE) -C $(ATF_SRC) clean
+atf_clean: $(obj-tos-clean-y)
+	$(MAKE) -C $(ATF_SRC) BUILD_BASE=$(ATF_LOC) clean
 	@rm -f $(BL31_BIN)
 
-atf_distclean:
+atf_distclean: $(obj-tos-dist-y)
 	@rm -rf $(ATF_LOC)
 
 #==================================
 # U-Boot compilation
 #==================================
-uboot $(UBOOT_BIN): $(UBOOT_CONFIGED) FORCE
+uboot: $(UBOOT_LOC)/$(OS)/.config FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
 		$(UBOOT_CROSS_COMPILE_FLAGS) $(UBOOT_TARGET) -j 10
 
-$(UBOOT_CONFIGED): $(UBOOT_CONFIG_FILE)
+$(UBOOT_LOC)/%/.config: $($(OS)-uboot-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
-		$(UBOOT_CROSS_COMPILE_FLAGS) $(UBOOT_CONFIG) olddefconfig
+		$(UBOOT_CROSS_COMPILE_FLAGS) $($(OS)-uboot-config) olddefconfig
 
 uboot_clean:
-	$(MAKE) -C $(UBOOT_SRC) clean 
+	$(MAKE) -C $(UBOOT_SRC) KBUILD_OUTPUT=$(UBOOT_LOC) clean 
 
 uboot_distclean:
 	@rm -rf $(UBOOT_LOC)
@@ -83,21 +84,18 @@ uboot_distclean:
 #==================================
 linux: $(KERN_LOC)/$(OS)/.config FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
-		$(KERN_CROSS_COMPILE_FLAGS) \
-		O=$(KERN_LOC)/$(OS) $(KERN_TARGET) -j 10
+		$(KERN_CROSS_COMPILE_FLAGS) $(KERN_TARGET) -j 10
 	@mkdir -p $(KERN_INSTALL_LOC)
 	@cp $(KERN_IMAGE_GEN) $(KERN_IMAGE)
 
-$(KERN_LOC)/%/.config: $($(OS)-config-file)
-	@mkdir -p $(KERN_LOC)/$(OS)
+$(KERN_LOC)/%/.config: $($(OS)-kern-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
-		$(KERN_CROSS_COMPILE_FLAGS) \
-		O=$(KERN_LOC)/$(OS) $($(OS)-config) menuconfig
+		$(KERN_CROSS_COMPILE_FLAGS) $($(OS)-kern-config) menuconfig
 
 linux_clean:
 	$(MAKE) -C $(KERN_SRC) O=$(KERN_LOC)/$(OS) clean 
-	@rm -f $(KERN_IMAGE_GEN)
+	@rm -f $(KERN_IMAGE)
 
 linux_distclean:
-	@rm -rf $(KERN_LOC)/$(OS) $(KERN_INSTALL_LOC)/$(OS)
+	@rm -rf $(KERN_LOC)/$(OS) $(KERN_INSTALL_LOC)
 
