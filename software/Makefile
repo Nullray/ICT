@@ -90,7 +90,7 @@ linux: $(KERN_LOC)/$(OS)/.config FORCE
 
 $(KERN_LOC)/%/.config: $($(OS)-kern-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
-		$(KERN_CROSS_COMPILE_FLAGS) $($(OS)-kern-config) menuconfig
+		$(KERN_CROSS_COMPILE_FLAGS) $($(OS)-kern-config) olddefconfig
 
 linux_clean:
 	$(MAKE) -C $(KERN_SRC) O=$(KERN_LOC)/$(OS) clean 
