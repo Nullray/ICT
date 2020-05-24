@@ -31,6 +31,10 @@ obj-sw-y := $(foreach obj,$(OS_KERN),$(obj).sw)
 obj-sw-clean-y := $(foreach obj,$(OS_KERN),$(obj).sw.clean)
 obj-sw-dist-y := $(foreach obj,$(OS_KERN),$(obj).sw.dist)
 
+# TODO: Change target file system
+phy_os-fs-obj := aarch64-debian-10.tar.gz
+phy_os-fs-path := rootfs/aarch64/debian/release
+
 # Temporal directory to hold hardware design output files 
 # (i.e., bitstream, hardware definition file (HDF))
 HW_PLATFORM := $(shell pwd)/hw_plat
@@ -98,6 +102,7 @@ ifeq ($(patsubst %.sw,%,$@),dom0)
 	$(MAKE) xen
 endif
 	$(MAKE) $(patsubst %.sw,%.os,$@)
+	$(MAKE) $(patsubst %.sw,%.fs,$@)
 	@echo "All required images of $(patsubst %.sw,%,$@) are generated"
 
 %.sw.clean:
@@ -226,6 +231,19 @@ pmufw_clean:
 
 pmufw_distclean:
 	$(MAKE) -C ./bootstrap $@
+
+#==============================================
+# File system
+#==============================================
+FTP_ROOT := 172.16.128.201
+FTP_USER := ftpuser
+FTP_PASSWD := 123456
+
+%.fs: FORCE
+	@mkdir -p $(INSTALL_LOC)/$(patsubst %.fs,%,$@)
+	@cd $(INSTALL_LOC)/$(patsubst %.fs,%,$@) && \
+		wget ftp://$(FTP_ROOT)/$($(patsubst %.fs,%,$@)-fs-path)/$($(patsubst %.fs,%,$@)-fs-obj) \
+		--ftp-user=$(FTP_USER) --ftp-password=$(FTP_PASSWD)
 
 #==============================================
 # Intermediate files between HW and SW design
