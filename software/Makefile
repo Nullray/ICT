@@ -15,10 +15,13 @@ include scripts/atf.mk
 ATF_CROSS_COMPILE_FLAGS += BUILD_BASE=$(ATF_LOC)
 
 ifneq (${TOS},) 
+TEE_SRC := $(SW_LOC)/tee
 obj-tos-y := $(foreach obj,$(TOS),$(obj).tos)
 obj-tos-clean-y := $(foreach obj,$(TOS),$(obj).tos.clean)
 obj-tos-dist-y := $(foreach obj,$(TOS),$(obj).tos.dist)
 ATF_CROSS_COMPILE_FLAGS += SPD=$(TOS)d
+BL32_BIN := $(SW_LOC)/arm-tee/bl32.elf
+include scripts/tee.mk
 endif
 
 ATF_ELF := $(ATF_LOC)/$(ATF_PLAT)/release/bl31/bl31.elf
@@ -61,6 +64,21 @@ atf_clean: $(obj-tos-clean-y)
 
 atf_distclean: $(obj-tos-dist-y)
 	@rm -rf $(ATF_LOC)
+
+%.tos: FORCE
+	$(EXPORT_CC_PATH) && $(MAKE) -C \
+		$(TEE_SRC)/$(patsubst %.tos,%,$@) \
+		$($(patsubst %.tos,%,$@)-obj-flags) \
+		$($(patsubst %.tos,%,$@)-target)
+	@cp $($(patsubst %.tos,%,$@)-obj) $(BL32_BIN)
+
+%.tos.clean:
+	$(MAKE) -C $($(patsubst %.tos.clean,%,$@)) \
+		$($(patsubst %.tos.clean,%,$@)-obj-clean) clean
+	@rm -f $(BL32_BIN)
+
+%.tos.dist:
+	@rm -rf $($(patsubst %.tos.dist,%,$@)-loc)
 
 #==================================
 # U-Boot compilation

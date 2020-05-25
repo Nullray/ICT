@@ -135,8 +135,7 @@ $(BOOT_BIN): $(BIF_FILE)
 	@cd $(BOOT_BIN_LOC) && $(BOOT_GEN) $(BOOT_GEN_FLAGS)
 
 $(BIF_FILE): FORCE
-	@bash $(BIF_GEN) $(WITH_BIT) $(OS) \
-		$(WITH_TOS) $(TOS)
+	@bash $(BIF_GEN) $(WITH_BIT) $(OS) $(WITH_TOS)
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)

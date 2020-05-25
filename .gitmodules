@@ -14,3 +14,7 @@
 	path = bootstrap/dt-gen
 	url = https://github.com/ict-accel-team/device-tree-xlnx
 	branch = xilinx-v2019.1-nf-dev
+[submodule "software/tee/optee"]
+	path = software/tee/optee
+	url = https://github.com/ict-accel-team/optee_os
+	branch = 3.5.0-dev

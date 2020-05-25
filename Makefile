@@ -21,8 +21,8 @@ VIVADO_BIN := $(VIVADO_TOOL_PATH)/vivado
 HSI_BIN := $(SDK_TOOL_PATH)/hsi
 BOOT_GEN_BIN := $(SDK_TOOL_PATH)/bootgen
 
-# TODO: Optional Trusted OS
-TOS := 
+# Optional Trusted OS
+TOS ?= 
 
 # Linux kernel (i.e., Physical machine, Dom0, DomU)
 OS_KERN := phy_os
@@ -179,8 +179,7 @@ dt_distclean:
 	@mkdir -p $(INSTALL_LOC)/$(patsubst %.bootbin,%,$@)
 	$(MAKE) -C ./bootstrap BOOT_GEN=$(BOOT_GEN_BIN) \
 		WITH_BIT=$(WITH_BIT) OS=$(patsubst %.bootbin,%,$@) \
-		WITH_TOS=$(WITH_TOS) TOS=$(TOS) \
-		O=$(INSTALL_LOC) boot_bin
+		WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC) boot_bin
 
 %.bootbin.clean: atf_clean fsbl_clean pmufw_clean
 	@rm -f $(INSTALL_LOC)/$(patsubst %.bootbin.clean,%,$@)/BOOT.bin
