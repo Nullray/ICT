@@ -83,6 +83,7 @@ sw_clean: $(obj-sw-clean-y)
 
 sw_distclean: $(obj-sw-dist-y)
 	@rm -rf software/arm-linux software/arm-uboot \
+		software/arm-tee
 		bootstrap/.Xil
 
 fpga: $(SYS_HDF) $(BITSTREAM)
@@ -101,8 +102,8 @@ endif
 ifeq ($(patsubst %.sw,%,$@),dom0)
 	$(MAKE) xen
 endif
-	$(MAKE) $(patsubst %.sw,%.os,$@)
 	$(MAKE) $(patsubst %.sw,%.fs,$@)
+	$(MAKE) $(patsubst %.sw,%.os,$@)
 	@echo "All required images of $(patsubst %.sw,%,$@) are generated"
 
 %.sw.clean:
