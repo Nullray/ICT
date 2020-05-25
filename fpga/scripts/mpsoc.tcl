@@ -225,8 +225,8 @@ proc create_root_design { parentCell } {
    CONFIG.PSU_MIO_8_POLARITY {Default} \
    CONFIG.PSU_MIO_9_DIRECTION {inout} \
    CONFIG.PSU_MIO_9_POLARITY {Default} \
-   CONFIG.PSU_MIO_TREE_PERIPHERALS {Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash##Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#SD 0#SD 0#SD 0#SD 0#####SD 0#SD 0####Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#Gem 0#########UART 0#UART 0#############################MDIO 0#MDIO 0} \
-   CONFIG.PSU_MIO_TREE_SIGNALS {sclk_out#miso_mo1#mo2#mo3#mosi_mi0#n_ss_out##n_ss_out_upper#mo_upper[0]#mo_upper[1]#mo_upper[2]#mo_upper[3]#sclk_out_upper#sdio0_data_out[0]#sdio0_data_out[1]#sdio0_data_out[2]#sdio0_data_out[3]#####sdio0_cmd_out#sdio0_clk_out####rgmii_tx_clk#rgmii_txd[0]#rgmii_txd[1]#rgmii_txd[2]#rgmii_txd[3]#rgmii_tx_ctl#rgmii_rx_clk#rgmii_rxd[0]#rgmii_rxd[1]#rgmii_rxd[2]#rgmii_rxd[3]#rgmii_rx_ctl#########rxd#txd#############################gem0_mdc#gem0_mdio_out} \
+   CONFIG.PSU_MIO_TREE_PERIPHERALS {Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash##Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#Quad SPI Flash#SD 0#SD 0#SD 0#SD 0#####SD 0#SD 0########################UART 0#UART 0##############################} \
+   CONFIG.PSU_MIO_TREE_SIGNALS {sclk_out#miso_mo1#mo2#mo3#mosi_mi0#n_ss_out##n_ss_out_upper#mo_upper[0]#mo_upper[1]#mo_upper[2]#mo_upper[3]#sclk_out_upper#sdio0_data_out[0]#sdio0_data_out[1]#sdio0_data_out[2]#sdio0_data_out[3]#####sdio0_cmd_out#sdio0_clk_out########################rxd#txd##############################} \
    CONFIG.PSU_SD0_INTERNAL_BUS_WIDTH {4} \
    CONFIG.PSU__ACT_DDR_FREQ_MHZ {1066.666626} \
    CONFIG.PSU__CRF_APB__ACPU_CTRL__ACT_FREQMHZ {1325.000000} \
@@ -376,14 +376,16 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__DDR__INTERFACE__FREQMHZ {533.500} \
    CONFIG.PSU__DLL__ISUSED {1} \
    CONFIG.PSU__ENET0__FIFO__ENABLE {0} \
-   CONFIG.PSU__ENET0__GRP_MDIO__ENABLE {1} \
-   CONFIG.PSU__ENET0__GRP_MDIO__IO {MIO 76 .. 77} \
+   CONFIG.PSU__ENET0__GRP_MDIO__ENABLE {0} \
+   CONFIG.PSU__ENET0__GRP_MDIO__IO {<Select>} \
    CONFIG.PSU__ENET0__PERIPHERAL__ENABLE {1} \
-   CONFIG.PSU__ENET0__PERIPHERAL__IO {MIO 26 .. 37} \
+   CONFIG.PSU__ENET0__PERIPHERAL__IO {GT Lane0} \
    CONFIG.PSU__ENET0__PTP__ENABLE {0} \
    CONFIG.PSU__ENET0__TSU__ENABLE {0} \
    CONFIG.PSU__GEM0_COHERENCY {0} \
    CONFIG.PSU__GEM0_ROUTE_THROUGH_FPD {0} \
+   CONFIG.PSU__GEM0__REF_CLK_FREQ {125} \
+   CONFIG.PSU__GEM0__REF_CLK_SEL {Ref Clk0} \
    CONFIG.PSU__GEM__TSU__ENABLE {0} \
    CONFIG.PSU__HIGH_ADDRESS__ENABLE {1} \
    CONFIG.PSU__MAXIGP2__DATA_WIDTH {32} \
