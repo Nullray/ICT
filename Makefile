@@ -83,7 +83,7 @@ sw_clean: $(obj-sw-clean-y)
 
 sw_distclean: $(obj-sw-dist-y)
 	@rm -rf software/arm-linux software/arm-uboot \
-		software/arm-tee
+		software/arm-tee \
 		bootstrap/.Xil
 
 fpga: $(SYS_HDF) $(BITSTREAM)
@@ -242,6 +242,7 @@ FTP_PASSWD := 123456
 %.fs: FORCE
 	@mkdir -p $(INSTALL_LOC)/$(patsubst %.fs,%,$@)
 	@cd $(INSTALL_LOC)/$(patsubst %.fs,%,$@) && \
+		rm -f $($(patsubst %.fs,%,$@)-fs-obj) && \
 		wget ftp://$(FTP_ROOT)/$($(patsubst %.fs,%,$@)-fs-path)/$($(patsubst %.fs,%,$@)-fs-obj) \
 		--ftp-user=$(FTP_USER) --ftp-password=$(FTP_PASSWD)
 
