@@ -21,6 +21,11 @@ VIVADO_BIN := $(VIVADO_TOOL_PATH)/vivado
 HSI_BIN := $(SDK_TOOL_PATH)/hsi
 BOOT_GEN_BIN := $(SDK_TOOL_PATH)/bootgen
 
+# Board and Chipset
+FPGA_BD ?= nf
+FPGA_PRJ := mpsoc
+FPGA_TARGET := $(FPGA_PRJ)_$(FPGA_BD)
+
 # Optional Trusted OS
 TOS ?= 
 
@@ -37,7 +42,7 @@ phy_os-fs-path := rootfs/aarch64/debian/release
 
 # Temporal directory to hold hardware design output files 
 # (i.e., bitstream, hardware definition file (HDF))
-HW_PLATFORM := $(shell pwd)/hw_plat
+HW_PLATFORM := $(shell pwd)/hw_plat/$(FPGA_TARGET)
 BITSTREAM := $(HW_PLATFORM)/system.bit
 SYS_HDF := $(HW_PLATFORM)/system.hdf
 
@@ -49,7 +54,7 @@ WITH_TOS ?= n
 WITH_BIT ?= n
 
 # Temporal directory to save all image files for porting
-INSTALL_LOC := $(shell pwd)/ready_for_download
+INSTALL_LOC := $(shell pwd)/ready_for_download/$(FPGA_TARGET)
 
 # FLAGS for sub-directory Makefile
 ATF_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) TOS=$(TOS)
@@ -96,8 +101,7 @@ fpga_distclean:
 
 %.sw: FORCE
 ifneq ($(patsubst %.sw,%,$@),domU)
-	$(MAKE) $(patsubst %.sw,%.uboot,$@)
-	$(MAKE) $(patsubst %.sw,%.bootbin,$@)
+	$(MAKE) bootbin 
 endif
 ifeq ($(patsubst %.sw,%,$@),dom0)
 	$(MAKE) xen
@@ -108,8 +112,7 @@ endif
 
 %.sw.clean:
 ifneq ($(patsubst %.sw.clean,%,$@),domU)
-	$(MAKE) $(patsubst %.sw.clean,%.bootbin.clean,$@)
-	$(MAKE) $(patsubst %.sw.clean,%.uboot.clean,$@)
+	$(MAKE) bootbin_clean 
 endif
 ifeq ($(patsubst %.sw.clean,%,$@),dom0)
 	$(MAKE) xen_clean
@@ -118,8 +121,7 @@ endif
 
 %.sw.dist:
 ifneq ($(patsubst %.sw.dist,%,$@),domU)
-	$(MAKE) $(patsubst %.sw.dist,%.bootbin.dist,$@)
-	$(MAKE) $(patsubst %.sw.dist,%.uboot.dist,$@)
+	$(MAKE) bootbin_distclean 
 endif
 ifeq ($(patsubst %.sw.dist,%,$@),dom0)
 	$(MAKE) xen_distclean
@@ -127,28 +129,13 @@ endif
 	$(MAKE) $(patsubst %.sw.dist,%.os.dist,$@)
 
 #==========================================
-# U-Boot Compilation
-#==========================================
-%.uboot: dt FORCE
-	@echo "Compiling U-Boot..."
-	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) \
-		OS=$(patsubst %.uboot,%,$@) uboot
-
-%.uboot.clean: dt_clean
-	$(MAKE) -C ./software \
-		OS=$(patsubst %.uboot.clean,%,$@) uboot_clean
-
-%.uboot.dist: dt_distclean
-	$(MAKE) -C ./software \
-		OS=$(patsubst %.uboot.dist,%,$@) uboot_distclean
-
-#==========================================
 # Generation of Device Tree Blob
 #==========================================
-dt: $(SYS_HDF) FORCE
+dt: FORCE
 	@echo "Compiling Device Tree..."
 	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
-		HSI=$(HSI_BIN) O=$(INSTALL_LOC) $@
+		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
+		O=$(INSTALL_LOC) $@
 
 dt_clean:
 	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
@@ -175,22 +162,22 @@ dt_distclean:
 #==========================================
 # BOOT.bin generation
 #==========================================
-%.bootbin: atf fsbl pmufw FORCE
+bootbin: atf fsbl pmufw uboot FORCE
 	@echo "Generating BOOT.bin image..."
-	@mkdir -p $(INSTALL_LOC)/$(patsubst %.bootbin,%,$@)
+	@mkdir -p $(INSTALL_LOC)
 	$(MAKE) -C ./bootstrap BOOT_GEN=$(BOOT_GEN_BIN) \
-		WITH_BIT=$(WITH_BIT) OS=$(patsubst %.bootbin,%,$@) \
+		WITH_BIT=$(WITH_BIT) BIT_LOC=$(FPGA_TARGET) \
 		WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC) boot_bin
 
-%.bootbin.clean: atf_clean fsbl_clean pmufw_clean
+bootbin_clean: atf_clean fsbl_clean pmufw_clean uboot_clean
 	@rm -f $(INSTALL_LOC)/$(patsubst %.bootbin.clean,%,$@)/BOOT.bin
 
-%.bootbin.dist: atf_distclean fsbl_distclean pmufw_distclean
+bootbin_distclean: atf_distclean fsbl_distclean pmufw_distclean uboot_distclean
 	$(MAKE) -C ./bootstrap boot_bin_distclean
 	@rm -rf $(INSTALL_LOC)/$(patsubst %.bootbin.dist,%,$@)
 
 #==========================================
-# Generation of BL31 (i.e., ARM Trusted Firmware (ATF)) 
+# Compilation of BL31 (i.e., ARM Trusted Firmware (ATF)) 
 # and optional BL32 Trusted OS (e.g., OP-TEE) 
 #==========================================
 atf: FORCE
@@ -210,7 +197,7 @@ atf_distclean: FORCE
 fsbl: FORCE
 	@echo "Compiling FSBL..."
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(ELF_GCC_PATH) \
-		HSI=$(HSI_BIN) $@ 
+		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) $@
 
 fsbl_clean:
 	$(MAKE) -C ./bootstrap $@
@@ -224,13 +211,27 @@ fsbl_distclean:
 pmufw: FORCE
 	@echo "Compiling PMU Firmware..."
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) \
-		HSI=$(HSI_BIN) $@ 
+		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) $@ 
 
 pmufw_clean:
 	$(MAKE) -C ./bootstrap $@ 
 
 pmufw_distclean:
 	$(MAKE) -C ./bootstrap $@
+
+#==========================================
+# U-Boot Compilation
+#==========================================
+uboot: dt FORCE
+	@echo "Compiling U-Boot..."
+	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) \
+		DTB_LOC=$(FPGA_TARGET) uboot
+
+uboot_clean: dt_clean
+	$(MAKE) -C ./software uboot_clean
+
+uboot_distclean: dt_distclean
+	$(MAKE) -C ./software uboot_distclean
 
 #==============================================
 # File system
@@ -250,16 +251,17 @@ FTP_PASSWD := 123456
 # Intermediate files between HW and SW design
 #==============================================
 $(SYS_HDF): FORCE
-	$(MAKE) FPGA_ACT=prj_gen vivado_prj 
+	$(MAKE) FPGA_ACT=prj_gen FPGA_BD=$(FPGA_BD) FPGA_PRJ=$(FPGA_PRJ) vivado_prj 
 
 $(BITSTREAM): FORCE
-	$(MAKE) FPGA_ACT=run_syn vivado_prj 
-	$(MAKE) FPGA_ACT=bit_gen vivado_prj
+	$(MAKE) FPGA_ACT=run_syn FPGA_BD=$(FPGA_BD) FPGA_PRJ=$(FPGA_PRJ) vivado_prj 
+	$(MAKE) FPGA_ACT=bit_gen FPGA_BD=$(FPGA_BD) FPGA_PRJ=$(FPGA_PRJ) vivado_prj
 
 #==========================================
 # FPGA Design Flow
 #==========================================
 vivado_prj: FORCE
 	@mkdir -p $(HW_PLATFORM)
-	$(MAKE) -C ./fpga VIVADO=$(VIVADO_BIN) FPGA_ACT=$(FPGA_ACT) FPGA_VAL="$(FPGA_VAL)" O=$(HW_PLATFORM) $@
+	$(MAKE) -C ./fpga VIVADO=$(VIVADO_BIN) FPGA_BD=$(FPGA_BD) FPGA_PRJ=$(FPGA_PRJ) \
+		FPGA_ACT=$(FPGA_ACT) FPGA_VAL="$(FPGA_VAL)" O=$(HW_PLATFORM) $@
 

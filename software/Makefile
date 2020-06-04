@@ -31,7 +31,7 @@ BL31_BIN := $(ATF_LOC)/bl31.elf
 UBOOT_SRC :=$(SW_LOC)/uboot
 UBOOT_LOC := $(SW_LOC)/arm-uboot
 include scripts/uboot.mk
-UBOOT_CROSS_COMPILE_FLAGS += KBUILD_OUTPUT=$(UBOOT_LOC)/$(OS)
+UBOOT_CROSS_COMPILE_FLAGS += KBUILD_OUTPUT=$(UBOOT_LOC)
 
 # BL33: Linux kernel image
 KERN_SRC := $(SW_LOC)/linux
@@ -83,13 +83,13 @@ atf_distclean: $(obj-tos-dist-y)
 #==================================
 # U-Boot compilation
 #==================================
-uboot: $(UBOOT_LOC)/$(OS)/.config FORCE
+uboot: $(UBOOT_LOC)/.config FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
 		$(UBOOT_CROSS_COMPILE_FLAGS) $(UBOOT_TARGET) -j 10
 
-$(UBOOT_LOC)/%/.config: $($(OS)-uboot-config-file)
+$(UBOOT_LOC)/.config: $(uboot-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
-		$(UBOOT_CROSS_COMPILE_FLAGS) $($(OS)-uboot-config) olddefconfig
+		$(UBOOT_CROSS_COMPILE_FLAGS) $(uboot-config) olddefconfig
 
 uboot_clean:
 	$(MAKE) -C $(UBOOT_SRC) KBUILD_OUTPUT=$(UBOOT_LOC) clean 

@@ -11,8 +11,6 @@ endif
 
 BOOT_STRAP_LOC := $(shell pwd)
 
-HDF_FILE := $(BOOT_STRAP_LOC)/../hw_plat/system.hdf
-
 HSI_FLAGS := -nojournal -nolog -mode batch
 
 # BL2: ZynqMP First-Stage Boot Loader (FSBL)
@@ -50,8 +48,11 @@ BOOT_BIN_LOC := $(BOOT_STRAP_LOC)/boot_bin
 BIF_GEN := $(BOOT_STRAP_LOC)/scripts/bif_gen.sh
 BIF_FILE := $(BOOT_BIN_LOC)/boot_gen.bif
 
-BOOT_GEN_FLAGS := -arch zynqmp -packagename xczu19eg \
+#BOOT_GEN_FLAGS := -arch zynqmp -packagename $(CHIP) \
 	-w on -image $(BIF_FILE) -log info
+
+BOOT_GEN_FLAGS := -arch zynqmp -w on \
+	-image $(BIF_FILE) -log info
 
 ifneq ($(O),)
 BOOT_BIN := $(O)/$(OS)/BOOT.bin
@@ -135,7 +136,7 @@ $(BOOT_BIN): $(BIF_FILE)
 	@cd $(BOOT_BIN_LOC) && $(BOOT_GEN) $(BOOT_GEN_FLAGS)
 
 $(BIF_FILE): FORCE
-	@bash $(BIF_GEN) $(WITH_BIT) $(OS) $(WITH_TOS)
+	@bash $(BIF_GEN) $(WITH_BIT) $(BIT_LOC) $(WITH_TOS)
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)
