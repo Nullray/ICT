@@ -6,25 +6,30 @@
 #========================================================
 
 # parsing argument
-if {$argc != 3} {
+if {$argc != 5} {
 	puts "Error: The argument should be hw_act val output_dir"
 	exit
 } else {
 	set act [lindex $argv 0]
 	set val [lindex $argv 1]
 	set out_dir [lindex $argv 2]
+  set board [lindex $argv 3]
+  set prj [lindex $argv 4]
 }
 
 set script_dir [file dirname [info script]]
+set design_dir ${script_dir}/../design/${prj}/scripts
 
-source [file join $script_dir "flow/prologue.tcl"]
+source [file join $script_dir "board/${board}.tcl"]
+source [file join $script_dir "prologue.tcl"]
 
 #====================
 # Main flow
 #====================
 if {$act == "prj_gen"} {
 	# project setup
-	source [file join $script_dir "flow/prj_setup.tcl"]
+  source [file join $script_dir "prj_setup.tcl"]
+	source [file join $design_dir "prj_setup.tcl"]
 	
 	# Generate HDF
 	write_hwdef -force -file ${out_dir}/system.hdf
@@ -34,18 +39,18 @@ if {$act == "prj_gen"} {
 } elseif {$act == "run_syn"} {
 	open_project ${prj_file}
 
-	source [file join $script_dir "flow/synth.tcl"]
+	source [file join $design_dir "flow/synth.tcl"]
 
 	close_project
 
 } elseif {$act == "bit_gen"} {
 	open_project ${prj_file}
 	# Design optimization
-	source [file join $script_dir "flow/opt.tcl"]
+	source [file join $design_dir "flow/opt.tcl"]
 	# Placement
-	source [file join $script_dir "flow/place.tcl"]
+	source [file join $design_dir "flow/place.tcl"]
 	# routing
-	source [file join $script_dir "flow/route.tcl"]
+	source [file join $design_dir "flow/route.tcl"]
 	# bitstream generation
 	write_bitstream -force ${out_dir}/system.bit
 

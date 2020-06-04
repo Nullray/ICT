@@ -4,7 +4,7 @@ set_property strategy {Vivado Synthesis defaults} [get_runs synth_1]
 set_property STEPS.SYNTH_DESIGN.ARGS.FLATTEN_HIERARCHY {none} [get_runs synth_1]
 		
 # synthesizing alu design
-synth_design -top ${top_module} -part ${device}
+synth_design -top mpsoc_wrapper -part ${device}
 
 # setup output logs and reports
 report_utilization -hierarchical -file ${synth_rpt_dir}/synth_util_hier.rpt
