@@ -266,101 +266,101 @@ proc create_root_design { parentCell } {
   # Create instance: axi_iic_1, and set properties
   set axi_iic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.0 axi_iic_1 ]
 
-  # Create instance: axi_uartlite_0, and set properties
-  set axi_uartlite_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_0 ]
+  # Create instance: uartlite_00, and set properties
+  set uartlite_00 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_00 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_0
+ ] $uartlite_00
 
-  # Create instance: axi_uartlite_1, and set properties
-  set axi_uartlite_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_1 ]
+  # Create instance: uartlite_01, and set properties
+  set uartlite_01 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_01 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_1
+ ] $uartlite_01
 
-  # Create instance: axi_uartlite_2, and set properties
-  set axi_uartlite_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_2 ]
+  # Create instance: uartlite_02, and set properties
+  set uartlite_02 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_02 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_2
+ ] $uartlite_02
 
-  # Create instance: axi_uartlite_3, and set properties
-  set axi_uartlite_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_3 ]
+  # Create instance: uartlite_03, and set properties
+  set uartlite_03 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_03 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_3
+ ] $uartlite_03
 
-  # Create instance: axi_uartlite_4, and set properties
-  set axi_uartlite_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_4 ]
+  # Create instance: uartlite_04, and set properties
+  set uartlite_04 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_04 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_4
+ ] $uartlite_04
 
-  # Create instance: axi_uartlite_5, and set properties
-  set axi_uartlite_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_5 ]
+  # Create instance: uartlite_05, and set properties
+  set uartlite_05 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_05 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_5
+ ] $uartlite_05
 
-  # Create instance: axi_uartlite_6, and set properties
-  set axi_uartlite_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_6 ]
+  # Create instance: uartlite_06, and set properties
+  set uartlite_06 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_06 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_6
+ ] $uartlite_06
 
-  # Create instance: axi_uartlite_7, and set properties
-  set axi_uartlite_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_7 ]
+  # Create instance: uartlite_07, and set properties
+  set uartlite_07 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_07 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_7
+ ] $uartlite_07
 
-  # Create instance: axi_uartlite_8, and set properties
-  set axi_uartlite_8 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_8 ]
+  # Create instance: uartlite_08, and set properties
+  set uartlite_08 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_08 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_8
+ ] $uartlite_08
 
-  # Create instance: axi_uartlite_9, and set properties
-  set axi_uartlite_9 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_9 ]
+  # Create instance: uartlite_09, and set properties
+  set uartlite_09 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_09 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_9
+ ] $uartlite_09
 
-  # Create instance: axi_uartlite_10, and set properties
-  set axi_uartlite_10 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_10 ]
+  # Create instance: uartlite_10, and set properties
+  set uartlite_10 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_10 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_10
+ ] $uartlite_10
 
-  # Create instance: axi_uartlite_11, and set properties
-  set axi_uartlite_11 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_11 ]
+  # Create instance: uartlite_11, and set properties
+  set uartlite_11 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_11 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_11
+ ] $uartlite_11
 
-  # Create instance: axi_uartlite_12, and set properties
-  set axi_uartlite_12 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_12 ]
+  # Create instance: uartlite_12, and set properties
+  set uartlite_12 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_12 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_12
+ ] $uartlite_12
 
-  # Create instance: axi_uartlite_13, and set properties
-  set axi_uartlite_13 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_13 ]
+  # Create instance: uartlite_13, and set properties
+  set uartlite_13 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_13 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_13
+ ] $uartlite_13
 
-  # Create instance: axi_uartlite_14, and set properties
-  set axi_uartlite_14 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_14 ]
+  # Create instance: uartlite_14, and set properties
+  set uartlite_14 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_14 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_14
+ ] $uartlite_14
 
-  # Create instance: axi_uartlite_15, and set properties
-  set axi_uartlite_15 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 axi_uartlite_15 ]
+  # Create instance: uartlite_15, and set properties
+  set uartlite_15 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_15 ]
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
- ] $axi_uartlite_15
+ ] $uartlite_15
 
   # Create instance: debug_bridge_0, and set properties
   set debug_bridge_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:debug_bridge:3.0 debug_bridge_0 ]
@@ -405,6 +405,9 @@ proc create_root_design { parentCell } {
   # Create instance: zynq_ultra_ps_e_0, and set properties
   set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.3 zynq_ultra_ps_e_0 ]
   set_property -dict [ list \
+   CONFIG.PSU_BANK_0_IO_STANDARD {LVCMOS18} \
+   CONFIG.PSU_BANK_2_IO_STANDARD {LVCMOS18} \
+   CONFIG.PSU_BANK_3_IO_STANDARD {LVCMOS18} \
    CONFIG.PSU_DDR_RAM_HIGHADDR {0x7FFFFFFF} \
    CONFIG.PSU_DDR_RAM_HIGHADDR_OFFSET {0x00000002} \
    CONFIG.PSU_DDR_RAM_LOWADDR_OFFSET {0x80000000} \
@@ -732,22 +735,22 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports power_en_b] [get_bd_intf_pins axi_gpio_0/GPIO]
   connect_bd_intf_net -intf_net axi_iic_0_IIC [get_bd_intf_ports local_iic] [get_bd_intf_pins axi_iic_0/IIC]
   connect_bd_intf_net -intf_net axi_iic_1_IIC [get_bd_intf_ports main_iic] [get_bd_intf_pins axi_iic_1/IIC]
-  connect_bd_intf_net -intf_net axi_uartlite_0_UART [get_bd_intf_ports uart_rtl_0] [get_bd_intf_pins axi_uartlite_0/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_10_UART [get_bd_intf_ports uart_rtl_10] [get_bd_intf_pins axi_uartlite_10/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_11_UART [get_bd_intf_ports uart_rtl_11] [get_bd_intf_pins axi_uartlite_11/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_12_UART [get_bd_intf_ports uart_rtl_12] [get_bd_intf_pins axi_uartlite_12/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_13_UART [get_bd_intf_ports uart_rtl_13] [get_bd_intf_pins axi_uartlite_13/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_14_UART [get_bd_intf_ports uart_rtl_14] [get_bd_intf_pins axi_uartlite_14/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_15_UART [get_bd_intf_ports uart_rtl_15] [get_bd_intf_pins axi_uartlite_15/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_1_UART [get_bd_intf_ports uart_rtl_1] [get_bd_intf_pins axi_uartlite_1/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_2_UART [get_bd_intf_ports uart_rtl_2] [get_bd_intf_pins axi_uartlite_2/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_3_UART [get_bd_intf_ports uart_rtl_3] [get_bd_intf_pins axi_uartlite_3/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_4_UART [get_bd_intf_ports uart_rtl_4] [get_bd_intf_pins axi_uartlite_4/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_5_UART [get_bd_intf_ports uart_rtl_5] [get_bd_intf_pins axi_uartlite_5/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_6_UART [get_bd_intf_ports uart_rtl_6] [get_bd_intf_pins axi_uartlite_6/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_7_UART [get_bd_intf_ports uart_rtl_7] [get_bd_intf_pins axi_uartlite_7/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_8_UART [get_bd_intf_ports uart_rtl_8] [get_bd_intf_pins axi_uartlite_8/UART]
-  connect_bd_intf_net -intf_net axi_uartlite_9_UART [get_bd_intf_ports uart_rtl_9] [get_bd_intf_pins axi_uartlite_9/UART]
+  connect_bd_intf_net -intf_net uartlite_00_UART [get_bd_intf_ports uart_rtl_0] [get_bd_intf_pins uartlite_00/UART]
+  connect_bd_intf_net -intf_net uartlite_10_UART [get_bd_intf_ports uart_rtl_10] [get_bd_intf_pins uartlite_10/UART]
+  connect_bd_intf_net -intf_net uartlite_11_UART [get_bd_intf_ports uart_rtl_11] [get_bd_intf_pins uartlite_11/UART]
+  connect_bd_intf_net -intf_net uartlite_12_UART [get_bd_intf_ports uart_rtl_12] [get_bd_intf_pins uartlite_12/UART]
+  connect_bd_intf_net -intf_net uartlite_13_UART [get_bd_intf_ports uart_rtl_13] [get_bd_intf_pins uartlite_13/UART]
+  connect_bd_intf_net -intf_net uartlite_14_UART [get_bd_intf_ports uart_rtl_14] [get_bd_intf_pins uartlite_14/UART]
+  connect_bd_intf_net -intf_net uartlite_15_UART [get_bd_intf_ports uart_rtl_15] [get_bd_intf_pins uartlite_15/UART]
+  connect_bd_intf_net -intf_net uartlite_01_UART [get_bd_intf_ports uart_rtl_1] [get_bd_intf_pins uartlite_01/UART]
+  connect_bd_intf_net -intf_net uartlite_02_UART [get_bd_intf_ports uart_rtl_2] [get_bd_intf_pins uartlite_02/UART]
+  connect_bd_intf_net -intf_net uartlite_03_UART [get_bd_intf_ports uart_rtl_3] [get_bd_intf_pins uartlite_03/UART]
+  connect_bd_intf_net -intf_net uartlite_04_UART [get_bd_intf_ports uart_rtl_4] [get_bd_intf_pins uartlite_04/UART]
+  connect_bd_intf_net -intf_net uartlite_05_UART [get_bd_intf_ports uart_rtl_5] [get_bd_intf_pins uartlite_05/UART]
+  connect_bd_intf_net -intf_net uartlite_06_UART [get_bd_intf_ports uart_rtl_6] [get_bd_intf_pins uartlite_06/UART]
+  connect_bd_intf_net -intf_net uartlite_07_UART [get_bd_intf_ports uart_rtl_7] [get_bd_intf_pins uartlite_07/UART]
+  connect_bd_intf_net -intf_net uartlite_08_UART [get_bd_intf_ports uart_rtl_8] [get_bd_intf_pins uartlite_08/UART]
+  connect_bd_intf_net -intf_net uartlite_09_UART [get_bd_intf_ports uart_rtl_9] [get_bd_intf_pins uartlite_09/UART]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M00_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M01_AXI [get_bd_intf_pins axi_iic_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M01_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M02_AXI [get_bd_intf_pins axi_iic_1/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M02_AXI]
@@ -756,42 +759,42 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M05_AXI [get_bd_intf_pins fan_con_2/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M05_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M06_AXI [get_bd_intf_pins fan_con_3/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M06_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M07_AXI [get_bd_intf_pins debug_bridge_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M07_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M08_AXI [get_bd_intf_pins axi_uartlite_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M08_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M09_AXI [get_bd_intf_pins axi_uartlite_1/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M09_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M10_AXI [get_bd_intf_pins axi_uartlite_2/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M10_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M11_AXI [get_bd_intf_pins axi_uartlite_3/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M11_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M12_AXI [get_bd_intf_pins axi_uartlite_4/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M12_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M13_AXI [get_bd_intf_pins axi_uartlite_5/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M13_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M14_AXI [get_bd_intf_pins axi_uartlite_6/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M14_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M15_AXI [get_bd_intf_pins axi_uartlite_7/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M15_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M16_AXI [get_bd_intf_pins axi_uartlite_8/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M16_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M17_AXI [get_bd_intf_pins axi_uartlite_9/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M17_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M18_AXI [get_bd_intf_pins axi_uartlite_10/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M18_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M19_AXI [get_bd_intf_pins axi_uartlite_11/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M19_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M20_AXI [get_bd_intf_pins axi_uartlite_12/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M20_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M21_AXI [get_bd_intf_pins axi_uartlite_13/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M21_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M22_AXI [get_bd_intf_pins axi_uartlite_14/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M22_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M23_AXI [get_bd_intf_pins axi_uartlite_15/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M23_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M08_AXI [get_bd_intf_pins uartlite_00/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M08_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M09_AXI [get_bd_intf_pins uartlite_01/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M09_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M10_AXI [get_bd_intf_pins uartlite_02/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M10_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M11_AXI [get_bd_intf_pins uartlite_03/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M11_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M12_AXI [get_bd_intf_pins uartlite_04/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M12_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M13_AXI [get_bd_intf_pins uartlite_05/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M13_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M14_AXI [get_bd_intf_pins uartlite_06/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M14_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M15_AXI [get_bd_intf_pins uartlite_07/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M15_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M16_AXI [get_bd_intf_pins uartlite_08/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M16_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M17_AXI [get_bd_intf_pins uartlite_09/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M17_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M18_AXI [get_bd_intf_pins uartlite_10/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M18_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M19_AXI [get_bd_intf_pins uartlite_11/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M19_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M20_AXI [get_bd_intf_pins uartlite_12/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M20_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M21_AXI [get_bd_intf_pins uartlite_13/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M21_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M22_AXI [get_bd_intf_pins uartlite_14/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M22_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M23_AXI [get_bd_intf_pins uartlite_15/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M23_AXI]
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_FPD [get_bd_intf_pins ps8_0_axi_periph/S00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_FPD]
 
   # Create port connections
   connect_bd_net -net axi_gpio_0_gpio2_io_o [get_bd_ports switch_reset_n] [get_bd_pins axi_gpio_0/gpio2_io_o]
-  connect_bd_net -net axi_uartlite_0_interrupt [get_bd_pins axi_uartlite_0/interrupt] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net axi_uartlite_10_interrupt [get_bd_pins axi_uartlite_10/interrupt] [get_bd_pins xlconcat_1/In2]
-  connect_bd_net -net axi_uartlite_11_interrupt [get_bd_pins axi_uartlite_11/interrupt] [get_bd_pins xlconcat_1/In3]
-  connect_bd_net -net axi_uartlite_12_interrupt [get_bd_pins axi_uartlite_12/interrupt] [get_bd_pins xlconcat_1/In4]
-  connect_bd_net -net axi_uartlite_13_interrupt [get_bd_pins axi_uartlite_13/interrupt] [get_bd_pins xlconcat_1/In5]
-  connect_bd_net -net axi_uartlite_14_interrupt [get_bd_pins axi_uartlite_14/interrupt] [get_bd_pins xlconcat_1/In6]
-  connect_bd_net -net axi_uartlite_15_interrupt [get_bd_pins axi_uartlite_15/interrupt] [get_bd_pins xlconcat_1/In7]
-  connect_bd_net -net axi_uartlite_1_interrupt [get_bd_pins axi_uartlite_1/interrupt] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net axi_uartlite_2_interrupt [get_bd_pins axi_uartlite_2/interrupt] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net axi_uartlite_3_interrupt [get_bd_pins axi_uartlite_3/interrupt] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net axi_uartlite_4_interrupt [get_bd_pins axi_uartlite_4/interrupt] [get_bd_pins xlconcat_0/In4]
-  connect_bd_net -net axi_uartlite_5_interrupt [get_bd_pins axi_uartlite_5/interrupt] [get_bd_pins xlconcat_0/In5]
-  connect_bd_net -net axi_uartlite_6_interrupt [get_bd_pins axi_uartlite_6/interrupt] [get_bd_pins xlconcat_0/In6]
-  connect_bd_net -net axi_uartlite_7_interrupt [get_bd_pins axi_uartlite_7/interrupt] [get_bd_pins xlconcat_0/In7]
-  connect_bd_net -net axi_uartlite_8_interrupt [get_bd_pins axi_uartlite_8/interrupt] [get_bd_pins xlconcat_1/In0]
-  connect_bd_net -net axi_uartlite_9_interrupt [get_bd_pins axi_uartlite_9/interrupt] [get_bd_pins xlconcat_1/In1]
+  connect_bd_net -net uartlite_00_interrupt [get_bd_pins uartlite_00/interrupt] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net uartlite_10_interrupt [get_bd_pins uartlite_10/interrupt] [get_bd_pins xlconcat_1/In2]
+  connect_bd_net -net uartlite_11_interrupt [get_bd_pins uartlite_11/interrupt] [get_bd_pins xlconcat_1/In3]
+  connect_bd_net -net uartlite_12_interrupt [get_bd_pins uartlite_12/interrupt] [get_bd_pins xlconcat_1/In4]
+  connect_bd_net -net uartlite_13_interrupt [get_bd_pins uartlite_13/interrupt] [get_bd_pins xlconcat_1/In5]
+  connect_bd_net -net uartlite_14_interrupt [get_bd_pins uartlite_14/interrupt] [get_bd_pins xlconcat_1/In6]
+  connect_bd_net -net uartlite_15_interrupt [get_bd_pins uartlite_15/interrupt] [get_bd_pins xlconcat_1/In7]
+  connect_bd_net -net uartlite_01_interrupt [get_bd_pins uartlite_01/interrupt] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net uartlite_02_interrupt [get_bd_pins uartlite_02/interrupt] [get_bd_pins xlconcat_0/In2]
+  connect_bd_net -net uartlite_03_interrupt [get_bd_pins uartlite_03/interrupt] [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net uartlite_04_interrupt [get_bd_pins uartlite_04/interrupt] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net uartlite_05_interrupt [get_bd_pins uartlite_05/interrupt] [get_bd_pins xlconcat_0/In5]
+  connect_bd_net -net uartlite_06_interrupt [get_bd_pins uartlite_06/interrupt] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net uartlite_07_interrupt [get_bd_pins uartlite_07/interrupt] [get_bd_pins xlconcat_0/In7]
+  connect_bd_net -net uartlite_08_interrupt [get_bd_pins uartlite_08/interrupt] [get_bd_pins xlconcat_1/In0]
+  connect_bd_net -net uartlite_09_interrupt [get_bd_pins uartlite_09/interrupt] [get_bd_pins xlconcat_1/In1]
   connect_bd_net -net debug_bridge_0_tap_tck [get_bd_ports tck] [get_bd_pins debug_bridge_0/tap_tck]
   connect_bd_net -net debug_bridge_0_tap_tdi [get_bd_ports tdi] [get_bd_pins debug_bridge_0/tap_tdi]
   connect_bd_net -net debug_bridge_0_tap_tms [get_bd_ports tms] [get_bd_pins debug_bridge_0/tap_tms]
@@ -803,34 +806,34 @@ proc create_root_design { parentCell } {
   connect_bd_net -net fg_1_1 [get_bd_ports fg_1] [get_bd_pins fan_con_1/fg]
   connect_bd_net -net fg_2_1 [get_bd_ports fg_2] [get_bd_pins fan_con_2/fg]
   connect_bd_net -net fg_3_1 [get_bd_ports fg_3] [get_bd_pins fan_con_3/fg]
-  connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_iic_1/s_axi_aresetn] [get_bd_pins axi_uartlite_0/s_axi_aresetn] [get_bd_pins axi_uartlite_1/s_axi_aresetn] [get_bd_pins axi_uartlite_10/s_axi_aresetn] [get_bd_pins axi_uartlite_11/s_axi_aresetn] [get_bd_pins axi_uartlite_12/s_axi_aresetn] [get_bd_pins axi_uartlite_13/s_axi_aresetn] [get_bd_pins axi_uartlite_14/s_axi_aresetn] [get_bd_pins axi_uartlite_15/s_axi_aresetn] [get_bd_pins axi_uartlite_2/s_axi_aresetn] [get_bd_pins axi_uartlite_3/s_axi_aresetn] [get_bd_pins axi_uartlite_4/s_axi_aresetn] [get_bd_pins axi_uartlite_5/s_axi_aresetn] [get_bd_pins axi_uartlite_6/s_axi_aresetn] [get_bd_pins axi_uartlite_7/s_axi_aresetn] [get_bd_pins axi_uartlite_8/s_axi_aresetn] [get_bd_pins axi_uartlite_9/s_axi_aresetn] [get_bd_pins debug_bridge_0/s_axi_aresetn] [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins ps8_0_axi_periph/M02_ARESETN] [get_bd_pins ps8_0_axi_periph/M03_ARESETN] [get_bd_pins ps8_0_axi_periph/M04_ARESETN] [get_bd_pins ps8_0_axi_periph/M05_ARESETN] [get_bd_pins ps8_0_axi_periph/M06_ARESETN] [get_bd_pins ps8_0_axi_periph/M07_ARESETN] [get_bd_pins ps8_0_axi_periph/M08_ARESETN] [get_bd_pins ps8_0_axi_periph/M09_ARESETN] [get_bd_pins ps8_0_axi_periph/M10_ARESETN] [get_bd_pins ps8_0_axi_periph/M11_ARESETN] [get_bd_pins ps8_0_axi_periph/M12_ARESETN] [get_bd_pins ps8_0_axi_periph/M13_ARESETN] [get_bd_pins ps8_0_axi_periph/M14_ARESETN] [get_bd_pins ps8_0_axi_periph/M15_ARESETN] [get_bd_pins ps8_0_axi_periph/M16_ARESETN] [get_bd_pins ps8_0_axi_periph/M17_ARESETN] [get_bd_pins ps8_0_axi_periph/M18_ARESETN] [get_bd_pins ps8_0_axi_periph/M19_ARESETN] [get_bd_pins ps8_0_axi_periph/M20_ARESETN] [get_bd_pins ps8_0_axi_periph/M21_ARESETN] [get_bd_pins ps8_0_axi_periph/M22_ARESETN] [get_bd_pins ps8_0_axi_periph/M23_ARESETN] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps8_0_99M/peripheral_aresetn]
+  connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_iic_1/s_axi_aresetn] [get_bd_pins uartlite_00/s_axi_aresetn] [get_bd_pins uartlite_01/s_axi_aresetn] [get_bd_pins uartlite_10/s_axi_aresetn] [get_bd_pins uartlite_11/s_axi_aresetn] [get_bd_pins uartlite_12/s_axi_aresetn] [get_bd_pins uartlite_13/s_axi_aresetn] [get_bd_pins uartlite_14/s_axi_aresetn] [get_bd_pins uartlite_15/s_axi_aresetn] [get_bd_pins uartlite_02/s_axi_aresetn] [get_bd_pins uartlite_03/s_axi_aresetn] [get_bd_pins uartlite_04/s_axi_aresetn] [get_bd_pins uartlite_05/s_axi_aresetn] [get_bd_pins uartlite_06/s_axi_aresetn] [get_bd_pins uartlite_07/s_axi_aresetn] [get_bd_pins uartlite_08/s_axi_aresetn] [get_bd_pins uartlite_09/s_axi_aresetn] [get_bd_pins debug_bridge_0/s_axi_aresetn] [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins ps8_0_axi_periph/M02_ARESETN] [get_bd_pins ps8_0_axi_periph/M03_ARESETN] [get_bd_pins ps8_0_axi_periph/M04_ARESETN] [get_bd_pins ps8_0_axi_periph/M05_ARESETN] [get_bd_pins ps8_0_axi_periph/M06_ARESETN] [get_bd_pins ps8_0_axi_periph/M07_ARESETN] [get_bd_pins ps8_0_axi_periph/M08_ARESETN] [get_bd_pins ps8_0_axi_periph/M09_ARESETN] [get_bd_pins ps8_0_axi_periph/M10_ARESETN] [get_bd_pins ps8_0_axi_periph/M11_ARESETN] [get_bd_pins ps8_0_axi_periph/M12_ARESETN] [get_bd_pins ps8_0_axi_periph/M13_ARESETN] [get_bd_pins ps8_0_axi_periph/M14_ARESETN] [get_bd_pins ps8_0_axi_periph/M15_ARESETN] [get_bd_pins ps8_0_axi_periph/M16_ARESETN] [get_bd_pins ps8_0_axi_periph/M17_ARESETN] [get_bd_pins ps8_0_axi_periph/M18_ARESETN] [get_bd_pins ps8_0_axi_periph/M19_ARESETN] [get_bd_pins ps8_0_axi_periph/M20_ARESETN] [get_bd_pins ps8_0_axi_periph/M21_ARESETN] [get_bd_pins ps8_0_axi_periph/M22_ARESETN] [get_bd_pins ps8_0_axi_periph/M23_ARESETN] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps8_0_99M/peripheral_aresetn]
   connect_bd_net -net rst_ps8_0_99M_peripheral_reset [get_bd_pins fan_con_0/reset] [get_bd_pins fan_con_1/reset] [get_bd_pins fan_con_2/reset] [get_bd_pins fan_con_3/reset] [get_bd_pins rst_ps8_0_99M/peripheral_reset]
   connect_bd_net -net tap_tdo_0_1 [get_bd_ports tdo] [get_bd_pins debug_bridge_0/tap_tdo]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
   connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_1/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq1]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_iic_1/s_axi_aclk] [get_bd_pins axi_uartlite_0/s_axi_aclk] [get_bd_pins axi_uartlite_1/s_axi_aclk] [get_bd_pins axi_uartlite_10/s_axi_aclk] [get_bd_pins axi_uartlite_11/s_axi_aclk] [get_bd_pins axi_uartlite_12/s_axi_aclk] [get_bd_pins axi_uartlite_13/s_axi_aclk] [get_bd_pins axi_uartlite_14/s_axi_aclk] [get_bd_pins axi_uartlite_15/s_axi_aclk] [get_bd_pins axi_uartlite_2/s_axi_aclk] [get_bd_pins axi_uartlite_3/s_axi_aclk] [get_bd_pins axi_uartlite_4/s_axi_aclk] [get_bd_pins axi_uartlite_5/s_axi_aclk] [get_bd_pins axi_uartlite_6/s_axi_aclk] [get_bd_pins axi_uartlite_7/s_axi_aclk] [get_bd_pins axi_uartlite_8/s_axi_aclk] [get_bd_pins axi_uartlite_9/s_axi_aclk] [get_bd_pins debug_bridge_0/s_axi_aclk] [get_bd_pins fan_con_0/clk_100m] [get_bd_pins fan_con_1/clk_100m] [get_bd_pins fan_con_2/clk_100m] [get_bd_pins fan_con_3/clk_100m] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins ps8_0_axi_periph/M06_ACLK] [get_bd_pins ps8_0_axi_periph/M07_ACLK] [get_bd_pins ps8_0_axi_periph/M08_ACLK] [get_bd_pins ps8_0_axi_periph/M09_ACLK] [get_bd_pins ps8_0_axi_periph/M10_ACLK] [get_bd_pins ps8_0_axi_periph/M11_ACLK] [get_bd_pins ps8_0_axi_periph/M12_ACLK] [get_bd_pins ps8_0_axi_periph/M13_ACLK] [get_bd_pins ps8_0_axi_periph/M14_ACLK] [get_bd_pins ps8_0_axi_periph/M15_ACLK] [get_bd_pins ps8_0_axi_periph/M16_ACLK] [get_bd_pins ps8_0_axi_periph/M17_ACLK] [get_bd_pins ps8_0_axi_periph/M18_ACLK] [get_bd_pins ps8_0_axi_periph/M19_ACLK] [get_bd_pins ps8_0_axi_periph/M20_ACLK] [get_bd_pins ps8_0_axi_periph/M21_ACLK] [get_bd_pins ps8_0_axi_periph/M22_ACLK] [get_bd_pins ps8_0_axi_periph/M23_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_iic_1/s_axi_aclk] [get_bd_pins uartlite_00/s_axi_aclk] [get_bd_pins uartlite_01/s_axi_aclk] [get_bd_pins uartlite_10/s_axi_aclk] [get_bd_pins uartlite_11/s_axi_aclk] [get_bd_pins uartlite_12/s_axi_aclk] [get_bd_pins uartlite_13/s_axi_aclk] [get_bd_pins uartlite_14/s_axi_aclk] [get_bd_pins uartlite_15/s_axi_aclk] [get_bd_pins uartlite_02/s_axi_aclk] [get_bd_pins uartlite_03/s_axi_aclk] [get_bd_pins uartlite_04/s_axi_aclk] [get_bd_pins uartlite_05/s_axi_aclk] [get_bd_pins uartlite_06/s_axi_aclk] [get_bd_pins uartlite_07/s_axi_aclk] [get_bd_pins uartlite_08/s_axi_aclk] [get_bd_pins uartlite_09/s_axi_aclk] [get_bd_pins debug_bridge_0/s_axi_aclk] [get_bd_pins fan_con_0/clk_100m] [get_bd_pins fan_con_1/clk_100m] [get_bd_pins fan_con_2/clk_100m] [get_bd_pins fan_con_3/clk_100m] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins ps8_0_axi_periph/M06_ACLK] [get_bd_pins ps8_0_axi_periph/M07_ACLK] [get_bd_pins ps8_0_axi_periph/M08_ACLK] [get_bd_pins ps8_0_axi_periph/M09_ACLK] [get_bd_pins ps8_0_axi_periph/M10_ACLK] [get_bd_pins ps8_0_axi_periph/M11_ACLK] [get_bd_pins ps8_0_axi_periph/M12_ACLK] [get_bd_pins ps8_0_axi_periph/M13_ACLK] [get_bd_pins ps8_0_axi_periph/M14_ACLK] [get_bd_pins ps8_0_axi_periph/M15_ACLK] [get_bd_pins ps8_0_axi_periph/M16_ACLK] [get_bd_pins ps8_0_axi_periph/M17_ACLK] [get_bd_pins ps8_0_axi_periph/M18_ACLK] [get_bd_pins ps8_0_axi_periph/M19_ACLK] [get_bd_pins ps8_0_axi_periph/M20_ACLK] [get_bd_pins ps8_0_axi_periph/M21_ACLK] [get_bd_pins ps8_0_axi_periph/M22_ACLK] [get_bd_pins ps8_0_axi_periph/M23_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins rst_ps8_0_99M/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
 
   # Create address segments
   create_bd_addr_seg -range 0x00001000 -offset 0xA0000000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0001000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] SEG_axi_iic_0_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0002000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_iic_1/S_AXI/Reg] SEG_axi_iic_1_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0020000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_0/S_AXI/Reg] SEG_axi_uartlite_0_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002A000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_10/S_AXI/Reg] SEG_axi_uartlite_10_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002B000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_11/S_AXI/Reg] SEG_axi_uartlite_11_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002C000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_12/S_AXI/Reg] SEG_axi_uartlite_12_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002D000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_13/S_AXI/Reg] SEG_axi_uartlite_13_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002E000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_14/S_AXI/Reg] SEG_axi_uartlite_14_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002F000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_15/S_AXI/Reg] SEG_axi_uartlite_15_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0021000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_1/S_AXI/Reg] SEG_axi_uartlite_1_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0022000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_2/S_AXI/Reg] SEG_axi_uartlite_2_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0023000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_3/S_AXI/Reg] SEG_axi_uartlite_3_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0024000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_4/S_AXI/Reg] SEG_axi_uartlite_4_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0025000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_5/S_AXI/Reg] SEG_axi_uartlite_5_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0026000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_6/S_AXI/Reg] SEG_axi_uartlite_6_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0027000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_7/S_AXI/Reg] SEG_axi_uartlite_7_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0028000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_8/S_AXI/Reg] SEG_axi_uartlite_8_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0029000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uartlite_9/S_AXI/Reg] SEG_axi_uartlite_9_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0020000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_00/S_AXI/Reg] SEG_uartlite_00_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002A000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_10/S_AXI/Reg] SEG_uartlite_10_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002B000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_11/S_AXI/Reg] SEG_uartlite_11_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002C000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_12/S_AXI/Reg] SEG_uartlite_12_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002D000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_13/S_AXI/Reg] SEG_uartlite_13_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002E000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_14/S_AXI/Reg] SEG_uartlite_14_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002F000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_15/S_AXI/Reg] SEG_uartlite_15_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0021000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_01/S_AXI/Reg] SEG_uartlite_01_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0022000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_02/S_AXI/Reg] SEG_uartlite_02_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0023000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_03/S_AXI/Reg] SEG_uartlite_03_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0024000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_04/S_AXI/Reg] SEG_uartlite_04_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0025000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_05/S_AXI/Reg] SEG_uartlite_05_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0026000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_06/S_AXI/Reg] SEG_uartlite_06_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0027000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_07/S_AXI/Reg] SEG_uartlite_07_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0028000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_08/S_AXI/Reg] SEG_uartlite_08_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0029000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_09/S_AXI/Reg] SEG_uartlite_09_Reg
   create_bd_addr_seg -range 0x00010000 -offset 0xA0010000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs debug_bridge_0/S_AXI/Reg0] SEG_debug_bridge_0_Reg0
   create_bd_addr_seg -range 0x00001000 -offset 0xA0003000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_0/s_axi_lite/reg0] SEG_fan_con_0_reg0
   create_bd_addr_seg -range 0x00001000 -offset 0xA0004000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_1/s_axi_lite/reg0] SEG_fan_con_1_reg0
