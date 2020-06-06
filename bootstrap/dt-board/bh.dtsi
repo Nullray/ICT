@@ -1,0 +1,10 @@
+
+&gem3 {
+	phy-handle = <&phy>;
+	phy: eth0-phy@5 {
+		reg = <5>;
+		ti,rx-internal-delay = <0x8>;
+		ti,tx-internal-delay = <0xa>;
+		ti,fifo-depth = <0x1>;
+	};
+};

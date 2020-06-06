@@ -48,9 +48,6 @@ BOOT_BIN_LOC := $(BOOT_STRAP_LOC)/boot_bin
 BIF_GEN := $(BOOT_STRAP_LOC)/scripts/bif_gen.sh
 BIF_FILE := $(BOOT_BIN_LOC)/boot_gen.bif
 
-#BOOT_GEN_FLAGS := -arch zynqmp -packagename $(CHIP) \
-	-w on -image $(BIF_FILE) -log info
-
 BOOT_GEN_FLAGS := -arch zynqmp -w on \
 	-image $(BIF_FILE) -log info
 
@@ -76,6 +73,9 @@ $(FSBL_BIN): .fsbl_gen FORCE
 
 .fsbl_gen:
 	@$(HSI) $(FSBL_HSI_FLAGS)
+ifneq ($(wildcard $(BOOT_STRAP_LOC)/fsbl-board/$(FPGA_BD).sh),)
+	@bash $(BOOT_STRAP_LOC)/fsbl-board/$(FPGA_BD).sh $(FSBL_LOC)
+endif
 	@touch $@
 
 fsbl_clean:
@@ -119,6 +119,10 @@ $(DTB): .dt_gen FORCE
 
 .dt_gen:
 	$(HSI) $(DT_HSI_FLAGS)
+ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi),)
+	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
+	@sed -i '13i #include \"board.dtsi\"' $(DTS)
+endif
 	@touch $@
 
 dt_clean:

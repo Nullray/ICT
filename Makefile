@@ -96,9 +96,6 @@ fpga: $(SYS_HDF) $(BITSTREAM)
 fpga_clean:
 	@rm -f $(SYS_HDF) $(BITSTREAM)
 
-fpga_distclean:
-	$(MAKE) -C ./fpga vivado_prj_clean
-
 %.sw: FORCE
 ifneq ($(patsubst %.sw,%,$@),domU)
 	$(MAKE) bootbin 
@@ -135,7 +132,7 @@ dt: FORCE
 	@echo "Compiling Device Tree..."
 	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
-		O=$(INSTALL_LOC) $@
+		FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) $@
 
 dt_clean:
 	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
@@ -197,7 +194,8 @@ atf_distclean: FORCE
 fsbl: FORCE
 	@echo "Compiling FSBL..."
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(ELF_GCC_PATH) \
-		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) $@
+		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
+		FPGA_BD=$(FPGA_BD) $@
 
 fsbl_clean:
 	$(MAKE) -C ./bootstrap $@
