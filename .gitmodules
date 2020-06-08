@@ -18,3 +18,7 @@
 	path = software/tee/optee
 	url = https://github.com/ict-accel-team/optee_os
 	branch = 3.5.0-dev
+[submodule "software/xen"]
+	path = software/xen
+	url = https://github.com/ict-accel-team/xilinx-xen
+	branch = xilinx-v2019.1-nf-dev

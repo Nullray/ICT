@@ -60,6 +60,7 @@ INSTALL_LOC := $(shell pwd)/ready_for_download/$(FPGA_TARGET)
 ATF_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) TOS=$(TOS)
 UBOOT_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) DTC_LOC=$(DTC_LOC)
 KERNEL_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) INSTALL_LOC=$(INSTALL_LOC)
+XEN_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) INSTALL_LOC=$(INSTALL_LOC)
 
 # Device Tree Compiler (DTC)
 DTC_LOC := /opt/dtc
@@ -155,6 +156,19 @@ dt_distclean:
 %.os.dist:
 	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os.dist,%,$@) linux_distclean
+
+#==========================================
+# Compilation of XEN 
+#==========================================
+xen: uboot FORCE
+	@echo "Compiling ARM XEN..."
+	$(MAKE) -C ./software $(XEN_COMPILE_FLAGS) $@
+
+xen_clean: FORCE
+	$(MAKE) -C ./software $@
+
+xen_distclean: FORCE
+	$(MAKE) -C ./software $@
 
 #==========================================
 # BOOT.bin generation
