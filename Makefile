@@ -26,6 +26,8 @@ FPGA_BD ?= nf
 FPGA_PRJ := mpsoc
 FPGA_TARGET := $(FPGA_PRJ)_$(FPGA_BD)
 
+PRJ_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/pl.dtsi)
+
 # Optional Trusted OS
 TOS ?= 
 
@@ -133,7 +135,8 @@ dt: FORCE
 	@echo "Compiling Device Tree..."
 	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
-		FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) $@
+		FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) \
+		PRJ_DT=$(PRJ_DT) $@
 
 dt_clean:
 	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@

@@ -123,6 +123,9 @@ ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
 	@sed -i '13i #include \"board.dtsi\"' $(DTS)
 endif
+ifneq ($(wildcard $(PRJ_DT)),)
+	@cp $(PRJ_DT) $(DT_LOC)/pl.dtsi
+endif
 	@touch $@
 
 dt_clean:
