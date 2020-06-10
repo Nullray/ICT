@@ -1,6 +1,9 @@
 
 XEN_PLAT := arm64
 XEN_CROSS_COMPILE_FLAGS := XEN_TARGET_ARCH=$(XEN_PLAT) \
-	CROSS_COMPILE=aarch64-linux-gnu-
+	CROSS_COMPILE=aarch64-linux-gnu- \
+	CONFIG_DEBUG=y \
+	CONFIG_EARLY_PRINTK=zynqmp
+
 XEN_TARGET := dist-xen
 
