@@ -6,12 +6,11 @@ set_property strategy Performance_Explore [get_runs impl_1]
 # open shell checkpoint
 open_checkpoint ${dcp_dir}/synth.dcp
 
-# Save debug probe file
-write_debug_probes -force ${out_dir}/debug_nets.ltx
-
 # setup output logs and reports
 report_timing_summary -file ${synth_rpt_dir}/synth_timing.rpt -delay_type max -max_paths 1000
 
 # Design optimization
 opt_design
 
+# Save debug probe file
+write_debug_probes -force ${out_dir}/debug_nets.ltx
