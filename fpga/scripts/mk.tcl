@@ -13,7 +13,7 @@ if {$argc != 5} {
 	set act [lindex $argv 0]
 	set val [lindex $argv 1]
 	set out_dir [lindex $argv 2]
-  set ::board [lindex $argv 3]
+  set board [lindex $argv 3]
   set prj [lindex $argv 4]
 }
 
