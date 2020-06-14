@@ -32,7 +32,7 @@ PRJ_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/pl.dtsi)
 TOS ?= 
 
 # Linux kernel (i.e., Physical machine, Dom0, DomU)
-OS_KERN := phy_os dom0
+OS_KERN := phy_os dom0 domU
 
 obj-sw-y := $(foreach obj,$(OS_KERN),$(obj).sw)
 obj-sw-clean-y := $(foreach obj,$(OS_KERN),$(obj).sw.clean)
