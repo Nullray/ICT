@@ -137,8 +137,8 @@ if {${::board} == "fidus"} {
   set xdma_rp_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_rp_0 ]
   set_property -dict [ list CONFIG.mode_selection {Advanced} \
 				CONFIG.device_port_type {Root_Port_of_PCI_Express_Root_Complex} \
-        			CONFIG.functional_mode {AXI Bridge} \
-        			CONFIG.dma_reset_source_sel {Phy_Ready} \
+        CONFIG.functional_mode {AXI Bridge} \
+        CONFIG.dma_reset_source_sel {Phy_Ready} \
 				CONFIG.en_gt_selection {true} \
 				CONFIG.select_quad {GTY_Quad_128} \
 				CONFIG.pl_link_cap_max_link_width {X4} \
@@ -149,6 +149,7 @@ if {${::board} == "fidus"} {
 				CONFIG.axibar2pciebar_0 {0x00000000A0000000} \
 				CONFIG.c_s_axi_supports_narrow_burst {false} \
 				CONFIG.plltype {QPLL1} \
+        CONFIG.msi_rx_pin_en {true} \
 				CONFIG.BASEADDR {0x00000000} \
 				CONFIG.HIGHADDR {0x007FFFFF} ] $xdma_rp_0
 
@@ -156,8 +157,8 @@ if {${::board} == "fidus"} {
   set xdma_rp_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_rp_1 ]
   set_property -dict [ list CONFIG.mode_selection {Advanced} \
 				CONFIG.device_port_type {Root_Port_of_PCI_Express_Root_Complex} \
-        			CONFIG.functional_mode {AXI Bridge} \
-        			CONFIG.dma_reset_source_sel {Phy_Ready} \
+        CONFIG.functional_mode {AXI Bridge} \
+        CONFIG.dma_reset_source_sel {Phy_Ready} \
 				CONFIG.en_gt_selection {true} \
 				CONFIG.select_quad {GTY_Quad_129} \
 				CONFIG.pl_link_cap_max_link_width {X4} \
@@ -168,6 +169,7 @@ if {${::board} == "fidus"} {
 				CONFIG.axibar2pciebar_0 {0x00000000A0100000} \
 				CONFIG.c_s_axi_supports_narrow_burst {false} \
 				CONFIG.plltype {QPLL1} \
+        CONFIG.msi_rx_pin_en {true} \
 				CONFIG.BASEADDR {0x00000000} \
 				CONFIG.HIGHADDR {0x007FFFFF} ] $xdma_rp_1
 
@@ -176,10 +178,10 @@ if {${::board} == "fidus"} {
   set xdma_rp_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_rp_0 ]
   set_property -dict [ list CONFIG.mode_selection {Advanced} \
 				CONFIG.device_port_type {Root_Port_of_PCI_Express_Root_Complex} \
-        			CONFIG.functional_mode {AXI Bridge} \
-        			CONFIG.dma_reset_source_sel {Phy_Ready} \
+        CONFIG.functional_mode {AXI Bridge} \
+        CONFIG.dma_reset_source_sel {Phy_Ready} \
 				CONFIG.en_gt_selection {true} \
-   				CONFIG.pcie_blk_locn {X1Y2} \
+        CONFIG.pcie_blk_locn {X1Y2} \
 				CONFIG.select_quad {GTH_Quad_228} \
 				CONFIG.pl_link_cap_max_link_width {X2} \
 				CONFIG.pl_link_cap_max_link_speed {8.0_GT/s} \
@@ -189,6 +191,7 @@ if {${::board} == "fidus"} {
 				CONFIG.axibar2pciebar_0 {0x00000000A0000000} \
 				CONFIG.c_s_axi_supports_narrow_burst {false} \
 				CONFIG.plltype {QPLL1} \
+        CONFIG.msi_rx_pin_en {true} \
 				CONFIG.BASEADDR {0x00000000} \
 				CONFIG.HIGHADDR {0x007FFFFF} ] $xdma_rp_0
 
@@ -196,10 +199,10 @@ if {${::board} == "fidus"} {
   set xdma_rp_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_rp_1 ]
   set_property -dict [ list CONFIG.mode_selection {Advanced} \
 				CONFIG.device_port_type {Root_Port_of_PCI_Express_Root_Complex} \
-        			CONFIG.functional_mode {AXI Bridge} \
-        			CONFIG.dma_reset_source_sel {Phy_Ready} \
+        CONFIG.functional_mode {AXI Bridge} \
+        CONFIG.dma_reset_source_sel {Phy_Ready} \
 				CONFIG.en_gt_selection {true} \
-   				CONFIG.pcie_blk_locn {X1Y2} \
+        CONFIG.pcie_blk_locn {X1Y2} \
 				CONFIG.select_quad {GTH_Quad_229} \
 				CONFIG.pl_link_cap_max_link_width {X2} \
 				CONFIG.pl_link_cap_max_link_speed {8.0_GT/s} \
@@ -209,6 +212,7 @@ if {${::board} == "fidus"} {
 				CONFIG.axibar2pciebar_0 {0x00000000A0100000} \
 				CONFIG.c_s_axi_supports_narrow_burst {false} \
 				CONFIG.plltype {QPLL1} \
+        CONFIG.msi_rx_pin_en {true} \
 				CONFIG.BASEADDR {0x00000000} \
 				CONFIG.HIGHADDR {0x007FFFFF} ] $xdma_rp_1
 }
@@ -453,10 +457,14 @@ if {${::board} == "fidus"} {
 
   # Create instance: concat_intr, and set properties
   set concat_intr [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 concat_intr ]
-  set_property -dict [ list CONFIG.NUM_PORTS {2} ] $concat_intr
+  set_property -dict [ list CONFIG.NUM_PORTS {6} ] $concat_intr
 	  
   connect_bd_net [get_bd_pins xdma_rp_0/interrupt_out] [get_bd_pins concat_intr/In0]
-  connect_bd_net [get_bd_pins xdma_rp_1/interrupt_out] [get_bd_pins concat_intr/In1]
+  connect_bd_net [get_bd_pins xdma_rp_0/interrupt_out_msi_vec0to31] [get_bd_pins concat_intr/In1]
+  connect_bd_net [get_bd_pins xdma_rp_0/interrupt_out_msi_vec32to63] [get_bd_pins concat_intr/In2]
+  connect_bd_net [get_bd_pins xdma_rp_1/interrupt_out] [get_bd_pins concat_intr/In3]
+  connect_bd_net [get_bd_pins xdma_rp_1/interrupt_out_msi_vec0to31] [get_bd_pins concat_intr/In4]
+  connect_bd_net [get_bd_pins xdma_rp_1/interrupt_out_msi_vec32to63] [get_bd_pins concat_intr/In5]
   connect_bd_net [get_bd_pins concat_intr/dout] [get_bd_pins zynq_mpsoc/pl_ps_irq0]
 
 #=============================================
