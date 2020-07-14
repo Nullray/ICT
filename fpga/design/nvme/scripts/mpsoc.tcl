@@ -226,7 +226,8 @@ if {${::board} == "fidus"} {
   # Create instance: AXI IC for AXI-Lite slave instance of PCIe RC
   set axi_ic_pcie_rc_dma [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_ic_pcie_rc_dma ]
   set_property -dict [ list CONFIG.NUM_MI {1} \
-				CONFIG.NUM_SI {2} ] $axi_ic_pcie_rc_dma
+				CONFIG.NUM_SI {2} \
+        CONFIG.STRATEGY {2} ] $axi_ic_pcie_rc_dma
 
   set axi_ic_pcie_rc_bar [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_ic_pcie_rc_bar ]
   set_property -dict [ list CONFIG.NUM_MI {2} \
