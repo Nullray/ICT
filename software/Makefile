@@ -33,6 +33,8 @@ UBOOT_LOC := $(SW_LOC)/arm-uboot
 include scripts/uboot.mk
 UBOOT_CROSS_COMPILE_FLAGS += KBUILD_OUTPUT=$(UBOOT_LOC)
 
+UBOOT_APP := $(UBOOT_LOC)/examples/standalone/zynqmp_daemon.bin
+
 # BL33: Linux kernel image
 KERN_SRC := $(SW_LOC)/linux
 KERN_LOC := $(SW_LOC)/arm-linux
@@ -116,6 +118,7 @@ xen_distclean:
 uboot: $(UBOOT_LOC)/.config FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
 		$(UBOOT_CROSS_COMPILE_FLAGS) $(UBOOT_TARGET) -j 10
+	@cp $(UBOOT_APP) $(UBOOT_SRC)/../../ready_for_download/$(DTB_LOC)/
 
 $(UBOOT_LOC)/.config: $(uboot-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
