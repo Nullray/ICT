@@ -119,6 +119,9 @@ $(DTB): .dt_gen FORCE
 
 .dt_gen:
 	$(HSI) $(DT_HSI_FLAGS)
+ifneq ($(wildcard $(SYS_DT)),)
+	@cp $(SYS_DT) $(DTS)
+endif
 ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
 	@sed -i '13i #include \"board.dtsi\"' $(DTS)

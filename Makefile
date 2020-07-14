@@ -27,6 +27,7 @@ FPGA_PRJ := mpsoc
 FPGA_TARGET := $(FPGA_PRJ)_$(FPGA_BD)
 
 PRJ_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/pl.dtsi)
+SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/system-top.dts)
 
 # Optional Trusted OS
 TOS ?= 
@@ -136,7 +137,7 @@ dt: FORCE
 	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 		FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) \
-		PRJ_DT=$(PRJ_DT) $@
+		PRJ_DT=$(PRJ_DT) SYS_DT=$(SYS_DT) $@
 
 dt_clean:
 	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
