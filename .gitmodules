@@ -22,3 +22,6 @@
 	path = software/xen
 	url = https://github.com/ict-accel-team/xilinx-xen
 	branch = xilinx-v2019.1-nf-dev
+[submodule "fpga/design/serve/pdk"]
+	path = fpga/design/serve/pdk
+	url = https://github.com/ict-accel-team/SERVE

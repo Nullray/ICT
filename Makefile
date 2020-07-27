@@ -274,6 +274,29 @@ $(BITSTREAM): FORCE
 	$(MAKE) FPGA_ACT=bit_gen FPGA_BD=$(FPGA_BD) FPGA_PRJ=$(FPGA_PRJ) vivado_prj
 
 #==========================================
+# Specific FPGA project design
+#==========================================
+.PHONY: prj_hw prj_sw
+
+prj_sw: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
+		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+
+prj_sw_clean: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
+		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+
+prj_sw_distclean: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
+		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+
+prj_hw: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) $@
+
+prj_hw_clean:
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) $@
+
+#==========================================
 # FPGA Design Flow
 #==========================================
 vivado_prj: FORCE
