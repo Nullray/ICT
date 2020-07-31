@@ -32,16 +32,19 @@ SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/system-top.dts)
 # Optional Trusted OS
 TOS ?= 
 
-# Linux kernel (i.e., Physical machine, Dom0, DomU)
-OS_KERN := phy_os dom0 domU
+# Linux kernel (i.e., Physical machine, Virtual machine, Dom0, DomU)
+OS_KERN := phy_os virt dom0 domU
 
 obj-sw-y := $(foreach obj,$(OS_KERN),$(obj).sw)
 obj-sw-clean-y := $(foreach obj,$(OS_KERN),$(obj).sw.clean)
 obj-sw-dist-y := $(foreach obj,$(OS_KERN),$(obj).sw.dist)
 
 # TODO: Change target file system
-phy_os-fs-obj := aarch64-debian-10.tar.gz
-phy_os-fs-path := rootfs/aarch64/debian/release
+ROOTFS := debian
+ROOTFS_VER := 10
+
+rootfs-obj := aarch64-$(ROOTFS)-$(ROOTFS_VER).tar.gz
+rootfs-path := rootfs/aarch64/$(ROOTFS)/release
 
 # Temporal directory to hold hardware design output files 
 # (i.e., bitstream, hardware definition file (HDF))
@@ -86,11 +89,24 @@ FPGA_VAL ?=
 
 .PHONY: FORCE
 
-sw: $(obj-sw-y)
+sw: FORCE
+	$(MAKE) bootbin
+	$(MAKE) xen
+	$(foreach obj,$(obj-sw-y),\
+		$(MAKE) $(patsubst %.sw,%.os,$(obj));)
+	$(MAKE) rootfs
 
-sw_clean: $(obj-sw-clean-y)
+sw_clean:
+	$(MAKE) bootbin_clean
+	$(MAKE) xen_clean
+	$(foreach obj,$(obj-sw-clean-y),\
+		$(MAKE) $(patsubst %.sw.clean,%.os.clean,$(obj));)
 
-sw_distclean: $(obj-sw-dist-y)
+sw_distclean:
+	$(MAKE) bootbin_distclean
+	$(MAKE) xen_distclean
+	$(foreach obj,$(obj-sw-dist-y),\
+		$(MAKE) $(patsubst %.sw.dist,%.os.dist,$(obj));)
 	@rm -rf software/arm-linux software/arm-uboot \
 		software/arm-tee \
 		bootstrap/.Xil
@@ -99,35 +115,6 @@ fpga: $(SYS_HDF) $(BITSTREAM)
 
 fpga_clean:
 	@rm -f $(SYS_HDF) $(BITSTREAM)
-
-%.sw: FORCE
-ifneq ($(patsubst %.sw,%,$@),domU)
-	$(MAKE) bootbin 
-endif
-ifeq ($(patsubst %.sw,%,$@),dom0)
-	$(MAKE) xen
-endif
-	$(MAKE) $(patsubst %.sw,%.fs,$@)
-	$(MAKE) $(patsubst %.sw,%.os,$@)
-	@echo "All required images of $(patsubst %.sw,%,$@) are generated"
-
-%.sw.clean:
-ifneq ($(patsubst %.sw.clean,%,$@),domU)
-	$(MAKE) bootbin_clean 
-endif
-ifeq ($(patsubst %.sw.clean,%,$@),dom0)
-	$(MAKE) xen_clean
-endif
-	$(MAKE) $(patsubst %.sw.clean,%.os.clean,$@)
-
-%.sw.dist:
-ifneq ($(patsubst %.sw.dist,%,$@),domU)
-	$(MAKE) bootbin_distclean 
-endif
-ifeq ($(patsubst %.sw.dist,%,$@),dom0)
-	$(MAKE) xen_distclean
-endif
-	$(MAKE) $(patsubst %.sw.dist,%.os.dist,$@)
 
 #==========================================
 # Generation of Device Tree Blob
@@ -256,11 +243,11 @@ FTP_ROOT := 172.16.128.201
 FTP_USER := ftpuser
 FTP_PASSWD := 123456
 
-%.fs: FORCE
-	@mkdir -p $(INSTALL_LOC)/$(patsubst %.fs,%,$@)
-	@cd $(INSTALL_LOC)/$(patsubst %.fs,%,$@) && \
-		rm -f $($(patsubst %.fs,%,$@)-fs-obj) && \
-		wget ftp://$(FTP_ROOT)/$($(patsubst %.fs,%,$@)-fs-path)/$($(patsubst %.fs,%,$@)-fs-obj) \
+rootfs: FORCE
+	@mkdir -p $(INSTALL_LOC)/$@
+	@cd $(INSTALL_LOC)/$@ && \
+		rm -f $(rootfs-obj) && \
+		wget ftp://$(FTP_ROOT)/$(rootfs-path)/$(rootfs-obj) \
 		--ftp-user=$(FTP_USER) --ftp-password=$(FTP_PASSWD)
 
 #==============================================
