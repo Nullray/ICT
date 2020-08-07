@@ -159,7 +159,7 @@ proc create_root_design { parentCell } {
 				CONFIG.S00_HAS_REGSLICE {1} ] $io_front_1_axi_ic
 
   set io_ps_axi_ic [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 io_ps_axi_ic ]
-  set_property -dict [list CONFIG.NUM_MI {1} \
+  set_property -dict [list CONFIG.NUM_MI {2} \
 				CONFIG.NUM_SI {1} \
 				CONFIG.S00_HAS_REGSLICE {1} ] $io_ps_axi_ic
 
@@ -187,8 +187,9 @@ proc create_root_design { parentCell } {
 #==============================================
   #PL system reset using PS-PL user_reset_n signal
   create_bd_port -dir O -from 0 -to 0 -type rst FCLK_RESET0_N
+  create_bd_port -dir O -from 0 -to 0 -type rst soc_reset
 
-  set_property CONFIG.ASSOCIATED_RESET {FCLK_RESET0_N} [get_bd_ports FCLK_CLK0]
+  set_property CONFIG.ASSOCIATED_RESET {FCLK_RESET0_N:soc_reset} [get_bd_ports FCLK_CLK0]
 
 #==============================================
 # Interrupt pins
@@ -198,15 +199,30 @@ proc create_root_design { parentCell } {
   create_bd_port -dir O -from 0 -to 0 io_uart_int  
 
 #==============================================
+# AXI Slaves
+#==============================================
+  # axi_bram_ctrl used to control blk_mem_shared
+  set axi_bram_ctrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl ]
+  set_property -dict [ list \
+   CONFIG.ECC_TYPE {0} \
+   CONFIG.PROTOCOL {AXI4LITE} \
+   CONFIG.SINGLE_PORT_BRAM {1} \
+  ] $axi_bram_ctrl
+
+  # blk_mem_shared used as RV-ARM shared buffer
+  set blk_ram_shared [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 blk_mem_shared ]
+
+  # soc_reset_reg used to generate reset signal for RISC-V SoC
+  set soc_reset_reg [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 soc_reset_reg ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS {1} \
+   CONFIG.C_DOUT_DEFAULT {0x00000001} \
+   CONFIG.C_GPIO_WIDTH {1} \
+  ] $soc_reset_reg
+
+#==============================================
 # Export AXI Interface
 #==============================================
-  # io_ps_axi used to access RISC-V reset control register
-  set io_ps_axi_slave [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 io_ps_axi_slave ]
-  set_property -dict [ list CONFIG.ADDR_WIDTH {32} \
-   CONFIG.DATA_WIDTH {32} \
-   CONFIG.HAS_REGION {0} \
-   CONFIG.PROTOCOL {AXI4Lite} ] $io_ps_axi_slave
-
   # io_front used to access RISC-V cache coherent interface for DMA engines in PS
   set io_front_axi_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 io_front_axi_0]
   set_property -dict [ list CONFIG.PROTOCOL {AXI4} \
@@ -242,7 +258,7 @@ proc create_root_design { parentCell } {
 				CONFIG.DATA_WIDTH {64} \
 				CONFIG.ID_WIDTH {4} ] $mmio_axi_0
 
-  set_property CONFIG.ASSOCIATED_BUSIF {io_front_axi_0:io_front_axi_1:mem_axi_0:mem_axi_1:mmio_axi_0:io_ps_axi_slave} [get_bd_ports FCLK_CLK0]
+  set_property CONFIG.ASSOCIATED_BUSIF {io_front_axi_0:io_front_axi_1:mem_axi_0:mem_axi_1:mmio_axi_0} [get_bd_ports FCLK_CLK0]
 
 #=============================================
 # System clock connection
@@ -258,6 +274,8 @@ proc create_root_design { parentCell } {
 			[get_bd_pins zynq_mpsoc/saxihp2_fpd_aclk] \
 			[get_bd_pins zynq_mpsoc/saxihp3_fpd_aclk] \
 			[get_bd_pins zynq_mpsoc/saxi_lpd_aclk] \
+			[get_bd_pins axi_bram_ctrl/s_axi_aclk] \
+			[get_bd_pins soc_reset_reg/s_axi_aclk] \
 			[get_bd_pins io_ps_axi_ic/*ACLK] \
 			[get_bd_pins io_front_0_axi_ic/*ACLK] \
 			[get_bd_pins io_front_1_axi_ic/*ACLK] \
@@ -275,6 +293,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_0_peripheral_aresetn \
 			[get_bd_pins system_reset/peripheral_aresetn] \
 			[get_bd_pins FCLK_RESET0_N] \
+			[get_bd_pins axi_bram_ctrl/s_axi_aresetn] \
+			[get_bd_pins soc_reset_reg/s_axi_aresetn] \
 			[get_bd_pins io_front_0_axi_ic/*_ARESETN] \
 			[get_bd_pins io_front_1_axi_ic/*_ARESETN] \
 			[get_bd_pins io_ps_axi_ic/*_ARESETN] \
@@ -292,8 +312,11 @@ proc create_root_design { parentCell } {
 #==============================================
 # AXI Interface Connection
 #==============================================
-  connect_bd_intf_net -intf_net armv8_ps_gp0_m [get_bd_intf_ports io_ps_axi_slave] \
+  connect_bd_intf_net -intf_net soc_reset_reg_s [get_bd_intf_pins soc_reset_reg/S_AXI] \
 			[get_bd_intf_pins io_ps_axi_ic/M00_AXI] 
+
+  connect_bd_intf_net -intf_net axi_bram_ctrl_s [get_bd_intf_pins axi_bram_ctrl/S_AXI] \
+			[get_bd_intf_pins io_ps_axi_ic/M01_AXI] 
 
   connect_bd_intf_net -intf_net armv8_ps_gp0_s [get_bd_intf_pins io_ps_axi_ic/S00_AXI] \
 			[get_bd_intf_pins zynq_mpsoc/M_AXI_HPM0_LPD]
@@ -337,6 +360,11 @@ proc create_root_design { parentCell } {
 #=============================================
 # Other ports
 #=============================================
+  connect_bd_intf_net -intf_net bram_port [get_bd_intf_pins axi_bram_ctrl/BRAM_PORTA] \
+      [get_bd_intf_pins blk_mem_shared/BRAM_PORTA]
+
+  connect_bd_net [get_bd_pins soc_reset_reg/gpio_io_o] [get_bd_pins soc_reset]
+
   if {${::board} == "fidus"} {
     connect_bd_net [get_bd_pins zynq_mpsoc/ps_pl_irq_enet3] [get_bd_pins io_mac_int]
     connect_bd_net [get_bd_pins zynq_mpsoc/ps_pl_irq_sdio1] [get_bd_pins io_sdio_int]
@@ -350,7 +378,8 @@ proc create_root_design { parentCell } {
 # Create address segments
 #=============================================
 
-  create_bd_addr_seg -range 0x00010000 -offset 0x83C00000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs io_ps_axi_slave/Reg] SEG_M_AXI_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80000000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs axi_bram_ctrl/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
+  create_bd_addr_seg -range 0x00001000 -offset 0x83C00000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs soc_reset_reg/S_AXI/Reg] SEG_axi_gpio_0_Reg
 
   create_bd_addr_seg -range 0x10000000 -offset 0xB0000000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs io_front_axi_0/Reg] SEG_front_0_M_AXI_Reg
   create_bd_addr_seg -range 0x1000000000 -offset 0x1000000000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs io_front_axi_1/Reg] SEG_front_1_M_AXI_Reg
