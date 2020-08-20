@@ -144,6 +144,10 @@ dt_distclean:
 	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os,%,$@) linux
 
+%.os.install: FORCE
+	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
+		OS=$(patsubst %.os.install,%,$@) linux_install
+
 %.os.clean:
 	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os.clean,%,$@) linux_clean

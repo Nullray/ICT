@@ -142,6 +142,14 @@ linux: $(KERN_LOC)/$(OS)/.config FORCE
 	@mkdir -p $(KERN_INSTALL_LOC)
 	@cp $(KERN_IMAGE_GEN) $(KERN_IMAGE)
 
+linux_install: FORCE
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
+		$(KERN_CROSS_COMPILE_FLAGS) \
+		INSTALL_PATH=/mnt/$(OS)/boot install
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
+		$(KERN_CROSS_COMPILE_FLAGS) \
+		INSTALL_MOD_PATH=/mnt/$(OS)/root/usr modules_install
+
 $(KERN_LOC)/%/.config: $($(OS)-kern-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
 		$(KERN_CROSS_COMPILE_FLAGS) $($(OS)-kern-config) olddefconfig
