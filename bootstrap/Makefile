@@ -42,7 +42,7 @@ DT_HSI_FLAGS := $(HSI_FLAGS) -source $(DT_GEN_TCL) \
 	-tclargs $(HDF_FILE) $(DT_LOC) $(DT_GEN)
 
 DTS := $(DT_LOC)/system-top.dts
-DTB := $(DT_LOC)/system.dtb
+DTB := $(DT_LOC)/zynqmp.dtb
 
 # BOOT.bin
 BOOT_BIN_LOC := $(BOOT_STRAP_LOC)/boot_bin
@@ -55,10 +55,10 @@ BOOT_GEN_FLAGS := -arch zynqmp -w on \
 
 ifneq ($(O),)
 BOOT_BIN := $(O)/$(OS)/BOOT.bin
-KERN_DTB := $(O)/system.dtb
+KERN_DTB := $(O)/zynqmp.dtb
 endif
 BOOT_BIN ?= $(BOOT_BIN_LOC)/BOOT.bin
-KERN_DTB ?= $(DT_LOC)/system.dtb
+KERN_DTB ?= $(DT_LOC)/zynqmp.dtb
 
 BOOT_GEN_FLAGS += -o $(BOOT_BIN)
 
