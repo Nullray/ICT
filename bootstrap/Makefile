@@ -158,3 +158,29 @@ $(BIF_FILE): FORCE
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)
 
+#==========================================
+# iPXE cross generation 
+#==========================================
+IPXE_TARGET := bin-arm64-efi
+ipxe: .ipxe_pre FORCE
+	$(EXPORT_CC_PATH) && \
+		$(MAKE) -C ipxe/src \
+		CROSS_COMPILE=aarch64-linux-gnu- \
+		$(IPXE_TARGET)/snp.efi -j 10
+
+.ipxe_pre:
+	$(EXPORT_CC_PATH) && \
+		$(MAKE) -C ipxe/src \
+		CROSS_COMPILE=aarch64-linux-gnu- \
+		$(IPXE_TARGET)/snp.efi -j 10
+	@cp src/ipxe/* ipxe/src/config/local
+	@touch $@
+
+ipxe_clean:
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) clean 
+
+ipxe_distclean:
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) veryclean 
+		$(MAKE) -C ipxe/src bin veryclean 
+		@rm -f .ipxe_pre
+

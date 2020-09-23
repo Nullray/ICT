@@ -121,6 +121,19 @@ fpga_clean:
 	@rm -f $(SYS_HDF) $(BITSTREAM)
 
 #==========================================
+# iPXE cross compilation 
+#==========================================
+ipxe: FORCE
+	$(MAKE) -C ./bootstrap \
+		COMPILER_PATH=$(LINUX_GCC_PATH) $@ 
+
+ipxe_clean:
+	$(MAKE) -C ./bootstrap $@
+
+ipxe_distclean:
+	$(MAKE) -C ./bootstrap $@
+
+#==========================================
 # Generation of Device Tree Blob
 #==========================================
 dt: FORCE
