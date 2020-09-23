@@ -29,3 +29,7 @@
 	path = software/openbmc
 	url = https://github.com/ict-accel-team/openbmc
 	branch = tmp
+[submodule "bootstrap/ipxe"]
+	path = bootstrap/ipxe
+	url = https://github.com/ict-accel-team/ipxe
+	branch = v1.20.1-dev
