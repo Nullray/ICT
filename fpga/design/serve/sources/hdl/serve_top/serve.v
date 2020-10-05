@@ -45,28 +45,8 @@ module serve (
 
   wire FCLK_RESET0_N;
   wire clk;
-  wire reset;
+  wire soc_reset;
   
-  wire [39:0]io_ps_axi_slave_araddr;
-  wire [2:0]io_ps_axi_slave_arprot;
-  wire io_ps_axi_slave_arready;
-  wire io_ps_axi_slave_arvalid;
-  wire [39:0]io_ps_axi_slave_awaddr;
-  wire [2:0]io_ps_axi_slave_awprot;
-  wire io_ps_axi_slave_awready;
-  wire io_ps_axi_slave_awvalid;
-  wire io_ps_axi_slave_bready;
-  wire [1:0]io_ps_axi_slave_bresp;
-  wire io_ps_axi_slave_bvalid;
-  wire [31:0]io_ps_axi_slave_rdata;
-  wire io_ps_axi_slave_rready;
-  wire [1:0]io_ps_axi_slave_rresp;
-  wire io_ps_axi_slave_rvalid;
-  wire [31:0]io_ps_axi_slave_wdata;
-  wire io_ps_axi_slave_wready;
-  wire [3:0]io_ps_axi_slave_wstrb;
-  wire io_ps_axi_slave_wvalid;
-
   wire [39:0]io_front_axi_0_araddr;
   wire [1:0]io_front_axi_0_arburst;
   wire [3:0]io_front_axi_0_arcache;
@@ -279,29 +259,11 @@ module serve (
 		.FCLK_CLK0(clk),
         .FCLK_RESET0_N(FCLK_RESET0_N),
 
+    .soc_reset(soc_reset),
+
 		.io_mac_int(io_mac_int),
 		.io_sdio_int(io_sdio_int),
 		.io_uart_int(io_uart_int),
-
-        .io_ps_axi_slave_araddr(io_ps_axi_slave_araddr),
-        .io_ps_axi_slave_arprot(io_ps_axi_slave_arprot),
-        .io_ps_axi_slave_arready(io_ps_axi_slave_arready),
-        .io_ps_axi_slave_arvalid(io_ps_axi_slave_arvalid),
-        .io_ps_axi_slave_awaddr(io_ps_axi_slave_awaddr),
-        .io_ps_axi_slave_awprot(io_ps_axi_slave_awprot),
-        .io_ps_axi_slave_awready(io_ps_axi_slave_awready),
-        .io_ps_axi_slave_awvalid(io_ps_axi_slave_awvalid),
-        .io_ps_axi_slave_bready(io_ps_axi_slave_bready),
-        .io_ps_axi_slave_bresp(io_ps_axi_slave_bresp),
-        .io_ps_axi_slave_bvalid(io_ps_axi_slave_bvalid),
-        .io_ps_axi_slave_rdata(io_ps_axi_slave_rdata),
-        .io_ps_axi_slave_rready(io_ps_axi_slave_rready),
-        .io_ps_axi_slave_rresp(io_ps_axi_slave_rresp),
-        .io_ps_axi_slave_rvalid(io_ps_axi_slave_rvalid),
-        .io_ps_axi_slave_wdata(io_ps_axi_slave_wdata),
-        .io_ps_axi_slave_wready(io_ps_axi_slave_wready),
-        .io_ps_axi_slave_wstrb(io_ps_axi_slave_wstrb),
-        .io_ps_axi_slave_wvalid(io_ps_axi_slave_wvalid),
 
 		.io_front_axi_0_araddr	(io_front_axi_0_araddr),
         .io_front_axi_0_arburst	(io_front_axi_0_arburst),
@@ -486,55 +448,15 @@ module serve (
         .mmio_axi_0_wvalid(mmio_axi_0_wvalid)
   );
 
-  assign reset = !FCLK_RESET0_N ;
-  
   wire jtag_tdo_data, jtag_tdo_driven;
   assign jtag_tdo = jtag_tdo_driven ? jtag_tdo_data : 1'bz;
 
   SERVETop top(
    .clock(clk),
-   .reset(reset),
+   .reset(soc_reset),
    .io_mac_int(io_mac_int),
    .io_sdio_int(io_sdio_int),
    .io_uart_int(io_uart_int),
-
-   .io_ps_axi_slave_aw_ready (io_ps_axi_slave_awready),
-   .io_ps_axi_slave_aw_valid (io_ps_axi_slave_awvalid),
-   .io_ps_axi_slave_aw_bits_addr (io_ps_axi_slave_awaddr),
-   .io_ps_axi_slave_aw_bits_len (0),
-   .io_ps_axi_slave_aw_bits_size (2),
-   .io_ps_axi_slave_aw_bits_burst (0),
-   .io_ps_axi_slave_aw_bits_id (0),
-   .io_ps_axi_slave_aw_bits_lock (0),
-   .io_ps_axi_slave_aw_bits_cache (0),
-   .io_ps_axi_slave_aw_bits_prot (io_ps_axi_slave_awprot),
-   .io_ps_axi_slave_aw_bits_qos (0),
-   .io_ps_axi_slave_ar_ready (io_ps_axi_slave_arready),
-   .io_ps_axi_slave_ar_valid (io_ps_axi_slave_arvalid),
-   .io_ps_axi_slave_ar_bits_addr (io_ps_axi_slave_araddr),
-   .io_ps_axi_slave_ar_bits_len (0),
-   .io_ps_axi_slave_ar_bits_size (2),
-   .io_ps_axi_slave_ar_bits_burst (0),
-   .io_ps_axi_slave_ar_bits_id (0),
-   .io_ps_axi_slave_ar_bits_lock (0),
-   .io_ps_axi_slave_ar_bits_cache (0),
-   .io_ps_axi_slave_ar_bits_prot (io_ps_axi_slave_arprot),
-   .io_ps_axi_slave_ar_bits_qos (0),
-   .io_ps_axi_slave_w_valid (io_ps_axi_slave_wvalid),
-   .io_ps_axi_slave_w_ready (io_ps_axi_slave_wready),
-   .io_ps_axi_slave_w_bits_data (io_ps_axi_slave_wdata),
-   .io_ps_axi_slave_w_bits_strb (io_ps_axi_slave_wstrb),
-   .io_ps_axi_slave_w_bits_last (1),
-   .io_ps_axi_slave_r_valid (io_ps_axi_slave_rvalid),
-   .io_ps_axi_slave_r_ready (io_ps_axi_slave_rready),
-   .io_ps_axi_slave_r_bits_id (),
-   .io_ps_axi_slave_r_bits_resp (io_ps_axi_slave_rresp),
-   .io_ps_axi_slave_r_bits_data (io_ps_axi_slave_rdata),
-   .io_ps_axi_slave_r_bits_last (),
-   .io_ps_axi_slave_b_valid (io_ps_axi_slave_bvalid),
-   .io_ps_axi_slave_b_ready (io_ps_axi_slave_bready),
-   .io_ps_axi_slave_b_bits_id (),
-   .io_ps_axi_slave_b_bits_resp (io_ps_axi_slave_bresp),
 
    .mem_axi_0_ar_valid (mem_axi_0_arvalid),
    .mem_axi_0_ar_ready (mem_axi_0_arready),
