@@ -44,6 +44,7 @@ module serve (
   wire io_uart_int;
 
   wire FCLK_RESET0_N;
+  wire FCLK_IC_RESET0_N;
   wire clk;
   wire soc_reset;
   
@@ -229,6 +230,81 @@ module serve (
   wire [7:0]mmio_axi_0_wstrb;
   wire mmio_axi_0_wvalid;
 
+  wire [39:0]bram_axi_ps_araddr;
+  wire [1:0]bram_axi_ps_arburst;
+  wire [3:0]bram_axi_ps_arcache;
+  wire [15:0]bram_axi_ps_arid;
+  wire [7:0]bram_axi_ps_arlen;
+  wire [0:0]bram_axi_ps_arlock;
+  wire [2:0]bram_axi_ps_arprot;
+  wire [3:0]bram_axi_ps_arqos;
+  wire bram_axi_ps_arready;
+  wire [3:0]bram_axi_ps_arregion;
+  wire [2:0]bram_axi_ps_arsize;
+  wire bram_axi_ps_arvalid;
+  wire [39:0]bram_axi_ps_awaddr;
+  wire [1:0]bram_axi_ps_awburst;
+  wire [3:0]bram_axi_ps_awcache;
+  wire [15:0]bram_axi_ps_awid;
+  wire [7:0]bram_axi_ps_awlen;
+  wire [0:0]bram_axi_ps_awlock;
+  wire [2:0]bram_axi_ps_awprot;
+  wire [3:0]bram_axi_ps_awqos;
+  wire bram_axi_ps_awready;
+  wire [3:0]bram_axi_ps_awregion;
+  wire [2:0]bram_axi_ps_awsize;
+  wire bram_axi_ps_awvalid;
+  wire [15:0]bram_axi_ps_bid;
+  wire bram_axi_ps_bready;
+  wire [1:0]bram_axi_ps_bresp;
+  wire bram_axi_ps_bvalid;
+  wire [31:0]bram_axi_ps_rdata;
+  wire [15:0]bram_axi_ps_rid;
+  wire bram_axi_ps_rlast;
+  wire bram_axi_ps_rready;
+  wire [1:0]bram_axi_ps_rresp;
+  wire bram_axi_ps_rvalid;
+  wire [31:0]bram_axi_ps_wdata;
+  wire bram_axi_ps_wlast;
+  wire bram_axi_ps_wready;
+  wire [3:0]bram_axi_ps_wstrb;
+  wire bram_axi_ps_wvalid;
+  wire [31:0]bram_axi_rv_araddr;
+  wire [1:0]bram_axi_rv_arburst;
+  wire [3:0]bram_axi_rv_arcache;
+  wire [7:0]bram_axi_rv_arlen;
+  wire [0:0]bram_axi_rv_arlock;
+  wire [2:0]bram_axi_rv_arprot;
+  wire [3:0]bram_axi_rv_arqos;
+  wire bram_axi_rv_arready;
+  wire [3:0]bram_axi_rv_arregion;
+  wire [2:0]bram_axi_rv_arsize;
+  wire bram_axi_rv_arvalid;
+  wire [31:0]bram_axi_rv_awaddr;
+  wire [1:0]bram_axi_rv_awburst;
+  wire [3:0]bram_axi_rv_awcache;
+  wire [7:0]bram_axi_rv_awlen;
+  wire [0:0]bram_axi_rv_awlock;
+  wire [2:0]bram_axi_rv_awprot;
+  wire [3:0]bram_axi_rv_awqos;
+  wire bram_axi_rv_awready;
+  wire [3:0]bram_axi_rv_awregion;
+  wire [2:0]bram_axi_rv_awsize;
+  wire bram_axi_rv_awvalid;
+  wire bram_axi_rv_bready;
+  wire [1:0]bram_axi_rv_bresp;
+  wire bram_axi_rv_bvalid;
+  wire [31:0]bram_axi_rv_rdata;
+  wire bram_axi_rv_rlast;
+  wire bram_axi_rv_rready;
+  wire [1:0]bram_axi_rv_rresp;
+  wire bram_axi_rv_rvalid;
+  wire [31:0]bram_axi_rv_wdata;
+  wire bram_axi_rv_wlast;
+  wire bram_axi_rv_wready;
+  wire [3:0]bram_axi_rv_wstrb;
+  wire bram_axi_rv_wvalid;
+
   /* button debounce */
   wire [3:0] gpio_btns;
   wire [1:0] gpio_sws;
@@ -257,7 +333,86 @@ module serve (
   mpsoc_wrapper system_i
   (
 		.FCLK_CLK0(clk),
-        .FCLK_RESET0_N(FCLK_RESET0_N),
+    .FCLK_RESET0_N(FCLK_RESET0_N),
+    .FCLK_IC_RESET0_N(FCLK_IC_RESET0_N),
+
+    .bram_axi_ps_araddr		(bram_axi_ps_araddr),
+    .bram_axi_ps_arburst		(bram_axi_ps_arburst),
+    .bram_axi_ps_arcache		(bram_axi_ps_arcache),
+    .bram_axi_ps_arid		(bram_axi_ps_arid),
+    .bram_axi_ps_arlen		(bram_axi_ps_arlen	),
+    .bram_axi_ps_arlock		(bram_axi_ps_arlock	),
+    .bram_axi_ps_arprot		(bram_axi_ps_arprot	),
+    .bram_axi_ps_arqos		(bram_axi_ps_arqos	),
+    .bram_axi_ps_arready		(bram_axi_ps_arready ),
+    .bram_axi_ps_arregion		(bram_axi_ps_arregion),
+    .bram_axi_ps_arsize		(bram_axi_ps_arsize),
+    .bram_axi_ps_aruser		(),
+    .bram_axi_ps_arvalid		(bram_axi_ps_arvalid),
+    .bram_axi_ps_awaddr		(bram_axi_ps_awaddr),
+    .bram_axi_ps_awburst		(bram_axi_ps_awburst),
+    .bram_axi_ps_awcache		(bram_axi_ps_awcache),
+    .bram_axi_ps_awid		(bram_axi_ps_awid),
+    .bram_axi_ps_awlen		(bram_axi_ps_awlen	),
+    .bram_axi_ps_awlock		(bram_axi_ps_awlock	),
+    .bram_axi_ps_awprot		(bram_axi_ps_awprot	),
+    .bram_axi_ps_awqos		(bram_axi_ps_awqos	),
+    .bram_axi_ps_awready		(bram_axi_ps_awready ),
+    .bram_axi_ps_awregion		(bram_axi_ps_awregion),
+    .bram_axi_ps_awsize		(bram_axi_ps_awsize),
+    .bram_axi_ps_awuser		(),
+    .bram_axi_ps_awvalid		(bram_axi_ps_awvalid),
+    .bram_axi_ps_bid		(bram_axi_ps_bid),
+    .bram_axi_ps_bready		(bram_axi_ps_bready	),
+    .bram_axi_ps_bresp		(bram_axi_ps_bresp	),
+    .bram_axi_ps_bvalid		(bram_axi_ps_bvalid	),
+    .bram_axi_ps_rdata		(bram_axi_ps_rdata	),
+    .bram_axi_ps_rid		(bram_axi_ps_rid),
+    .bram_axi_ps_rlast		(bram_axi_ps_rlast ),
+    .bram_axi_ps_rready		(bram_axi_ps_rready),
+    .bram_axi_ps_rresp		(bram_axi_ps_rresp ),
+    .bram_axi_ps_rvalid		(bram_axi_ps_rvalid),
+    .bram_axi_ps_wdata		(bram_axi_ps_wdata ),
+    .bram_axi_ps_wlast		(bram_axi_ps_wlast ),
+    .bram_axi_ps_wready		(bram_axi_ps_wready),
+    .bram_axi_ps_wstrb		(bram_axi_ps_wstrb ),
+    .bram_axi_ps_wvalid		(bram_axi_ps_wvalid),
+
+    .bram_axi_rv_araddr		(bram_axi_rv_araddr),
+    .bram_axi_rv_arburst		(bram_axi_rv_arburst),
+    .bram_axi_rv_arcache		(bram_axi_rv_arcache),
+    .bram_axi_rv_arlen		(bram_axi_rv_arlen	),
+    .bram_axi_rv_arlock		(bram_axi_rv_arlock	),
+    .bram_axi_rv_arprot		(bram_axi_rv_arprot	),
+    .bram_axi_rv_arqos		(bram_axi_rv_arqos	),
+    .bram_axi_rv_arready		(bram_axi_rv_arready ),
+    .bram_axi_rv_arregion		(bram_axi_rv_arregion),
+    .bram_axi_rv_arsize		(bram_axi_rv_arsize),
+    .bram_axi_rv_arvalid		(bram_axi_rv_arvalid),
+    .bram_axi_rv_awaddr		(bram_axi_rv_awaddr),
+    .bram_axi_rv_awburst		(bram_axi_rv_awburst),
+    .bram_axi_rv_awcache		(bram_axi_rv_awcache),
+    .bram_axi_rv_awlen		(bram_axi_rv_awlen	),
+    .bram_axi_rv_awlock		(bram_axi_rv_awlock	),
+    .bram_axi_rv_awprot		(bram_axi_rv_awprot	),
+    .bram_axi_rv_awqos		(bram_axi_rv_awqos	),
+    .bram_axi_rv_awready		(bram_axi_rv_awready ),
+    .bram_axi_rv_awregion		(bram_axi_rv_awregion),
+    .bram_axi_rv_awsize		(bram_axi_rv_awsize),
+    .bram_axi_rv_awvalid		(bram_axi_rv_awvalid),
+    .bram_axi_rv_bready		(bram_axi_rv_bready),
+    .bram_axi_rv_bresp		(bram_axi_rv_bresp ),
+    .bram_axi_rv_bvalid		(bram_axi_rv_bvalid),
+    .bram_axi_rv_rdata		(bram_axi_rv_rdata ),
+    .bram_axi_rv_rlast		(bram_axi_rv_rlast ),
+    .bram_axi_rv_rready		(bram_axi_rv_rready),
+    .bram_axi_rv_rresp		(bram_axi_rv_rresp ),
+    .bram_axi_rv_rvalid		(bram_axi_rv_rvalid),
+    .bram_axi_rv_wdata		(bram_axi_rv_wdata ),
+    .bram_axi_rv_wlast		(bram_axi_rv_wlast ),
+    .bram_axi_rv_wready		(bram_axi_rv_wready),
+    .bram_axi_rv_wstrb		(bram_axi_rv_wstrb ),
+    .bram_axi_rv_wvalid		(bram_axi_rv_wvalid),
 
     .soc_reset(soc_reset),
 
@@ -333,7 +488,7 @@ module serve (
         .io_front_axi_1_wstrb		(io_front_axi_1_wstrb),
         .io_front_axi_1_wvalid		(io_front_axi_1_wvalid),
 
-        .mem_axi_0_araddr({3'd0, mem_axi_0_araddr}),
+        .mem_axi_0_araddr(mem_axi_0_araddr),
         .mem_axi_0_arburst(mem_axi_0_arburst),
         .mem_axi_0_arcache(mem_axi_0_arcache),
         .mem_axi_0_arid(mem_axi_0_arid),
@@ -344,7 +499,7 @@ module serve (
         .mem_axi_0_arready(mem_axi_0_arready),
         .mem_axi_0_arsize(mem_axi_0_arsize),
         .mem_axi_0_arvalid(mem_axi_0_arvalid),
-        .mem_axi_0_awaddr({3'd0, mem_axi_0_awaddr}),
+        .mem_axi_0_awaddr(mem_axi_0_awaddr),
         .mem_axi_0_awburst(mem_axi_0_awburst),
         .mem_axi_0_awcache(mem_axi_0_awcache),
         .mem_axi_0_awid(mem_axi_0_awid),
@@ -371,7 +526,7 @@ module serve (
         .mem_axi_0_wstrb(mem_axi_0_wstrb),
         .mem_axi_0_wvalid(mem_axi_0_wvalid),
 
-        .mem_axi_1_araddr({3'd0, mem_axi_1_araddr}),
+        .mem_axi_1_araddr(mem_axi_1_araddr),
         .mem_axi_1_arburst(mem_axi_1_arburst),
         .mem_axi_1_arcache(mem_axi_1_arcache),
         .mem_axi_1_arid(mem_axi_1_arid),
@@ -382,7 +537,7 @@ module serve (
         .mem_axi_1_arready(mem_axi_1_arready),
         .mem_axi_1_arsize(mem_axi_1_arsize),
         .mem_axi_1_arvalid(mem_axi_1_arvalid),
-        .mem_axi_1_awaddr({3'd0, mem_axi_1_awaddr}),
+        .mem_axi_1_awaddr(mem_axi_1_awaddr),
         .mem_axi_1_awburst(mem_axi_1_awburst),
         .mem_axi_1_awcache(mem_axi_1_awcache),
         .mem_axi_1_awid(mem_axi_1_awid),
@@ -446,6 +601,89 @@ module serve (
         .mmio_axi_0_wready(mmio_axi_0_wready),
         .mmio_axi_0_wstrb(mmio_axi_0_wstrb),
         .mmio_axi_0_wvalid(mmio_axi_0_wvalid)
+  );
+
+  bram_wrapper u_bram (
+
+		.FCLK_CLK0(clk),
+    .FCLK_RESET0_N(FCLK_RESET0_N),
+    .FCLK_IC_RESET0_N(FCLK_IC_RESET0_N),
+
+    .bram_axi_ps_araddr		(bram_axi_ps_araddr[31:0]),
+    .bram_axi_ps_arburst		(bram_axi_ps_arburst),
+    .bram_axi_ps_arcache		(bram_axi_ps_arcache),
+    .bram_axi_ps_arid		(bram_axi_ps_arid),
+    .bram_axi_ps_arlen		(bram_axi_ps_arlen	),
+    .bram_axi_ps_arlock		(bram_axi_ps_arlock	),
+    .bram_axi_ps_arprot		(bram_axi_ps_arprot	),
+    .bram_axi_ps_arqos		(bram_axi_ps_arqos	),
+    .bram_axi_ps_arready		(bram_axi_ps_arready ),
+    .bram_axi_ps_arregion		(bram_axi_ps_arregion),
+    .bram_axi_ps_arsize		(bram_axi_ps_arsize),
+    .bram_axi_ps_arvalid		(bram_axi_ps_arvalid),
+    .bram_axi_ps_awaddr		(bram_axi_ps_awaddr[31:0]),
+    .bram_axi_ps_awburst		(bram_axi_ps_awburst),
+    .bram_axi_ps_awcache		(bram_axi_ps_awcache),
+    .bram_axi_ps_awid		(bram_axi_ps_awid),
+    .bram_axi_ps_awlen		(bram_axi_ps_awlen	),
+    .bram_axi_ps_awlock		(bram_axi_ps_awlock	),
+    .bram_axi_ps_awprot		(bram_axi_ps_awprot	),
+    .bram_axi_ps_awqos		(bram_axi_ps_awqos	),
+    .bram_axi_ps_awready		(bram_axi_ps_awready ),
+    .bram_axi_ps_awregion		(bram_axi_ps_awregion),
+    .bram_axi_ps_awsize		(bram_axi_ps_awsize),
+    .bram_axi_ps_awvalid		(bram_axi_ps_awvalid),
+    .bram_axi_ps_bid		(bram_axi_ps_bid),
+    .bram_axi_ps_bready		(bram_axi_ps_bready	),
+    .bram_axi_ps_bresp		(bram_axi_ps_bresp	),
+    .bram_axi_ps_bvalid		(bram_axi_ps_bvalid	),
+    .bram_axi_ps_rdata		(bram_axi_ps_rdata	),
+    .bram_axi_ps_rid		(bram_axi_ps_rid),
+    .bram_axi_ps_rlast		(bram_axi_ps_rlast ),
+    .bram_axi_ps_rready		(bram_axi_ps_rready),
+    .bram_axi_ps_rresp		(bram_axi_ps_rresp ),
+    .bram_axi_ps_rvalid		(bram_axi_ps_rvalid),
+    .bram_axi_ps_wdata		(bram_axi_ps_wdata ),
+    .bram_axi_ps_wlast		(bram_axi_ps_wlast ),
+    .bram_axi_ps_wready		(bram_axi_ps_wready),
+    .bram_axi_ps_wstrb		(bram_axi_ps_wstrb ),
+    .bram_axi_ps_wvalid		(bram_axi_ps_wvalid),
+
+    .bram_axi_rv_araddr		({4'h8, bram_axi_rv_araddr[27:0]}),
+    .bram_axi_rv_arburst		(bram_axi_rv_arburst),
+    .bram_axi_rv_arcache		(bram_axi_rv_arcache),
+    .bram_axi_rv_arlen		(bram_axi_rv_arlen	),
+    .bram_axi_rv_arlock		(bram_axi_rv_arlock	),
+    .bram_axi_rv_arprot		(bram_axi_rv_arprot	),
+    .bram_axi_rv_arqos		(bram_axi_rv_arqos	),
+    .bram_axi_rv_arready		(bram_axi_rv_arready ),
+    .bram_axi_rv_arregion		(bram_axi_rv_arregion),
+    .bram_axi_rv_arsize		(bram_axi_rv_arsize),
+    .bram_axi_rv_arvalid		(bram_axi_rv_arvalid),
+    .bram_axi_rv_awaddr		({4'h8, bram_axi_rv_awaddr[27:0]}),
+    .bram_axi_rv_awburst		(bram_axi_rv_awburst),
+    .bram_axi_rv_awcache		(bram_axi_rv_awcache),
+    .bram_axi_rv_awlen		(bram_axi_rv_awlen	),
+    .bram_axi_rv_awlock		(bram_axi_rv_awlock	),
+    .bram_axi_rv_awprot		(bram_axi_rv_awprot	),
+    .bram_axi_rv_awqos		(bram_axi_rv_awqos	),
+    .bram_axi_rv_awready		(bram_axi_rv_awready ),
+    .bram_axi_rv_awregion		(bram_axi_rv_awregion),
+    .bram_axi_rv_awsize		(bram_axi_rv_awsize),
+    .bram_axi_rv_awvalid		(bram_axi_rv_awvalid),
+    .bram_axi_rv_bready		(bram_axi_rv_bready),
+    .bram_axi_rv_bresp		(bram_axi_rv_bresp ),
+    .bram_axi_rv_bvalid		(bram_axi_rv_bvalid),
+    .bram_axi_rv_rdata		(bram_axi_rv_rdata ),
+    .bram_axi_rv_rlast		(bram_axi_rv_rlast ),
+    .bram_axi_rv_rready		(bram_axi_rv_rready),
+    .bram_axi_rv_rresp		(bram_axi_rv_rresp ),
+    .bram_axi_rv_rvalid		(bram_axi_rv_rvalid),
+    .bram_axi_rv_wdata		(bram_axi_rv_wdata ),
+    .bram_axi_rv_wlast		(bram_axi_rv_wlast ),
+    .bram_axi_rv_wready		(bram_axi_rv_wready),
+    .bram_axi_rv_wstrb		(bram_axi_rv_wstrb ),
+    .bram_axi_rv_wvalid		(bram_axi_rv_wvalid)
   );
 
   wire jtag_tdo_data, jtag_tdo_driven;

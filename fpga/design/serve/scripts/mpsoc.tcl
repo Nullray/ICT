@@ -176,6 +176,12 @@ proc create_root_design { parentCell } {
 				CONFIG.NUM_SI {1} \
 				CONFIG.S00_HAS_REGSLICE {1} ] $mem1_axi_ic
 
+  # Create interconnect
+  set mmio_axi_ic [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 mmio_axi_ic ]
+  set_property -dict [list CONFIG.NUM_MI {2} \
+				CONFIG.NUM_SI {1} \
+				CONFIG.S00_HAS_REGSLICE {1} ] $mmio_axi_ic
+
 #=============================================
 # Clock ports
 #=============================================
@@ -187,9 +193,10 @@ proc create_root_design { parentCell } {
 #==============================================
   #PL system reset using PS-PL user_reset_n signal
   create_bd_port -dir O -from 0 -to 0 -type rst FCLK_RESET0_N
+  create_bd_port -dir O -from 0 -to 0 -type rst FCLK_IC_RESET0_N
   create_bd_port -dir O -from 0 -to 0 -type rst soc_reset
 
-  set_property CONFIG.ASSOCIATED_RESET {FCLK_RESET0_N:soc_reset} [get_bd_ports FCLK_CLK0]
+  set_property CONFIG.ASSOCIATED_RESET {FCLK_RESET0_N:FCLK_IC_RESET0_N:soc_reset} [get_bd_ports FCLK_CLK0]
 
 #==============================================
 # Interrupt pins
@@ -201,17 +208,6 @@ proc create_root_design { parentCell } {
 #==============================================
 # AXI Slaves
 #==============================================
-  # axi_bram_ctrl used to control blk_mem_shared
-  set axi_bram_ctrl [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_bram_ctrl:4.1 axi_bram_ctrl ]
-  set_property -dict [ list \
-   CONFIG.ECC_TYPE {0} \
-   CONFIG.PROTOCOL {AXI4LITE} \
-   CONFIG.SINGLE_PORT_BRAM {1} \
-  ] $axi_bram_ctrl
-
-  # blk_mem_shared used as RV-ARM shared buffer
-  set blk_ram_shared [ create_bd_cell -type ip -vlnv xilinx.com:ip:blk_mem_gen:8.4 blk_mem_shared ]
-
   # soc_reset_reg used to generate reset signal for RISC-V SoC
   set soc_reset_reg [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 soc_reset_reg ]
   set_property -dict [ list \
@@ -223,6 +219,12 @@ proc create_root_design { parentCell } {
 #==============================================
 # Export AXI Interface
 #==============================================
+  # shared buffer (bram) access port from ZynqMP PS
+  set bram_axi_ps [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 bram_axi_ps]
+
+  # shared buffer (bram) access port from RISC-V MMIO port
+  set bram_axi_rv [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 bram_axi_rv]
+
   # io_front used to access RISC-V cache coherent interface for DMA engines in PS
   set io_front_axi_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:aximm_rtl:1.0 io_front_axi_0]
   set_property -dict [ list CONFIG.PROTOCOL {AXI4} \
@@ -258,7 +260,7 @@ proc create_root_design { parentCell } {
 				CONFIG.DATA_WIDTH {64} \
 				CONFIG.ID_WIDTH {4} ] $mmio_axi_0
 
-  set_property CONFIG.ASSOCIATED_BUSIF {io_front_axi_0:io_front_axi_1:mem_axi_0:mem_axi_1:mmio_axi_0} [get_bd_ports FCLK_CLK0]
+  set_property CONFIG.ASSOCIATED_BUSIF {bram_axi_ps:bram_axi_rv:io_front_axi_0:io_front_axi_1:mem_axi_0:mem_axi_1:mmio_axi_0} [get_bd_ports FCLK_CLK0]
 
 #=============================================
 # System clock connection
@@ -274,11 +276,11 @@ proc create_root_design { parentCell } {
 			[get_bd_pins zynq_mpsoc/saxihp2_fpd_aclk] \
 			[get_bd_pins zynq_mpsoc/saxihp3_fpd_aclk] \
 			[get_bd_pins zynq_mpsoc/saxi_lpd_aclk] \
-			[get_bd_pins axi_bram_ctrl/s_axi_aclk] \
 			[get_bd_pins soc_reset_reg/s_axi_aclk] \
 			[get_bd_pins io_ps_axi_ic/*ACLK] \
 			[get_bd_pins io_front_0_axi_ic/*ACLK] \
 			[get_bd_pins io_front_1_axi_ic/*ACLK] \
+			[get_bd_pins mmio_axi_ic/*ACLK] \
 			[get_bd_pins hp0_axi_ic/*ACLK] \
 			[get_bd_pins mem1_axi_ic/*ACLK] \
 			[get_bd_pins system_reset/slowest_sync_clk]
@@ -293,19 +295,21 @@ proc create_root_design { parentCell } {
   connect_bd_net -net proc_sys_reset_0_peripheral_aresetn \
 			[get_bd_pins system_reset/peripheral_aresetn] \
 			[get_bd_pins FCLK_RESET0_N] \
-			[get_bd_pins axi_bram_ctrl/s_axi_aresetn] \
 			[get_bd_pins soc_reset_reg/s_axi_aresetn] \
 			[get_bd_pins io_front_0_axi_ic/*_ARESETN] \
 			[get_bd_pins io_front_1_axi_ic/*_ARESETN] \
 			[get_bd_pins io_ps_axi_ic/*_ARESETN] \
+			[get_bd_pins mmio_axi_ic/*_ARESETN] \
 			[get_bd_pins hp0_axi_ic/*_ARESETN] \
 			[get_bd_pins mem1_axi_ic/*_ARESETN]
 
   connect_bd_net -net proc_sys_reset_0_ic_aresetn \
 			[get_bd_pins system_reset/interconnect_aresetn] \
+			[get_bd_pins FCLK_IC_RESET0_N] \
 			[get_bd_pins io_front_0_axi_ic/ARESETN] \
 			[get_bd_pins io_front_1_axi_ic/ARESETN] \
 			[get_bd_pins io_ps_axi_ic/ARESETN] \
+			[get_bd_pins mmio_axi_ic/ARESETN] \
 			[get_bd_pins hp0_axi_ic/ARESETN] \
 			[get_bd_pins mem1_axi_ic/ARESETN]
 
@@ -313,55 +317,59 @@ proc create_root_design { parentCell } {
 # AXI Interface Connection
 #==============================================
   connect_bd_intf_net -intf_net soc_reset_reg_s [get_bd_intf_pins soc_reset_reg/S_AXI] \
-			[get_bd_intf_pins io_ps_axi_ic/M00_AXI] 
+			[get_bd_intf_pins io_ps_axi_ic/M00_AXI]
 
-  connect_bd_intf_net -intf_net axi_bram_ctrl_s [get_bd_intf_pins axi_bram_ctrl/S_AXI] \
-			[get_bd_intf_pins io_ps_axi_ic/M01_AXI] 
+  connect_bd_intf_net -intf_net bram_ps [get_bd_intf_ports bram_axi_ps] \
+			[get_bd_intf_pins io_ps_axi_ic/M01_AXI]
 
   connect_bd_intf_net -intf_net armv8_ps_gp0_s [get_bd_intf_pins io_ps_axi_ic/S00_AXI] \
 			[get_bd_intf_pins zynq_mpsoc/M_AXI_HPM0_LPD]
 
   connect_bd_intf_net -intf_net io_front_1_axi_m00 [get_bd_intf_ports io_front_axi_1] \
-			[get_bd_intf_pins io_front_1_axi_ic/M00_AXI] 
+			[get_bd_intf_pins io_front_1_axi_ic/M00_AXI]
 
   connect_bd_intf_net -intf_net io_front_1_axi_s [get_bd_intf_pins io_front_1_axi_ic/S00_AXI] \
-			[get_bd_intf_pins zynq_mpsoc/M_AXI_HPM0_FPD] 
+			[get_bd_intf_pins zynq_mpsoc/M_AXI_HPM0_FPD]
 
   connect_bd_intf_net -intf_net io_front_0_axi_m00 [get_bd_intf_ports io_front_axi_0] \
-			[get_bd_intf_pins io_front_0_axi_ic/M00_AXI] 
+			[get_bd_intf_pins io_front_0_axi_ic/M00_AXI]
 
   connect_bd_intf_net -intf_net io_front_0_axi_s [get_bd_intf_pins io_front_0_axi_ic/S00_AXI] \
-			[get_bd_intf_pins zynq_mpsoc/M_AXI_HPM1_FPD] 
+			[get_bd_intf_pins zynq_mpsoc/M_AXI_HPM1_FPD]
 
   connect_bd_intf_net -intf_net mem_axi_0 [get_bd_intf_ports mem_axi_0] \
 			[get_bd_intf_pins hp0_axi_ic/S00_AXI]
 
   connect_bd_intf_net -intf_net zynqmp_hp0 [get_bd_intf_pins hp0_axi_ic/M00_AXI] \
-			[get_bd_intf_pins zynq_mpsoc/S_AXI_HP0_FPD] 
+			[get_bd_intf_pins zynq_mpsoc/S_AXI_HP0_FPD]
 
   connect_bd_intf_net -intf_net mem_axi_1_s [get_bd_intf_ports mem_axi_1] \
 			[get_bd_intf_pins mem1_axi_ic/S00_AXI]
 
   connect_bd_intf_net -intf_net mem_axi_1_m00 [get_bd_intf_pins mem1_axi_ic/M00_AXI] \
-			[get_bd_intf_pins zynq_mpsoc/S_AXI_HP1_FPD] 
+			[get_bd_intf_pins zynq_mpsoc/S_AXI_HP1_FPD]
 
   connect_bd_intf_net -intf_net mem_axi_1_m01 [get_bd_intf_pins mem1_axi_ic/M01_AXI] \
 			[get_bd_intf_pins zynq_mpsoc/S_AXI_HP2_FPD]
 
   connect_bd_intf_net -intf_net mem_axi_1_m02 [get_bd_intf_pins mem1_axi_ic/M02_AXI] \
-			[get_bd_intf_pins zynq_mpsoc/S_AXI_HP3_FPD] 
+			[get_bd_intf_pins zynq_mpsoc/S_AXI_HP3_FPD]
 
   connect_bd_intf_net -intf_net mem_axi_1_m03 [get_bd_intf_pins mem1_axi_ic/M03_AXI] \
 			[get_bd_intf_pins hp0_axi_ic/S01_AXI]
 
   connect_bd_intf_net -intf_net mmio_axi_0 [get_bd_intf_ports mmio_axi_0] \
-			[get_bd_intf_pins zynq_mpsoc/S_AXI_LPD] 
+      [get_bd_intf_pins mmio_axi_ic/S00_AXI]
+
+  connect_bd_intf_net -intf_net mmio_ic_m00 [get_bd_intf_pins mmio_axi_ic/M00_AXI] \
+			[get_bd_intf_pins zynq_mpsoc/S_AXI_LPD]
+
+  connect_bd_intf_net -intf_net bram_rv [get_bd_intf_ports bram_axi_rv] \
+			[get_bd_intf_pins mmio_axi_ic/M01_AXI]
 
 #=============================================
 # Other ports
 #=============================================
-  connect_bd_intf_net -intf_net bram_port [get_bd_intf_pins axi_bram_ctrl/BRAM_PORTA] \
-      [get_bd_intf_pins blk_mem_shared/BRAM_PORTA]
 
   connect_bd_net [get_bd_pins soc_reset_reg/gpio_io_o] [get_bd_pins soc_reset]
 
@@ -378,7 +386,7 @@ proc create_root_design { parentCell } {
 # Create address segments
 #=============================================
 
-  create_bd_addr_seg -range 0x00001000 -offset 0x80000000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs axi_bram_ctrl/S_AXI/Mem0] SEG_axi_bram_ctrl_0_Mem0
+  create_bd_addr_seg -range 0x00001000 -offset 0x80000000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs bram_axi_ps/Reg] SEG_axi_bram_arm
   create_bd_addr_seg -range 0x00001000 -offset 0x83C00000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs soc_reset_reg/S_AXI/Reg] SEG_axi_gpio_0_Reg
 
   create_bd_addr_seg -range 0x10000000 -offset 0xB0000000 [get_bd_addr_spaces zynq_mpsoc/Data] [get_bd_addr_segs io_front_axi_0/Reg] SEG_front_0_M_AXI_Reg
@@ -390,6 +398,7 @@ proc create_root_design { parentCell } {
   create_bd_addr_seg -range 0x100000000 -offset 0xA00000000 [get_bd_addr_spaces mem_axi_1] [get_bd_addr_segs zynq_mpsoc/SAXIGP5/HP3_DDR_HIGH] SEG_HP3_DDR_HIGH
   create_bd_addr_seg -range 0x80000000 -offset 0xB00000000 [get_bd_addr_spaces mem_axi_1] [get_bd_addr_segs zynq_mpsoc/SAXIGP2/HP0_DDR_HIGH] SEG_HP0_DDR_HIGH
 
+  create_bd_addr_seg -range 0x00001000 -offset 0xF0000000 [get_bd_addr_spaces mmio_axi_0] [get_bd_addr_segs bram_axi_rv/Reg] SEG_axi_bram_rv
   create_bd_addr_seg -range 0x10000 -offset 0xFF000000 [get_bd_addr_spaces mmio_axi_0] [get_bd_addr_segs zynq_mpsoc/SAXIGP6/LPD_UART0] SEG_LPD_UART0
 
   if {${::board} == "fidus"} {
@@ -399,7 +408,7 @@ proc create_root_design { parentCell } {
     create_bd_addr_seg -range 0x10000 -offset 0xFF0B0000 [get_bd_addr_spaces mmio_axi_0] [get_bd_addr_segs zynq_mpsoc/SAXIGP6/LPD_GEM0] SEG_LPD_GEM0
     create_bd_addr_seg -range 0x10000 -offset 0xFF160000 [get_bd_addr_spaces mmio_axi_0] [get_bd_addr_segs zynq_mpsoc/SAXIGP6/LPD_SD0] SEG_LPD_SD1
   }
-  create_bd_addr_seg -range 0x1000 -offset 0x0FF00000 [get_bd_addr_spaces mmio_axi_0] [get_bd_addr_segs zynq_mpsoc/SAXIGP6/LPD_DDR_LOW] SEG_LPD_DDR_LOW
+  #create_bd_addr_seg -range 0x1000 -offset 0x0FF00000 [get_bd_addr_spaces mmio_axi_0] [get_bd_addr_segs zynq_mpsoc/SAXIGP6/LPD_DDR_LOW] SEG_LPD_DDR_LOW
 
 #=============================================
 # Finish BD creation 
