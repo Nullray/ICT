@@ -130,6 +130,7 @@ xilinx.com:ip:debug_bridge:3.0\
 xilinx.com:user:fan_con:1.0\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:xlconcat:2.1\
+xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:zynq_ultra_ps_e:3.3\
 "
 
@@ -234,15 +235,16 @@ proc create_root_design { parentCell } {
 
 
   # Create ports
+  set bcm_switch_reset_n [ create_bd_port -dir O -from 0 -to 0 bcm_switch_reset_n ]
   set fg_0 [ create_bd_port -dir I fg_0 ]
   set fg_1 [ create_bd_port -dir I fg_1 ]
   set fg_2 [ create_bd_port -dir I fg_2 ]
   set fg_3 [ create_bd_port -dir I fg_3 ]
+  set iic_switch_reset_n [ create_bd_port -dir O -from 0 -to 0 iic_switch_reset_n ]
   set pwm_0 [ create_bd_port -dir O pwm_0 ]
   set pwm_1 [ create_bd_port -dir O pwm_1 ]
   set pwm_2 [ create_bd_port -dir O pwm_2 ]
   set pwm_3 [ create_bd_port -dir O pwm_3 ]
-  set switch_reset_n [ create_bd_port -dir O -from 0 -to 0 switch_reset_n ]
   set tck [ create_bd_port -dir O tck ]
   set tdi [ create_bd_port -dir O tdi ]
   set tdo [ create_bd_port -dir I tdo ]
@@ -255,7 +257,7 @@ proc create_root_design { parentCell } {
    CONFIG.C_ALL_OUTPUTS_2 {1} \
    CONFIG.C_DOUT_DEFAULT {0xFFFFFFFF} \
    CONFIG.C_DOUT_DEFAULT_2 {0xFFFFFFFF} \
-   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO2_WIDTH {2} \
    CONFIG.C_GPIO_WIDTH {16} \
    CONFIG.C_IS_DUAL {1} \
  ] $axi_gpio_0
@@ -367,6 +369,7 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.C_DEBUG_MODE {3} \
    CONFIG.C_DESIGN_TYPE {0} \
+   CONFIG.C_TCK_CLOCK_RATIO {20} \
  ] $debug_bridge_0
 
   # Create instance: fan_con_0, and set properties
@@ -401,6 +404,24 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.NUM_PORTS {8} \
  ] $xlconcat_1
+
+  # Create instance: xlslice_0, and set properties
+  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {0} \
+   CONFIG.DIN_TO {0} \
+   CONFIG.DIN_WIDTH {2} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_0
+
+  # Create instance: xlslice_1, and set properties
+  set xlslice_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_1 ]
+  set_property -dict [ list \
+   CONFIG.DIN_FROM {1} \
+   CONFIG.DIN_TO {1} \
+   CONFIG.DIN_WIDTH {2} \
+   CONFIG.DOUT_WIDTH {1} \
+ ] $xlslice_1
 
   # Create instance: zynq_ultra_ps_e_0, and set properties
   set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.3 zynq_ultra_ps_e_0 ]
@@ -778,7 +799,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_FPD [get_bd_intf_pins ps8_0_axi_periph/S00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_FPD]
 
   # Create port connections
-  connect_bd_net -net axi_gpio_0_gpio2_io_o [get_bd_ports switch_reset_n] [get_bd_pins axi_gpio_0/gpio2_io_o]
+  connect_bd_net -net axi_gpio_0_gpio2_io_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_0/Din] [get_bd_pins xlslice_1/Din]
   connect_bd_net -net uartlite_00_interrupt [get_bd_pins uartlite_00/interrupt] [get_bd_pins xlconcat_0/In0]
   connect_bd_net -net uartlite_10_interrupt [get_bd_pins uartlite_10/interrupt] [get_bd_pins xlconcat_1/In2]
   connect_bd_net -net uartlite_11_interrupt [get_bd_pins uartlite_11/interrupt] [get_bd_pins xlconcat_1/In3]
@@ -811,6 +832,8 @@ proc create_root_design { parentCell } {
   connect_bd_net -net tap_tdo_0_1 [get_bd_ports tdo] [get_bd_pins debug_bridge_0/tap_tdo]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins xlconcat_0/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
   connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_1/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq1]
+  connect_bd_net -net xlslice_0_Dout [get_bd_ports bcm_switch_reset_n] [get_bd_pins xlslice_0/Dout]
+  connect_bd_net -net xlslice_1_Dout [get_bd_ports iic_switch_reset_n] [get_bd_pins xlslice_1/Dout]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_iic_1/s_axi_aclk] [get_bd_pins uartlite_00/s_axi_aclk] [get_bd_pins uartlite_01/s_axi_aclk] [get_bd_pins uartlite_10/s_axi_aclk] [get_bd_pins uartlite_11/s_axi_aclk] [get_bd_pins uartlite_12/s_axi_aclk] [get_bd_pins uartlite_13/s_axi_aclk] [get_bd_pins uartlite_14/s_axi_aclk] [get_bd_pins uartlite_15/s_axi_aclk] [get_bd_pins uartlite_02/s_axi_aclk] [get_bd_pins uartlite_03/s_axi_aclk] [get_bd_pins uartlite_04/s_axi_aclk] [get_bd_pins uartlite_05/s_axi_aclk] [get_bd_pins uartlite_06/s_axi_aclk] [get_bd_pins uartlite_07/s_axi_aclk] [get_bd_pins uartlite_08/s_axi_aclk] [get_bd_pins uartlite_09/s_axi_aclk] [get_bd_pins debug_bridge_0/s_axi_aclk] [get_bd_pins fan_con_0/clk_100m] [get_bd_pins fan_con_1/clk_100m] [get_bd_pins fan_con_2/clk_100m] [get_bd_pins fan_con_3/clk_100m] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins ps8_0_axi_periph/M06_ACLK] [get_bd_pins ps8_0_axi_periph/M07_ACLK] [get_bd_pins ps8_0_axi_periph/M08_ACLK] [get_bd_pins ps8_0_axi_periph/M09_ACLK] [get_bd_pins ps8_0_axi_periph/M10_ACLK] [get_bd_pins ps8_0_axi_periph/M11_ACLK] [get_bd_pins ps8_0_axi_periph/M12_ACLK] [get_bd_pins ps8_0_axi_periph/M13_ACLK] [get_bd_pins ps8_0_axi_periph/M14_ACLK] [get_bd_pins ps8_0_axi_periph/M15_ACLK] [get_bd_pins ps8_0_axi_periph/M16_ACLK] [get_bd_pins ps8_0_axi_periph/M17_ACLK] [get_bd_pins ps8_0_axi_periph/M18_ACLK] [get_bd_pins ps8_0_axi_periph/M19_ACLK] [get_bd_pins ps8_0_axi_periph/M20_ACLK] [get_bd_pins ps8_0_axi_periph/M21_ACLK] [get_bd_pins ps8_0_axi_periph/M22_ACLK] [get_bd_pins ps8_0_axi_periph/M23_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins rst_ps8_0_99M/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
 
