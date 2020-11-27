@@ -8,3 +8,39 @@
 		ti,fifo-depth = <0x1>;
 	};
 };
+
+&axi_gpio_0 {
+  gpio-line-names = "slot_0_pwr", "slot_1_pwr", "slot_2_pwr", "slot_3_pwr", 
+    "slot_4_pwr", "slot_5_pwr", "slot_6_pwr", "slot_7_pwr", 
+    "slot_8_pwr", "slot_9_pwr", "slot_10_pwr", "slot_11_pwr", 
+    "slot_12_pwr", "slot_13_pwr", "slot_14_pwr", "slot_15_pwr";
+};
+
+&axi_iic_0 {
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+  i2c-mux@70 { /* u23 */
+    compatible = "nxp,pca9548";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    reg = <0x70>;
+        
+    i2c@6 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <6>;
+
+      tca6416_u151: gpio@21 {
+        compatible = "ti,tca6416";
+        reg = <0x21>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "slot_0_prsnt", "slot_1_prsnt", "slot_2_prsnt", "slot_3_prsnt", 
+          "slot_4_prsnt", "slot_5_prsnt", "slot_6_prsnt", "slot_7_prsnt", 
+          "slot_8_prsnt", "slot_9_prsnt", "slot_10_prsnt", "slot_11_prsnt", 
+          "slot_12_prsnt", "slot_13_prsnt", "slot_14_prsnt", "slot_15_prsnt";
+      };
+    };
+  };
+};
