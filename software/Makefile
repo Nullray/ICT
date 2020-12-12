@@ -62,9 +62,8 @@ XEN_INSTALL_LOC ?= $(KERN_LOC)
 
 XEN_UIMAGE := $(XEN_INSTALL_LOC)/xen.ub
 
-#OpenBMC
-OBMC_MACHINE := zcu102-zynqmp
-OBMC_IMG := $(SW_LOC)/arm-openbmc/tmp/deploy/images/$(OBMC_MACHINE)/*.rootfs.cpio.gz.u-boot
+#OpenBMC image
+OBMC_IMG := $(OBMC_LOC)/*.rootfs.cpio.gz.u-boot
 
 .PHONY: FORCE
 

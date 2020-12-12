@@ -87,6 +87,10 @@ DTC_LOC := /opt/dtc
 FPGA_ACT ?= 
 FPGA_VAL ?= 
 
+#OpenBMC
+OBMC_MACHINE := zcu102-zynqmp
+OBMC_LOC := $(abspath ./software/arm-openbmc/tmp/deploy/images/$(OBMC_MACHINE))
+
 .PHONY: FORCE
 
 sw: FORCE
@@ -216,6 +220,11 @@ pmufw: FORCE
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) $@ 
 
+pmufw_bin: FORCE
+	@echo "Generating PMU Firmware Binary..."
+	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) $@ 
+	@cp ./bootstrap/pmufw/*.bin $(OBMC_LOC)
+
 pmufw_clean:
 	$(MAKE) -C ./bootstrap $@ 
 
@@ -241,7 +250,8 @@ uboot_distclean: dt_distclean
 #==============================================
 openbmc: FORCE
 	@mkdir -p $(INSTALL_LOC)
-	$(MAKE) -C ./software INSTALL_LOC=$(INSTALL_LOC) openbmc
+	$(MAKE) -C ./software OBMC_LOC=$(OBMC_LOC) \
+		INSTALL_LOC=$(INSTALL_LOC) openbmc
 
 #==============================================
 # File system
