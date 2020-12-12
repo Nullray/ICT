@@ -28,8 +28,10 @@ PMUFW_GEN_TCL := $(BOOT_STRAP_LOC)/scripts/pmufw.tcl
 PMUFW_HSI_FLAGS := $(HSI_FLAGS) -source $(PMUFW_GEN_TCL) \
 	-tclargs $(HDF_FILE) $(PMUFW_LOC)
 
-PMUFW_BIN_GEN := $(PMUFW_LOC)/executable.elf
-PMUFW_BIN := $(PMUFW_LOC)/pmufw.elf
+PMUFW_ELF_GEN := $(PMUFW_LOC)/executable.elf
+PMUFW_ELF := $(PMUFW_LOC)/pmufw.elf
+PMUFW_BIN := $(PMUFW_LOC)/pmu-zcu102-zynqmp.bin
+PMUFW_OBJCOPY_FLAGS := -S -O binary --set-section-flags .bss=alloc,load,contents
 
 # Device Tree Source and Blob (DTS and DTB)
 DT_GEN := $(BOOT_STRAP_LOC)/dt-gen
@@ -88,11 +90,16 @@ fsbl_distclean:
 #==========================================
 # PMU Firware (PMUFW) compilation 
 #==========================================
-pmufw: $(PMUFW_BIN)
+pmufw: $(PMUFW_ELF)
 
-$(PMUFW_BIN): .pmufw_gen FORCE
+pmufw_bin: $(PMUFW_BIN)
+
+$(PMUFW_BIN): $(PMUFW_ELF)
+	$(EXPORT_CC_PATH) && mb-objcopy $(PMUFW_OBJCOPY_FLAGS) $< $@
+
+$(PMUFW_ELF): .pmufw_gen FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(PMUFW_LOC)
-	@cp $(PMUFW_BIN_GEN) $(PMUFW_BIN)
+	@cp $(PMUFW_ELF_GEN) $(PMUFW_ELF)
 
 .pmufw_gen:
 	@$(HSI) $(PMUFW_HSI_FLAGS)

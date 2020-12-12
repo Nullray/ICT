@@ -155,6 +155,16 @@
         compatible = "ti,tmp275";
         reg = <0x4b>;
       };
+      tca6416_u182: gpio@20 {
+        compatible = "ti,tca6416";
+        reg = <0x20>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "slot_0_resetn", "slot_1_resetn", "slot_2_resetn", "slot_3_resetn", 
+          "slot_4_resetn", "slot_5_resetn", "slot_6_resetn", "slot_7_resetn", 
+          "slot_8_resetn", "slot_9_resetn", "slot_10_resetn", "slot_11_resetn", 
+          "slot_12_resetn", "slot_13_resetn", "slot_14_resetn", "slot_15_resetn";
+      };
     };
 
     i2c@5 {
@@ -223,6 +233,17 @@
       #address-cells = <1>;
       #size-cells = <0>;
       reg = <6>;
+
+      tca6416_u152: gpio@20 {
+        compatible = "ti,tca6416";
+        reg = <0x20>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "slot_0_alert", "slot_1_alert", "slot_2_alert", "slot_3_alert", 
+          "slot_4_alert", "slot_5_alert", "slot_6_alert", "slot_7_alert", 
+          "slot_8_alert", "slot_9_alert", "slot_10_alert", "slot_11_alert", 
+          "slot_12_alert", "slot_13_alert", "slot_14_alert", "slot_15_alert";
+      };
 
       tca6416_u151: gpio@21 {
         compatible = "ti,tca6416";

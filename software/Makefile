@@ -28,7 +28,7 @@ ATF_ELF := $(ATF_LOC)/$(ATF_PLAT)/release/bl31/bl31.elf
 BL31_BIN := $(ATF_LOC)/bl31.elf
 
 # BL33: U-Boot
-UBOOT_SRC :=$(SW_LOC)/uboot
+UBOOT_SRC := $(SW_LOC)/uboot
 UBOOT_LOC := $(SW_LOC)/arm-uboot
 include scripts/uboot.mk
 UBOOT_CROSS_COMPILE_FLAGS += KBUILD_OUTPUT=$(UBOOT_LOC)
@@ -61,6 +61,9 @@ endif
 XEN_INSTALL_LOC ?= $(KERN_LOC)
 
 XEN_UIMAGE := $(XEN_INSTALL_LOC)/xen.ub
+
+#OpenBMC image
+OBMC_IMG := $(OBMC_LOC)/*.rootfs.cpio.gz.u-boot
 
 .PHONY: FORCE
 
@@ -149,4 +152,15 @@ linux_clean:
 
 linux_distclean:
 	@rm -rf $(KERN_LOC)/$(OS) $(KERN_INSTALL_LOC)
+
+#==================================
+# OpenBMC compilation
+#==================================
+openbmc: FORCE
+	@bash scripts/openbmc.sh
+	@cp $(OBMC_IMG) $(INSTALL_LOC)/obmc.cpio.gz
+
+openbmc_clean:
+	@rm -rf arm-openbmc $(INSTALL_LOC)/obmc.cpio.gz
+
 
