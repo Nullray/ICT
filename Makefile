@@ -237,6 +237,13 @@ uboot_distclean: dt_distclean
 	$(MAKE) -C ./software uboot_distclean
 
 #==============================================
+# OpenBMC Compilation
+#==============================================
+openbmc: FORCE
+	@mkdir -p $(INSTALL_LOC)
+	$(MAKE) -C ./software INSTALL_LOC=$(INSTALL_LOC) openbmc
+
+#==============================================
 # File system
 #==============================================
 FTP_ROOT := 172.16.128.201
