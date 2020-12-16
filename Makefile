@@ -91,6 +91,9 @@ FPGA_VAL ?=
 OBMC_MACHINE := zcu102-zynqmp
 OBMC_LOC := $(abspath ./software/arm-openbmc/tmp/deploy/images/$(OBMC_MACHINE))
 
+# U-Boot mkimage
+MKIMG_PATH := $(abspath ./software/arm-uboot/tools)
+
 .PHONY: FORCE
 
 sw: FORCE
@@ -251,7 +254,7 @@ pmufw_distclean:
 uboot: dt FORCE
 	@echo "Compiling U-Boot..."
 	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) \
-		DTB_LOC=$(FPGA_TARGET) $@
+		FPGA_PRJ=$(FPGA_PRJ) DTB_LOC=$(FPGA_TARGET) $@
 
 uboot_clean: dt_clean
 	$(MAKE) -C ./software $@

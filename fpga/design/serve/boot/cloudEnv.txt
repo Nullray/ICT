@@ -1,0 +1,7 @@
+bootargs=earlycon clk_ignore_unused console=ttyPS0,115200n8 ip=dhcp cma=512M root=/dev/nfs nfsroot=10.30.5.120:/home/wangyazhou/share/debian/riscv,nolock,proto=tcp,nfsvers=4 rw rootwait cpuidle.off=1
+fpga_load=echo "loading fpga bit" && tftpboot 0x80000 system.bit && fpga loadb 0 0x80000 $filesize
+rv_boot_load=echo "loading RV_BOOT.bin" && tftpboot 0x10000000 RV_BOOT.bin && dcache flush
+daemon_load=echo "loading U-Boot Daemon" && tftpboot 0xc100000 zynqmp_daemon.bin && go 0xc100000
+arm_load_rv=run fpga_load && run rv_boot_load && run daemon_load;
+rvboot=tftpboot $fdt_addr $fdt_image && tftpboot $kernel_addr $kernel_image && bootm $kernel_addr - $fdt_addr;
+cloudboot=if test -n $rv_uboot; then run rvboot; else run arm_load_rv; fi;
