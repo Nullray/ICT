@@ -2,7 +2,7 @@
 UBOOT_CROSS_COMPILE_FLAGS := ARCH=arm \
 	CROSS_COMPILE=aarch64-linux-gnu- \
 	EXT_DTB=$(UBOOT_LOC)/../../ready_for_download/$(DTB_LOC)/zynqmp.dtb
-UBOOT_TARGET := all
+UBOOT_TARGET := u-boot.elf
 
 # TODO: Change to your own U-Boot configuration file name
 uboot-config := xilinx_zynqmp_zcu102_revB_defconfig
