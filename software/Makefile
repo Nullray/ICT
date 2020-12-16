@@ -169,6 +169,8 @@ openbmc: FORCE
 	@cp $(OBMC_IMG) $(INSTALL_LOC)/obmc.cpio.gz
 
 openbmc_clean:
-	@rm -rf arm-openbmc $(INSTALL_LOC)/obmc.cpio.gz
+	@rm -f $(INSTALL_LOC)/obmc.cpio.gz
 
+openbmc_distclean:
+	@rm -rf arm-openbmc
 

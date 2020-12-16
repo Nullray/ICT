@@ -33,7 +33,7 @@ SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/system-top.dts)
 TOS ?= 
 
 # Linux kernel (i.e., Physical machine, Virtual machine, Dom0, DomU)
-OS_KERN := phy_os virt dom0 domU
+OS_KERN := phy_os virt
 
 obj-sw-y := $(foreach obj,$(OS_KERN),$(obj).sw)
 obj-sw-clean-y := $(foreach obj,$(OS_KERN),$(obj).sw.clean)
@@ -95,20 +95,17 @@ OBMC_LOC := $(abspath ./software/arm-openbmc/tmp/deploy/images/$(OBMC_MACHINE))
 
 sw: FORCE
 	$(MAKE) bootbin
-	$(MAKE) xen
 	$(foreach obj,$(obj-sw-y),\
 		$(MAKE) $(patsubst %.sw,%.os,$(obj));)
 	$(MAKE) rootfs
 
 sw_clean:
 	$(MAKE) bootbin_clean
-	$(MAKE) xen_clean
 	$(foreach obj,$(obj-sw-clean-y),\
 		$(MAKE) $(patsubst %.sw.clean,%.os.clean,$(obj));)
 
 sw_distclean:
 	$(MAKE) bootbin_distclean
-	$(MAKE) xen_distclean
 	$(foreach obj,$(obj-sw-dist-y),\
 		$(MAKE) $(patsubst %.sw.dist,%.os.dist,$(obj));)
 	@rm -rf software/arm-linux software/arm-uboot \
@@ -170,7 +167,7 @@ dt_distclean:
 		OS=$(patsubst %.os.dist,%,$@) linux_distclean
 
 #==========================================
-# Compilation of XEN 
+# Compilation of XEN
 #==========================================
 xen: uboot FORCE
 	@echo "Compiling ARM XEN..."
@@ -254,13 +251,13 @@ pmufw_distclean:
 uboot: dt FORCE
 	@echo "Compiling U-Boot..."
 	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) \
-		DTB_LOC=$(FPGA_TARGET) uboot
+		DTB_LOC=$(FPGA_TARGET) $@
 
 uboot_clean: dt_clean
-	$(MAKE) -C ./software uboot_clean
+	$(MAKE) -C ./software $@
 
 uboot_distclean: dt_distclean
-	$(MAKE) -C ./software uboot_distclean
+	$(MAKE) -C ./software $@
 
 #==============================================
 # OpenBMC Compilation
@@ -268,7 +265,13 @@ uboot_distclean: dt_distclean
 openbmc: FORCE
 	@mkdir -p $(INSTALL_LOC)
 	$(MAKE) -C ./software OBMC_LOC=$(OBMC_LOC) \
-		INSTALL_LOC=$(INSTALL_LOC) openbmc
+		INSTALL_LOC=$(INSTALL_LOC) $@
+
+openbmc_clean:
+	$(MAKE) -C ./software $@
+
+openbmc_distclean:
+	$(MAKE) -C ./software $@
 
 #==============================================
 # File system
