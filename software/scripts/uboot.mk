@@ -5,5 +5,5 @@ UBOOT_CROSS_COMPILE_FLAGS := ARCH=arm \
 UBOOT_TARGET := u-boot.elf
 
 # TODO: Change to your own U-Boot configuration file name
-uboot-config := xilinx_zynqmp_zcu102_revB_defconfig
+uboot-config := xilinx_zynqmp_virt_defconfig
 uboot-config-file := $(UBOOT_SRC)/configs/$(uboot-config)
