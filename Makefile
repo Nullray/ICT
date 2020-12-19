@@ -125,7 +125,9 @@ fpga_clean:
 #==========================================
 ipxe: FORCE
 	$(MAKE) -C ./bootstrap \
-		COMPILER_PATH=$(LINUX_GCC_PATH) $@ 
+		COMPILER_PATH=$(LINUX_GCC_PATH) \
+		TARGET_IQN=$(IQN) \
+		INSTALL_LOC=$(shell pwd)/ready_for_download $@
 
 ipxe_clean:
 	$(MAKE) -C ./bootstrap $@

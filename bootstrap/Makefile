@@ -162,11 +162,15 @@ boot_bin_distclean:
 # iPXE cross generation 
 #==========================================
 IPXE_TARGET := bin-arm64-efi
+IPXE_TARGET_LOC := $(abspath $(BOOT_STRAP_LOC)/ipxe/src/$(IPXE_TARGET))
 ipxe: .ipxe_pre FORCE
+	@bash scripts/ipxe_scr_gen.sh $(TARGET_IQN)
 	$(EXPORT_CC_PATH) && \
 		$(MAKE) -C ipxe/src \
 		CROSS_COMPILE=aarch64-linux-gnu- \
+		EMBED=$(IPXE_TARGET_LOC)/ipxe_script \
 		$(IPXE_TARGET)/snp.efi -j 10
+	@cp $(IPXE_TARGET_LOC)/snp.efi $(INSTALL_LOC)
 
 .ipxe_pre:
 	$(EXPORT_CC_PATH) && \
@@ -177,10 +181,10 @@ ipxe: .ipxe_pre FORCE
 	@touch $@
 
 ipxe_clean:
-		$(MAKE) -C ipxe/src $(IPXE_TARGET) clean 
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) clean
 
 ipxe_distclean:
-		$(MAKE) -C ipxe/src $(IPXE_TARGET) veryclean 
-		$(MAKE) -C ipxe/src bin veryclean 
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) veryclean
+		$(MAKE) -C ipxe/src bin veryclean
 		@rm -f .ipxe_pre
 
