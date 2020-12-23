@@ -37,7 +37,7 @@ UBOOT_APP := $(UBOOT_LOC)/examples/standalone/zynqmp_daemon.bin
 
 UBOOT_MKIMG := $(UBOOT_LOC)/tools/mkimage
 UBOOT_SCR_FLAGS := -A arm -O linux -T script \
-	-C none -a 0 -e 0 -n 'RISC-V boot' \
+	-C none -a 0 -e 0 -n 'Custom BOOT config' \
 
 # BL33: Linux kernel image
 KERN_SRC := $(SW_LOC)/linux
