@@ -11,4 +11,5 @@ dt/
 .fsbl_gen
 .dt_gen
 .Xil
+.ipxe_pre
 

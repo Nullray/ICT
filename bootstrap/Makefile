@@ -42,7 +42,7 @@ DT_HSI_FLAGS := $(HSI_FLAGS) -source $(DT_GEN_TCL) \
 	-tclargs $(HDF_FILE) $(DT_LOC) $(DT_GEN)
 
 DTS := $(DT_LOC)/system-top.dts
-DTB := $(DT_LOC)/system.dtb
+DTB := $(DT_LOC)/zynqmp.dtb
 
 # BOOT.bin
 BOOT_BIN_LOC := $(BOOT_STRAP_LOC)/boot_bin
@@ -55,10 +55,10 @@ BOOT_GEN_FLAGS := -arch zynqmp -w on \
 
 ifneq ($(O),)
 BOOT_BIN := $(O)/$(OS)/BOOT.bin
-KERN_DTB := $(O)/system.dtb
+KERN_DTB := $(O)/zynqmp.dtb
 endif
 BOOT_BIN ?= $(BOOT_BIN_LOC)/BOOT.bin
-KERN_DTB ?= $(DT_LOC)/system.dtb
+KERN_DTB ?= $(DT_LOC)/zynqmp.dtb
 
 BOOT_GEN_FLAGS += -o $(BOOT_BIN)
 
@@ -157,4 +157,34 @@ $(BIF_FILE): FORCE
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)
+
+#==========================================
+# iPXE cross generation 
+#==========================================
+IPXE_TARGET := bin-arm64-efi
+IPXE_TARGET_LOC := $(abspath $(BOOT_STRAP_LOC)/ipxe/src/$(IPXE_TARGET))
+ipxe: .ipxe_pre FORCE
+	@bash scripts/ipxe_scr_gen.sh $(TARGET_IQN)
+	$(EXPORT_CC_PATH) && \
+		$(MAKE) -C ipxe/src \
+		CROSS_COMPILE=aarch64-linux-gnu- \
+		EMBED=$(IPXE_TARGET_LOC)/ipxe_script \
+		$(IPXE_TARGET)/snp.efi -j 10
+	@cp $(IPXE_TARGET_LOC)/snp.efi $(INSTALL_LOC)
+
+.ipxe_pre:
+	$(EXPORT_CC_PATH) && \
+		$(MAKE) -C ipxe/src \
+		CROSS_COMPILE=aarch64-linux-gnu- \
+		$(IPXE_TARGET)/snp.efi -j 10
+	@cp src/ipxe/* ipxe/src/config/local
+	@touch $@
+
+ipxe_clean:
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) clean
+
+ipxe_distclean:
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) veryclean
+		$(MAKE) -C ipxe/src bin veryclean
+		@rm -f .ipxe_pre
 

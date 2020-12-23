@@ -1,5 +1,6 @@
 
 &gem3 {
+	local-mac-address = [00 0a 35 01 00 05];
 	phy-handle = <&phy>;
 	phy: eth0-phy@5 {
 		reg = <5>;

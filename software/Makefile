@@ -35,6 +35,10 @@ UBOOT_CROSS_COMPILE_FLAGS += KBUILD_OUTPUT=$(UBOOT_LOC)
 
 UBOOT_APP := $(UBOOT_LOC)/examples/standalone/zynqmp_daemon.bin
 
+UBOOT_MKIMG := $(UBOOT_LOC)/tools/mkimage
+UBOOT_SCR_FLAGS := -A arm -O linux -T script \
+	-C none -a 0 -e 0 -n 'Custom BOOT config' \
+
 # BL33: Linux kernel image
 KERN_SRC := $(SW_LOC)/linux
 KERN_LOC := $(SW_LOC)/arm-linux
@@ -122,6 +126,11 @@ uboot: $(UBOOT_LOC)/.config FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
 		$(UBOOT_CROSS_COMPILE_FLAGS) $(UBOOT_TARGET) -j 10
 	@cp $(UBOOT_APP) $(UBOOT_LOC)/../../ready_for_download/$(DTB_LOC)/
+ifneq ($(wildcard $(SW_LOC)/../fpga/design/$(FPGA_PRJ)/boot/boot.script),)
+	$(UBOOT_MKIMG) $(UBOOT_SCR_FLAGS) \
+		-d $(abspath $(SW_LOC)/../fpga/design/$(FPGA_PRJ)/boot/boot.script) \
+		$(UBOOT_LOC)/../../ready_for_download/$(DTB_LOC)/boot.scr.uimg
+endif
 
 $(UBOOT_LOC)/.config: $(uboot-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
@@ -142,6 +151,14 @@ linux: $(KERN_LOC)/$(OS)/.config FORCE
 	@mkdir -p $(KERN_INSTALL_LOC)
 	@cp $(KERN_IMAGE_GEN) $(KERN_IMAGE)
 
+linux_install: FORCE
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
+		$(KERN_CROSS_COMPILE_FLAGS) \
+		INSTALL_PATH=/mnt/$(OS)/boot install
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
+		$(KERN_CROSS_COMPILE_FLAGS) \
+		INSTALL_MOD_PATH=/mnt/$(OS)/root/usr modules_install
+
 $(KERN_LOC)/%/.config: $($(OS)-kern-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
 		$(KERN_CROSS_COMPILE_FLAGS) $($(OS)-kern-config) olddefconfig
@@ -161,6 +178,8 @@ openbmc: FORCE
 	@cp $(OBMC_IMG) $(INSTALL_LOC)/obmc.cpio.gz
 
 openbmc_clean:
-	@rm -rf arm-openbmc $(INSTALL_LOC)/obmc.cpio.gz
+	@rm -f $(INSTALL_LOC)/obmc.cpio.gz
 
+openbmc_distclean:
+	@rm -rf arm-openbmc
 

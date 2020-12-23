@@ -1,0 +1,9 @@
+#define NSLOOKUP_CMD
+#define PING_CMD
+#define NTP_CMD
+#define VLAN_CMD
+#define IMAGE_EFI
+#define DOWNLOAD_PROTO_HTTPS
+#define DOWNLOAD_PROTO_FTP
+#define DOWNLOAD_PROTO_NFS
+#define DOWNLOAD_PROTO_FILE

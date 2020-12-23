@@ -1,0 +1,12 @@
+echo "loading fpga bit"
+tftpboot 0x80000 system.bit
+fpga loadb 0 0x80000 $filesize
+
+echo "loading RV_BOOT.bin"
+tftpboot 0x10000000 RV_BOOT.bin
+dcache flush
+
+echo "loading U-Boot Daemon"
+tftpboot 0xc100000 zynqmp_daemon.bin
+go 0xc100000
+
