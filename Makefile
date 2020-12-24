@@ -145,6 +145,10 @@ dt: FORCE
 		FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) \
 		PRJ_DT=$(PRJ_DT) SYS_DT=$(SYS_DT) $@
 
+dt_install: FORCE
+	@cp $(INSTALL_LOC)/zynqmp.dtb \
+		/mnt/phy_os/boot/efi/dtb/xilinx/
+	
 dt_clean:
 	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
 
