@@ -48,7 +48,7 @@ set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_0_txd}]
 set_property PACKAGE_PIN H4 [get_ports {power_en_b_tri_o[1]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {power_en_b_tri_o[1]}]
 
-set_property PACKAGE_PIN AE3 [get_ports {uart_rtl_1_rxd}]
+set_property PACKAGE_PIN AD4 [get_ports {uart_rtl_1_rxd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_1_rxd}]
 
 set_property PACKAGE_PIN AE4 [get_ports {uart_rtl_1_txd}]
@@ -59,20 +59,20 @@ set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_1_txd}]
 set_property PACKAGE_PIN H3 [get_ports {power_en_b_tri_o[2]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {power_en_b_tri_o[2]}]
 
-set_property PACKAGE_PIN AE1 [get_ports {uart_rtl_2_rxd}]
+set_property PACKAGE_PIN AE3 [get_ports {uart_rtl_2_rxd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_2_rxd}]
 
-set_property PACKAGE_PIN AE2 [get_ports {uart_rtl_2_txd}]
+set_property PACKAGE_PIN AD3 [get_ports {uart_rtl_2_txd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_2_txd}]
 
 #J9
 set_property PACKAGE_PIN H1 [get_ports {power_en_b_tri_o[3]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {power_en_b_tri_o[3]}]
 
-set_property PACKAGE_PIN AD1 [get_ports {uart_rtl_3_rxd}]
+set_property PACKAGE_PIN AD2 [get_ports {uart_rtl_3_rxd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_3_rxd}]
 
-set_property PACKAGE_PIN AD2 [get_ports {uart_rtl_3_txd}]
+set_property PACKAGE_PIN AE2 [get_ports {uart_rtl_3_txd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_3_txd}]
 
 
@@ -80,10 +80,10 @@ set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_3_txd}]
 set_property PACKAGE_PIN G3 [get_ports {power_en_b_tri_o[4]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {power_en_b_tri_o[4]}]
 
-set_property PACKAGE_PIN AC1 [get_ports {uart_rtl_4_rxd}]
+set_property PACKAGE_PIN AE1 [get_ports {uart_rtl_4_rxd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_4_rxd}]
 
-set_property PACKAGE_PIN AD3 [get_ports {uart_rtl_4_txd}]
+set_property PACKAGE_PIN AD1 [get_ports {uart_rtl_4_txd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_4_txd}]
 
 
@@ -91,10 +91,10 @@ set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_4_txd}]
 set_property PACKAGE_PIN G1 [get_ports {power_en_b_tri_o[5]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {power_en_b_tri_o[5]}]
 
-set_property PACKAGE_PIN AB1 [get_ports {uart_rtl_5_rxd}]
+set_property PACKAGE_PIN AA7 [get_ports {uart_rtl_5_rxd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_5_rxd}]
 
-set_property PACKAGE_PIN AD4 [get_ports {uart_rtl_5_txd}]
+set_property PACKAGE_PIN AC1 [get_ports {uart_rtl_5_txd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_5_txd}]
 
 
@@ -102,10 +102,10 @@ set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_5_txd}]
 set_property PACKAGE_PIN F2 [get_ports {power_en_b_tri_o[6]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {power_en_b_tri_o[6]}]
 
-set_property PACKAGE_PIN AA5 [get_ports {uart_rtl_6_rxd}]
+set_property PACKAGE_PIN AB5 [get_ports {uart_rtl_6_rxd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_6_rxd}]
 
-set_property PACKAGE_PIN AB5 [get_ports {uart_rtl_6_txd}]
+set_property PACKAGE_PIN AB1 [get_ports {uart_rtl_6_txd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_6_txd}]
 
 
@@ -113,7 +113,7 @@ set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_6_txd}]
 set_property PACKAGE_PIN F3 [get_ports {power_en_b_tri_o[7]}]
 set_property IOSTANDARD LVCMOS18 [get_ports {power_en_b_tri_o[7]}]
 
-set_property PACKAGE_PIN AA7 [get_ports {uart_rtl_7_rxd}]
+set_property PACKAGE_PIN AA5 [get_ports {uart_rtl_7_rxd}]
 set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_7_rxd}]
 
 set_property PACKAGE_PIN Y5 [get_ports {uart_rtl_7_txd}]
@@ -210,6 +210,7 @@ set_property IOSTANDARD LVCMOS18 [get_ports {uart_rtl_15_txd}]
 
 
 #############IIC####################
+#U22  U24   U26
 set_property IOSTANDARD LVCMOS33 [get_ports main_iic_scl_io]
 set_property SLEW SLOW [get_ports main_iic_scl_io]
 set_property DRIVE 16 [get_ports main_iic_scl_io]
@@ -223,6 +224,7 @@ set_property PULLUP true [get_ports main_iic_sda_io]
 set_property PACKAGE_PIN D12 [get_ports main_iic_sda_io]
 
 
+#U23
 set_property IOSTANDARD LVCMOS33 [get_ports local_iic_scl_io]
 set_property SLEW SLOW [get_ports local_iic_scl_io]
 set_property DRIVE 16 [get_ports local_iic_scl_io]
@@ -235,9 +237,16 @@ set_property DRIVE 16 [get_ports local_iic_sda_io]
 set_property PULLUP true [get_ports local_iic_sda_io]
 set_property PACKAGE_PIN A12 [get_ports local_iic_sda_io]
 
-##############SWITCH RESET##################
-set_property PACKAGE_PIN G12 [get_ports {switch_reset_n[0]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {switch_reset_n[0]}]
+
+##############BCM SWITCH RESET##################
+set_property PACKAGE_PIN G12 [get_ports {bcm_switch_reset_n[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {bcm_switch_reset_n[0]}]
+
+
+##############IIC SWITCH RESET##################
+set_property PACKAGE_PIN B12 [get_ports {iic_switch_reset_n[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {iic_switch_reset_n[0]}]
+
 
 
 

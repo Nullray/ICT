@@ -28,8 +28,10 @@ PMUFW_GEN_TCL := $(BOOT_STRAP_LOC)/scripts/pmufw.tcl
 PMUFW_HSI_FLAGS := $(HSI_FLAGS) -source $(PMUFW_GEN_TCL) \
 	-tclargs $(HDF_FILE) $(PMUFW_LOC)
 
-PMUFW_BIN_GEN := $(PMUFW_LOC)/executable.elf
-PMUFW_BIN := $(PMUFW_LOC)/pmufw.elf
+PMUFW_ELF_GEN := $(PMUFW_LOC)/executable.elf
+PMUFW_ELF := $(PMUFW_LOC)/pmufw.elf
+PMUFW_BIN := $(PMUFW_LOC)/pmu-zcu102-zynqmp.bin
+PMUFW_OBJCOPY_FLAGS := -S -O binary --set-section-flags .bss=alloc,load,contents
 
 # Device Tree Source and Blob (DTS and DTB)
 DT_GEN := $(BOOT_STRAP_LOC)/dt-gen
@@ -40,7 +42,7 @@ DT_HSI_FLAGS := $(HSI_FLAGS) -source $(DT_GEN_TCL) \
 	-tclargs $(HDF_FILE) $(DT_LOC) $(DT_GEN)
 
 DTS := $(DT_LOC)/system-top.dts
-DTB := $(DT_LOC)/system.dtb
+DTB := $(DT_LOC)/zynqmp.dtb
 
 # BOOT.bin
 BOOT_BIN_LOC := $(BOOT_STRAP_LOC)/boot_bin
@@ -53,10 +55,10 @@ BOOT_GEN_FLAGS := -arch zynqmp -w on \
 
 ifneq ($(O),)
 BOOT_BIN := $(O)/$(OS)/BOOT.bin
-KERN_DTB := $(O)/system.dtb
+KERN_DTB := $(O)/zynqmp.dtb
 endif
 BOOT_BIN ?= $(BOOT_BIN_LOC)/BOOT.bin
-KERN_DTB ?= $(DT_LOC)/system.dtb
+KERN_DTB ?= $(DT_LOC)/zynqmp.dtb
 
 BOOT_GEN_FLAGS += -o $(BOOT_BIN)
 
@@ -88,11 +90,16 @@ fsbl_distclean:
 #==========================================
 # PMU Firware (PMUFW) compilation 
 #==========================================
-pmufw: $(PMUFW_BIN)
+pmufw: $(PMUFW_ELF)
 
-$(PMUFW_BIN): .pmufw_gen FORCE
+pmufw_bin: $(PMUFW_BIN)
+
+$(PMUFW_BIN): $(PMUFW_ELF)
+	$(EXPORT_CC_PATH) && mb-objcopy $(PMUFW_OBJCOPY_FLAGS) $< $@
+
+$(PMUFW_ELF): .pmufw_gen FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(PMUFW_LOC)
-	@cp $(PMUFW_BIN_GEN) $(PMUFW_BIN)
+	@cp $(PMUFW_ELF_GEN) $(PMUFW_ELF)
 
 .pmufw_gen:
 	@$(HSI) $(PMUFW_HSI_FLAGS)
@@ -119,6 +126,9 @@ $(DTB): .dt_gen FORCE
 
 .dt_gen:
 	$(HSI) $(DT_HSI_FLAGS)
+ifneq ($(wildcard $(SYS_DT)),)
+	@cp $(SYS_DT) $(DTS)
+endif
 ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
 	@sed -i '13i #include \"board.dtsi\"' $(DTS)
@@ -147,4 +157,34 @@ $(BIF_FILE): FORCE
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)
+
+#==========================================
+# iPXE cross generation 
+#==========================================
+IPXE_TARGET := bin-arm64-efi
+IPXE_TARGET_LOC := $(abspath $(BOOT_STRAP_LOC)/ipxe/src/$(IPXE_TARGET))
+ipxe: .ipxe_pre FORCE
+	@bash scripts/ipxe_scr_gen.sh $(TARGET_IQN)
+	$(EXPORT_CC_PATH) && \
+		$(MAKE) -C ipxe/src \
+		CROSS_COMPILE=aarch64-linux-gnu- \
+		EMBED=$(IPXE_TARGET_LOC)/ipxe_script \
+		$(IPXE_TARGET)/snp.efi -j 10
+	@cp $(IPXE_TARGET_LOC)/snp.efi $(INSTALL_LOC)
+
+.ipxe_pre:
+	$(EXPORT_CC_PATH) && \
+		$(MAKE) -C ipxe/src \
+		CROSS_COMPILE=aarch64-linux-gnu- \
+		$(IPXE_TARGET)/snp.efi -j 10
+	@cp src/ipxe/* ipxe/src/config/local
+	@touch $@
+
+ipxe_clean:
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) clean
+
+ipxe_distclean:
+		$(MAKE) -C ipxe/src $(IPXE_TARGET) veryclean
+		$(MAKE) -C ipxe/src bin veryclean
+		@rm -f .ipxe_pre
 

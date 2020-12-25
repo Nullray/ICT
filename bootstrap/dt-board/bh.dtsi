@@ -1,5 +1,6 @@
 
 &gem3 {
+	local-mac-address = [00 0a 35 01 00 05];
 	phy-handle = <&phy>;
 	phy: eth0-phy@5 {
 		reg = <5>;
@@ -8,3 +9,471 @@
 		ti,fifo-depth = <0x1>;
 	};
 };
+
+&axi_gpio_0 {
+  gpio-line-names = "slot_0_pwr", "slot_1_pwr", "slot_2_pwr", "slot_3_pwr", 
+    "slot_4_pwr", "slot_5_pwr", "slot_6_pwr", "slot_7_pwr", 
+    "slot_8_pwr", "slot_9_pwr", "slot_10_pwr", "slot_11_pwr", 
+    "slot_12_pwr", "slot_13_pwr", "slot_14_pwr", "slot_15_pwr";
+};
+
+&axi_iic_0 {
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+  i2c-mux@70 { /* u23 */
+    compatible = "nxp,pca9548";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    reg = <0x70>;
+
+    i2c@0 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <0>;
+
+			ina226@40 { /* u37 */
+				compatible = "ti,ina226";
+				reg = <0x40>;
+				shunt-resistor = <5000>;
+			};
+			ina226@41 { /* u39 */
+				compatible = "ti,ina226";
+				reg = <0x41>;
+				shunt-resistor = <5000>;
+			};
+			ina226@44 { /* u41 */
+				compatible = "ti,ina226";
+				reg = <0x44>;
+				shunt-resistor = <5000>;
+			};
+			ina226@45 { /* u43 */
+				compatible = "ti,ina226";
+				reg = <0x45>;
+				shunt-resistor = <5000>;
+			};
+    };
+
+    i2c@1 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <1>;
+
+			ina226@40 { /* u38 */
+				compatible = "ti,ina226";
+				reg = <0x40>;
+				shunt-resistor = <5000>;
+			};
+			ina226@41 { /* u40 */
+				compatible = "ti,ina226";
+				reg = <0x41>;
+				shunt-resistor = <5000>;
+			};
+			ina226@44 { /* u42 */
+				compatible = "ti,ina226";
+				reg = <0x44>;
+				shunt-resistor = <5000>;
+			};
+			ina226@45 { /* u44 */
+				compatible = "ti,ina226";
+				reg = <0x45>;
+				shunt-resistor = <5000>;
+			};
+    };
+
+    i2c@2 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <2>;
+
+			ina226@40 { /* u45 */
+				compatible = "ti,ina226";
+				reg = <0x40>;
+				shunt-resistor = <5000>;
+			};
+			ina226@41 { /* u47 */
+				compatible = "ti,ina226";
+				reg = <0x41>;
+				shunt-resistor = <5000>;
+			};
+			ina226@44 { /* u49 */
+				compatible = "ti,ina226";
+				reg = <0x44>;
+				shunt-resistor = <5000>;
+			};
+			ina226@45 { /* u51 */
+				compatible = "ti,ina226";
+				reg = <0x45>;
+				shunt-resistor = <5000>;
+			};
+    };
+
+    i2c@3 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <3>;
+
+			ina226@40 { /* u46 */
+				compatible = "ti,ina226";
+				reg = <0x40>;
+				shunt-resistor = <5000>;
+			};
+			ina226@41 { /* u48 */
+				compatible = "ti,ina226";
+				reg = <0x41>;
+				shunt-resistor = <5000>;
+			};
+			ina226@44 { /* u50 */
+				compatible = "ti,ina226";
+				reg = <0x44>;
+				shunt-resistor = <5000>;
+			};
+			ina226@45 { /* u52 */
+				compatible = "ti,ina226";
+				reg = <0x45>;
+				shunt-resistor = <5000>;
+			};
+    };
+
+    i2c@4 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <4>;
+      
+      tmp275@48 { /* u120 */
+        compatible = "ti,tmp275";
+        reg = <0x48>;
+      };
+      tmp275@49 { /* u121 */
+        compatible = "ti,tmp275";
+        reg = <0x49>;
+      };
+      tmp275@4a { /* u122 */
+        compatible = "ti,tmp275";
+        reg = <0x4a>;
+      };
+      tmp275@4b { /* u123 */
+        compatible = "ti,tmp275";
+        reg = <0x4b>;
+      };
+      tca6416_u182: gpio@20 {
+        compatible = "ti,tca6416";
+        reg = <0x20>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "slot_0_resetn", "slot_1_resetn", "slot_2_resetn", "slot_3_resetn", 
+          "slot_4_resetn", "slot_5_resetn", "slot_6_resetn", "slot_7_resetn", 
+          "slot_8_resetn", "slot_9_resetn", "slot_10_resetn", "slot_11_resetn", 
+          "slot_12_resetn", "slot_13_resetn", "slot_14_resetn", "slot_15_resetn";
+      };
+    };
+
+    i2c@5 {
+			#address-cells = <1>;
+			#size-cells = <0>;
+			reg = <5>;
+
+			ina226@40 { /* u154 */
+				compatible = "ti,ina226";
+				reg = <0x40>;
+				shunt-resistor = <5000>;
+			};
+			ina226@42 { /* u168 */
+				compatible = "ti,ina226";
+				reg = <0x42>;
+				shunt-resistor = <5000>;
+			};
+			ina226@44 { /* u124 */
+				compatible = "ti,ina226";
+				reg = <0x44>;
+				shunt-resistor = <5000>;
+			};
+			ina226@45 { /* u126 */
+				compatible = "ti,ina226";
+				reg = <0x45>;
+				shunt-resistor = <5000>;
+			};
+			ina226@46 { /* u166 */
+				compatible = "ti,ina226";
+				reg = <0x46>;
+				shunt-resistor = <5000>;
+			};
+			ina226@48 { /* u128 */
+				compatible = "ti,ina226";
+				reg = <0x48>;
+				shunt-resistor = <5000>;
+			};
+			ina226@49 { /* u130 */
+				compatible = "ti,ina226";
+				reg = <0x49>;
+				shunt-resistor = <5000>;
+			};
+			ina226@4a { /* u181 */
+				compatible = "ti,ina226";
+				reg = <0x4a>;
+				shunt-resistor = <5000>;
+			};
+			ina226@4c { /* u127 */
+				compatible = "ti,ina226";
+				reg = <0x4c>;
+				shunt-resistor = <5000>;
+			};
+			ina226@4d { /* u129 */
+				compatible = "ti,ina226";
+				reg = <0x4d>;
+				shunt-resistor = <5000>;
+			};
+			ina226@4f { /* u179 */
+				compatible = "ti,ina226";
+				reg = <0x4f>;
+				shunt-resistor = <5000>;
+			};
+    };
+        
+    i2c@6 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <6>;
+
+      tca6416_u152: gpio@20 {
+        compatible = "ti,tca6416";
+        reg = <0x20>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "slot_0_alert", "slot_1_alert", "slot_2_alert", "slot_3_alert", 
+          "slot_4_alert", "slot_5_alert", "slot_6_alert", "slot_7_alert", 
+          "slot_8_alert", "slot_9_alert", "slot_10_alert", "slot_11_alert", 
+          "slot_12_alert", "slot_13_alert", "slot_14_alert", "slot_15_alert";
+      };
+
+      tca6416_u151: gpio@21 {
+        compatible = "ti,tca6416";
+        reg = <0x21>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "slot_0_prsnt", "slot_1_prsnt", "slot_2_prsnt", "slot_3_prsnt", 
+          "slot_4_prsnt", "slot_5_prsnt", "slot_6_prsnt", "slot_7_prsnt", 
+          "slot_8_prsnt", "slot_9_prsnt", "slot_10_prsnt", "slot_11_prsnt", 
+          "slot_12_prsnt", "slot_13_prsnt", "slot_14_prsnt", "slot_15_prsnt";
+      };
+    };
+
+    i2c@7 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <7>;
+
+      tca6416_u170: gpio@20 {
+        compatible = "ti,tca6416";
+        reg = <0x20>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "fan_alarm_0", "fan_alarm_1", "", "", 
+          "", "", "", "", 
+          "jtag_s_0", "jtag_s_1", "jtag_s_2", "jtag_oe_b_0", 
+          "jtag_oe_b_1", "", "", "";
+      };
+
+      tca6416_u165: gpio@21 {
+        compatible = "ti,tca6416";
+        reg = <0x21>;
+        gpio-controller; /* IRQ not connected */
+        #gpio-cells = <2>;
+        gpio-line-names = "nf_uart_jtag_0_sel", "nf_uart_jtag_1_sel", "nf_uart_jtag_2_sel", "nf_uart_jtag_3_sel", 
+          "nf_uart_jtag_4_sel", "nf_uart_jtag_5_sel", "nf_uart_jtag_6_sel", "nf_uart_jtag_7_sel", 
+          "nf_uart_jtag_8_sel", "nf_uart_jtag_9_sel", "nf_uart_jtag_10_sel", "nf_uart_jtag_11_sel", 
+          "nf_uart_jtag_12_sel", "nf_uart_jtag_13_sel", "nf_uart_jtag_14_sel", "nf_uart_jtag_15_sel";
+      };
+    };
+  };
+};
+
+&axi_iic_1 {
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+  i2c-mux@72 { /* u24 */
+    compatible = "nxp,pca9548";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    reg = <0x72>;
+
+    i2c@0 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <0>;
+      nf_8_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@1 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <1>;
+      nf_9_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@2 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <2>;
+      nf_10_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@3 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <3>;
+      nf_11_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@4 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <4>;
+      nf_12_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@5 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <5>;
+      nf_13_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@6 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <6>;
+      nf_14_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@7 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <7>;
+      nf_15_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+  };
+
+  i2c-mux@73 { /* u26 */
+    compatible = "nxp,pca9546";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    reg = <0x73>;
+
+    i2c@0 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <0>;
+
+      chassis_power_supply_0: ac-dc@58 {
+        reg = <0x58>;
+      };
+
+      chassis_power_supply_1: ac-dc@59 {
+        reg = <0x59>;
+      };
+
+      chassis_power_supply_2: ac-dc@5a {
+        reg = <0x5a>;
+      };
+    };
+  };
+
+  i2c-mux@74 { /* u22 */
+    compatible = "nxp,pca9548";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    reg = <0x74>;
+
+    i2c@0 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <0>;
+      nf_0_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@1 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <1>;
+      nf_1_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@2 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <2>;
+      nf_2_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@3 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <3>;
+      nf_3_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@4 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <4>;
+      nf_4_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@5 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <5>;
+      nf_5_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@6 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <6>;
+      nf_6_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+
+    i2c@7 {
+      #address-cells = <1>;
+      #size-cells = <0>;
+      reg = <7>;
+      nf_7_temp: tmp401@4c {
+        reg = <0x4c>;
+      };
+    };
+  };
+};
+
+

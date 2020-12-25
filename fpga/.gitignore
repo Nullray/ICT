@@ -4,3 +4,4 @@
 
 vivado_out/
 vivado_prj/
+design/serve/sources/hdl/freedom/freedom.v

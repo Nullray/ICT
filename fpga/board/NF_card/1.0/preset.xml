@@ -151,7 +151,6 @@
 <user_parameter name="CONFIG.PSU__CRL_APB__NAND_REF_CTRL__DIVISOR0" value="15"/> 
 <user_parameter name="CONFIG.PSU__CRL_APB__NAND_REF_CTRL__DIVISOR1" value="1"/> 
 <user_parameter name="CONFIG.PSU__CRL_APB__ADMA_REF_CTRL__DIVISOR0" value="2"/> 
-<user_parameter name="CONFIG.PSU__CRL_APB__PL0_REF_CTRL__SRCSEL" value="IOPLL"/> 
 <user_parameter name="CONFIG.PSU__CRL_APB__GEM_TSU_REF_CTRL__SRCSEL" value="IOPLL"/> 
 <user_parameter name="CONFIG.PSU__CRF_APB__APLL_FRAC_CFG__ENABLED" value="0"/> 
 <user_parameter name="CONFIG.PSU__CRF_APB__VPLL_FRAC_CFG__ENABLED" value="0"/> 

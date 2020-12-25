@@ -27,20 +27,24 @@ FPGA_PRJ := mpsoc
 FPGA_TARGET := $(FPGA_PRJ)_$(FPGA_BD)
 
 PRJ_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/pl.dtsi)
+SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/system-top.dts)
 
 # Optional Trusted OS
 TOS ?= 
 
-# Linux kernel (i.e., Physical machine, Dom0, DomU)
-OS_KERN := phy_os dom0
+# Linux kernel (i.e., Physical machine, Virtual machine, Dom0, DomU)
+OS_KERN := phy_os virt
 
 obj-sw-y := $(foreach obj,$(OS_KERN),$(obj).sw)
 obj-sw-clean-y := $(foreach obj,$(OS_KERN),$(obj).sw.clean)
 obj-sw-dist-y := $(foreach obj,$(OS_KERN),$(obj).sw.dist)
 
 # TODO: Change target file system
-phy_os-fs-obj := aarch64-debian-10.tar.gz
-phy_os-fs-path := rootfs/aarch64/debian/release
+ROOTFS := debian
+ROOTFS_VER := 10
+
+rootfs-obj := aarch64-$(ROOTFS)-$(ROOTFS_VER).tar.gz
+rootfs-path := rootfs/aarch64/$(ROOTFS)/release
 
 # Temporal directory to hold hardware design output files 
 # (i.e., bitstream, hardware definition file (HDF))
@@ -83,13 +87,30 @@ DTC_LOC := /opt/dtc
 FPGA_ACT ?= 
 FPGA_VAL ?= 
 
+#OpenBMC
+OBMC_MACHINE := zcu102-zynqmp
+OBMC_LOC := $(abspath ./software/arm-openbmc/tmp/deploy/images/$(OBMC_MACHINE))
+
+# U-Boot mkimage
+MKIMG_PATH := $(abspath ./software/arm-uboot/tools)
+
 .PHONY: FORCE
 
-sw: $(obj-sw-y)
+sw: FORCE
+	$(MAKE) bootbin
+	$(foreach obj,$(obj-sw-y),\
+		$(MAKE) $(patsubst %.sw,%.os,$(obj));)
+	$(MAKE) rootfs
 
-sw_clean: $(obj-sw-clean-y)
+sw_clean:
+	$(MAKE) bootbin_clean
+	$(foreach obj,$(obj-sw-clean-y),\
+		$(MAKE) $(patsubst %.sw.clean,%.os.clean,$(obj));)
 
-sw_distclean: $(obj-sw-dist-y)
+sw_distclean:
+	$(MAKE) bootbin_distclean
+	$(foreach obj,$(obj-sw-dist-y),\
+		$(MAKE) $(patsubst %.sw.dist,%.os.dist,$(obj));)
 	@rm -rf software/arm-linux software/arm-uboot \
 		software/arm-tee \
 		bootstrap/.Xil
@@ -99,34 +120,20 @@ fpga: $(SYS_HDF) $(BITSTREAM)
 fpga_clean:
 	@rm -f $(SYS_HDF) $(BITSTREAM)
 
-%.sw: FORCE
-ifneq ($(patsubst %.sw,%,$@),domU)
-	$(MAKE) bootbin 
-endif
-ifeq ($(patsubst %.sw,%,$@),dom0)
-	$(MAKE) xen
-endif
-	$(MAKE) $(patsubst %.sw,%.fs,$@)
-	$(MAKE) $(patsubst %.sw,%.os,$@)
-	@echo "All required images of $(patsubst %.sw,%,$@) are generated"
+#==========================================
+# iPXE cross compilation 
+#==========================================
+ipxe: FORCE
+	$(MAKE) -C ./bootstrap \
+		COMPILER_PATH=$(LINUX_GCC_PATH) \
+		TARGET_IQN=$(IQN) \
+		INSTALL_LOC=$(shell pwd)/ready_for_download $@
 
-%.sw.clean:
-ifneq ($(patsubst %.sw.clean,%,$@),domU)
-	$(MAKE) bootbin_clean 
-endif
-ifeq ($(patsubst %.sw.clean,%,$@),dom0)
-	$(MAKE) xen_clean
-endif
-	$(MAKE) $(patsubst %.sw.clean,%.os.clean,$@)
+ipxe_clean:
+	$(MAKE) -C ./bootstrap $@
 
-%.sw.dist:
-ifneq ($(patsubst %.sw.dist,%,$@),domU)
-	$(MAKE) bootbin_distclean 
-endif
-ifeq ($(patsubst %.sw.dist,%,$@),dom0)
-	$(MAKE) xen_distclean
-endif
-	$(MAKE) $(patsubst %.sw.dist,%.os.dist,$@)
+ipxe_distclean:
+	$(MAKE) -C ./bootstrap $@
 
 #==========================================
 # Generation of Device Tree Blob
@@ -136,8 +143,12 @@ dt: FORCE
 	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 		FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) \
-		PRJ_DT=$(PRJ_DT) $@
+		PRJ_DT=$(PRJ_DT) SYS_DT=$(SYS_DT) $@
 
+dt_install: FORCE
+	@cp $(INSTALL_LOC)/zynqmp.dtb \
+		/mnt/phy_os/boot/efi/dtb/xilinx/
+	
 dt_clean:
 	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
 
@@ -152,6 +163,10 @@ dt_distclean:
 	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os,%,$@) linux
 
+%.os.install: FORCE
+	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
+		OS=$(patsubst %.os.install,%,$@) linux_install
+
 %.os.clean:
 	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os.clean,%,$@) linux_clean
@@ -161,7 +176,7 @@ dt_distclean:
 		OS=$(patsubst %.os.dist,%,$@) linux_distclean
 
 #==========================================
-# Compilation of XEN 
+# Compilation of XEN
 #==========================================
 xen: uboot FORCE
 	@echo "Compiling ARM XEN..."
@@ -228,6 +243,11 @@ pmufw: FORCE
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) $@ 
 
+pmufw_bin: FORCE
+	@echo "Generating PMU Firmware Binary..."
+	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) $@ 
+	@cp ./bootstrap/pmufw/*.bin $(OBMC_LOC)
+
 pmufw_clean:
 	$(MAKE) -C ./bootstrap $@ 
 
@@ -240,13 +260,27 @@ pmufw_distclean:
 uboot: dt FORCE
 	@echo "Compiling U-Boot..."
 	$(MAKE) -C ./software $(UBOOT_COMPILE_FLAGS) \
-		DTB_LOC=$(FPGA_TARGET) uboot
+		FPGA_PRJ=$(FPGA_PRJ) DTB_LOC=$(FPGA_TARGET) $@
 
 uboot_clean: dt_clean
-	$(MAKE) -C ./software uboot_clean
+	$(MAKE) -C ./software $@
 
 uboot_distclean: dt_distclean
-	$(MAKE) -C ./software uboot_distclean
+	$(MAKE) -C ./software $@
+
+#==============================================
+# OpenBMC Compilation
+#==============================================
+openbmc: FORCE
+	@mkdir -p $(INSTALL_LOC)
+	$(MAKE) -C ./software OBMC_LOC=$(OBMC_LOC) \
+		INSTALL_LOC=$(INSTALL_LOC) $@
+
+openbmc_clean:
+	$(MAKE) -C ./software $@
+
+openbmc_distclean:
+	$(MAKE) -C ./software $@
 
 #==============================================
 # File system
@@ -255,11 +289,11 @@ FTP_ROOT := 172.16.128.201
 FTP_USER := ftpuser
 FTP_PASSWD := 123456
 
-%.fs: FORCE
-	@mkdir -p $(INSTALL_LOC)/$(patsubst %.fs,%,$@)
-	@cd $(INSTALL_LOC)/$(patsubst %.fs,%,$@) && \
-		rm -f $($(patsubst %.fs,%,$@)-fs-obj) && \
-		wget ftp://$(FTP_ROOT)/$($(patsubst %.fs,%,$@)-fs-path)/$($(patsubst %.fs,%,$@)-fs-obj) \
+rootfs: FORCE
+	@mkdir -p $(INSTALL_LOC)/$@
+	@cd $(INSTALL_LOC)/$@ && \
+		rm -f $(rootfs-obj) && \
+		wget ftp://$(FTP_ROOT)/$(rootfs-path)/$(rootfs-obj) \
 		--ftp-user=$(FTP_USER) --ftp-password=$(FTP_PASSWD)
 
 #==============================================
@@ -271,6 +305,29 @@ $(SYS_HDF): FORCE
 $(BITSTREAM): FORCE
 	$(MAKE) FPGA_ACT=run_syn FPGA_BD=$(FPGA_BD) FPGA_PRJ=$(FPGA_PRJ) vivado_prj 
 	$(MAKE) FPGA_ACT=bit_gen FPGA_BD=$(FPGA_BD) FPGA_PRJ=$(FPGA_PRJ) vivado_prj
+
+#==========================================
+# Specific FPGA project design
+#==========================================
+.PHONY: prj_hw prj_sw
+
+prj_sw: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
+		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+
+prj_sw_clean: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
+		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+
+prj_sw_distclean: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
+		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+
+prj_hw: FORCE
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) $@
+
+prj_hw_clean:
+	$(MAKE) -C fpga/design/$(FPGA_PRJ) $@
 
 #==========================================
 # FPGA Design Flow

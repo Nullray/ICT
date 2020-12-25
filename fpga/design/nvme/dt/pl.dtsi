@@ -32,8 +32,12 @@
 		  #size-cells = <2>;
 		  ranges = <0x02000000 0x0 0xA0000000 0x0 0xA0000000 0x0 0x200000>;
 		  #interrupt-cells = <1>;
-		  interrupts = <0 89 4>,  /*Root port 0*/
-                 <0 90 4>;  /*Root port 1*/
+		  interrupts = <0 89 4>,  /*Root port 0 INTx*/
+                 <0 90 4>,  /*Root port 0 MSI0*/
+                 <0 91 4>,  /*Root port 0 MSI1*/
+                 <0 92 4>,  /*Root port 1 INTx*/
+                 <0 93 4>,  /*Root port 1 MSI0*/
+                 <0 94 4>;  /*Root port 1 MSI1*/
       interrupt-parent = <&gic>;
 
 		  pcie_rp0: pcie@0,0 {

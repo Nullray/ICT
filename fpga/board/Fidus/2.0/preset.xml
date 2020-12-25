@@ -48,14 +48,14 @@
 <user_parameter name="CONFIG.PSU__DDRC__MEMORY_TYPE" value="DDR 4"/>
 <user_parameter name="CONFIG.PSU__DDRC__COMPONENTS" value="UDIMM"/>
 <user_parameter name="CONFIG.PSU__DDRC__SPEED_BIN" value="DDR4_2133P"/>
-<user_parameter name="CONFIG.PSU__CRF_APB__DDR_CTRL__FREQMHZ" value="800"/>
+<user_parameter name="CONFIG.PSU__CRF_APB__DDR_CTRL__FREQMHZ" value="1067"/>
 <user_parameter name="CONFIG.PSU__DDRC__DEVICE_CAPACITY" value="8192 MBits"/>
 <user_parameter name="CONFIG.PSU__DDRC__RANK_ADDR_COUNT" value="1"/>
 <user_parameter name="CONFIG.PSU__DDRC__BG_ADDR_COUNT" value="2"/>
 <user_parameter name="CONFIG.PSU__DDRC__BANK_ADDR_COUNT" value="2"/>
 <user_parameter name="CONFIG.PSU__DDRC__ROW_ADDR_COUNT" value="16"/>
 <user_parameter name="CONFIG.PSU__DDRC__COL_ADDR_COUNT" value="10"/>
-<user_parameter name="CONFIG.PSU__DDRC__CL" value="12"/>
+<user_parameter name="CONFIG.PSU__DDRC__CL" value="15"/>
 <user_parameter name="CONFIG.PSU__DDRC__CWL" value="11"/>
 <user_parameter name="CONFIG.PSU__DDRC__T_RCD" value="15"/>
 <user_parameter name="CONFIG.PSU__DDRC__T_RP" value="15"/>
