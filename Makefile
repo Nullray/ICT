@@ -127,6 +127,7 @@ ipxe: FORCE
 	$(MAKE) -C ./bootstrap \
 		COMPILER_PATH=$(LINUX_GCC_PATH) \
 		TARGET_IQN=$(IQN) \
+		TFTP_SERVER=$(TFTP) \
 		INSTALL_LOC=$(shell pwd)/ready_for_download $@
 
 ipxe_clean:

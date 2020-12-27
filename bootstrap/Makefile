@@ -164,7 +164,11 @@ boot_bin_distclean:
 IPXE_TARGET := bin-arm64-efi
 IPXE_TARGET_LOC := $(abspath $(BOOT_STRAP_LOC)/ipxe/src/$(IPXE_TARGET))
 ipxe: .ipxe_pre FORCE
-	@bash scripts/ipxe_scr_gen.sh $(TARGET_IQN)
+ifneq ($(TARGET_IQN),)
+	@bash scripts/ipxe_iqn_gen.sh $(TARGET_IQN)
+else
+	@bash scripts/ipxe_ironic_gen.sh $(TFTP_SERVER) 
+endif
 	$(EXPORT_CC_PATH) && \
 		$(MAKE) -C ipxe/src \
 		CROSS_COMPILE=aarch64-linux-gnu- \
