@@ -132,7 +132,6 @@ proc create_root_design { parentCell } {
 				CONFIG.PSU__HIGH_ADDRESS__ENABLE {1} \
 				CONFIG.PSU__EXPAND__LOWER_LPS_SLAVES {1} ] $zynq_mpsoc
 
-if {${::board} == "fidus"} {
   # Create instance: AXI PCIe Root Complex
   set xdma_rp_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_rp_0 ]
   set_property -dict [ list CONFIG.mode_selection {Advanced} \
@@ -140,7 +139,6 @@ if {${::board} == "fidus"} {
         CONFIG.functional_mode {AXI Bridge} \
         CONFIG.dma_reset_source_sel {Phy_Ready} \
 				CONFIG.en_gt_selection {true} \
-				CONFIG.select_quad {GTY_Quad_128} \
 				CONFIG.pl_link_cap_max_link_width {X4} \
 				CONFIG.pl_link_cap_max_link_speed {8.0_GT/s} \
 				CONFIG.axi_addr_width {40} \
@@ -160,7 +158,6 @@ if {${::board} == "fidus"} {
         CONFIG.functional_mode {AXI Bridge} \
         CONFIG.dma_reset_source_sel {Phy_Ready} \
 				CONFIG.en_gt_selection {true} \
-				CONFIG.select_quad {GTY_Quad_129} \
 				CONFIG.pl_link_cap_max_link_width {X4} \
 				CONFIG.pl_link_cap_max_link_speed {8.0_GT/s} \
 				CONFIG.axi_addr_width {40} \
@@ -172,49 +169,18 @@ if {${::board} == "fidus"} {
         CONFIG.msi_rx_pin_en {true} \
 				CONFIG.BASEADDR {0x00000000} \
 				CONFIG.HIGHADDR {0x007FFFFF} ] $xdma_rp_1
+
+if {${::board} == "fidus"} {
+  set_property -dict [ list CONFIG.select_quad {GTY_Quad_128} ] $xdma_rp_0
+
+  set_property -dict [ list CONFIG.select_quad {GTY_Quad_129} ] $xdma_rp_1
 
 } else {
-  # Create instance: AXI PCIe Root Complex
-  set xdma_rp_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_rp_0 ]
-  set_property -dict [ list CONFIG.mode_selection {Advanced} \
-				CONFIG.device_port_type {Root_Port_of_PCI_Express_Root_Complex} \
-        CONFIG.functional_mode {AXI Bridge} \
-        CONFIG.dma_reset_source_sel {Phy_Ready} \
-				CONFIG.en_gt_selection {true} \
-        CONFIG.pcie_blk_locn {X1Y2} \
-				CONFIG.select_quad {GTH_Quad_228} \
-				CONFIG.pl_link_cap_max_link_width {X2} \
-				CONFIG.pl_link_cap_max_link_speed {8.0_GT/s} \
-				CONFIG.axi_addr_width {40} \
-				CONFIG.pf0_class_code_sub {04} \
-				CONFIG.pf0_bar0_enabled {false} \
-				CONFIG.axibar2pciebar_0 {0x00000000A0000000} \
-				CONFIG.c_s_axi_supports_narrow_burst {false} \
-				CONFIG.plltype {QPLL1} \
-        CONFIG.msi_rx_pin_en {true} \
-				CONFIG.BASEADDR {0x00000000} \
-				CONFIG.HIGHADDR {0x007FFFFF} ] $xdma_rp_0
+  set_property -dict [ list CONFIG.pcie_blk_locn {X1Y2} \
+				CONFIG.select_quad {GTH_Quad_228} ] $xdma_rp_0
 
-  # Create instance: AXI PCIe Root Complex
-  set xdma_rp_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_rp_1 ]
-  set_property -dict [ list CONFIG.mode_selection {Advanced} \
-				CONFIG.device_port_type {Root_Port_of_PCI_Express_Root_Complex} \
-        CONFIG.functional_mode {AXI Bridge} \
-        CONFIG.dma_reset_source_sel {Phy_Ready} \
-				CONFIG.en_gt_selection {true} \
-        CONFIG.pcie_blk_locn {X1Y2} \
-				CONFIG.select_quad {GTH_Quad_229} \
-				CONFIG.pl_link_cap_max_link_width {X2} \
-				CONFIG.pl_link_cap_max_link_speed {8.0_GT/s} \
-				CONFIG.axi_addr_width {40} \
-				CONFIG.pf0_class_code_sub {04} \
-				CONFIG.pf0_bar0_enabled {false} \
-				CONFIG.axibar2pciebar_0 {0x00000000A0100000} \
-				CONFIG.c_s_axi_supports_narrow_burst {false} \
-				CONFIG.plltype {QPLL1} \
-        CONFIG.msi_rx_pin_en {true} \
-				CONFIG.BASEADDR {0x00000000} \
-				CONFIG.HIGHADDR {0x007FFFFF} ] $xdma_rp_1
+  set_property -dict [ list CONFIG.pcie_blk_locn {X1Y2} \
+				CONFIG.select_quad {GTH_Quad_229} ] $xdma_rp_1
 }
   # Create instance: Concat
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
