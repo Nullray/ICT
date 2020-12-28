@@ -1,0 +1,8 @@
+
+&gem0 {
+	local-mac-address = [00 0a 35 01 00 03];
+};
+
+&gem1 {
+	local-mac-address = [00 0a 35 01 00 06];
+};
