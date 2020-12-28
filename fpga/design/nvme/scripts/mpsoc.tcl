@@ -176,7 +176,7 @@ if {${::board} == "fidus"} {
   set_property -dict [ list CONFIG.select_quad {GTY_Quad_129} ] $xdma_rp_1
 
 } else {
-  set_property -dict [ list CONFIG.pcie_blk_locn {X1Y2} \
+  set_property -dict [ list CONFIG.pcie_blk_locn {X1Y1} \
 				CONFIG.select_quad {GTH_Quad_228} ] $xdma_rp_0
 
   set_property -dict [ list CONFIG.pcie_blk_locn {X1Y2} \

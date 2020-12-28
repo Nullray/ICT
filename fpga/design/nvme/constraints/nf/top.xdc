@@ -27,19 +27,19 @@ set_property LOC GTHE4_CHANNEL_X0Y23 [get_cells -hierarchical -filter {NAME =~ *
 
 # PCIe RP #0 perstn physical location
 set_property PACKAGE_PIN B6 [get_ports pcie_rc_perstn_0]
-set_property IOSTANDARD LVCMOS18 [get_ports pcie_rc_perstn_0]
+set_property IOSTANDARD LVCMOS33 [get_ports pcie_rc_perstn_0]
 
 # PCIe RP #1 perstn physical location
 set_property PACKAGE_PIN C5 [get_ports pcie_rc_perstn_1]
-set_property IOSTANDARD LVCMOS18 [get_ports pcie_rc_perstn_1]
+set_property IOSTANDARD LVCMOS33 [get_ports pcie_rc_perstn_1]
 
 # PCIe RP #0 link up LED
 set_property PACKAGE_PIN A9 [get_ports pcie_rc_user_link_up_0]
-set_property IOSTANDARD LVCMOS18 [get_ports pcie_rc_user_link_up_0]
+set_property IOSTANDARD LVCMOS33 [get_ports pcie_rc_user_link_up_0]
 
 # PCIe RP #1 link up LED
 set_property PACKAGE_PIN A10 [get_ports pcie_rc_user_link_up_1]
-set_property IOSTANDARD LVCMOS18 [get_ports pcie_rc_user_link_up_1]
+set_property IOSTANDARD LVCMOS33 [get_ports pcie_rc_user_link_up_1]
 
 # Timing exceptions
 set_clock_groups -name async_pl_clk0_pcie_0 -asynchronous \
