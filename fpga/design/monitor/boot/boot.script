@@ -1,0 +1,7 @@
+setenv initrd_addr_r 0x4020000
+setenv bootargs ip=dhcp
+load mmc 0:1 $kernel_addr_r Image
+load mmc 0:1 $fdt_addr_r zynqmp.dtb
+load mmc 0:1 $initrd_addr_r obmc.cpio.gz
+booti $kernel_addr_r $initrd_addr_r $fdt_addr_r
+

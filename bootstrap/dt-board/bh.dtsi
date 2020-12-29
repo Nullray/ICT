@@ -1,4 +1,8 @@
 
+&gem2 {
+	local-mac-address = [00 0a 35 01 01 05];
+};
+
 &gem3 {
 	local-mac-address = [00 0a 35 01 00 05];
 	phy-handle = <&phy>;
