@@ -202,9 +202,9 @@
 <user_parameter name="CONFIG.PSU__TSU__BUFG_PORT_PAIR" value="0"/> 
 <user_parameter name="CONFIG.PSU__GEM0_COHERENCY" value="0"/> 
 <user_parameter name="CONFIG.PSU__ENET1__TSU__ENABLE" value="0"/> 
-<user_parameter name="CONFIG.PSU__GEM1_COHERENCY" value="1"/> 
-<user_parameter name="CONFIG.PSU__GEM1_ROUTE_THROUGH_FPD" value="0"/> 
-<user_parameter name="CONFIG.PSU__USE__M_AXI_GP2" value="0"/> 
+<user_parameter name="CONFIG.PSU__GEM1_COHERENCY" value="0"/>
+<user_parameter name="CONFIG.PSU__GEM1_ROUTE_THROUGH_FPD" value="0"/>
+<user_parameter name="CONFIG.PSU__USE__M_AXI_GP2" value="0"/>
               </user_parameters>
     </ip>
     </ip_preset>
