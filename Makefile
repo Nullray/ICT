@@ -27,7 +27,7 @@ FPGA_PRJ := mpsoc
 FPGA_TARGET := $(FPGA_PRJ)_$(FPGA_BD)
 
 PRJ_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/pl.dtsi)
-SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/system-top.dts)
+SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/design_top.dtsi)
 
 # Optional Trusted OS
 TOS ?= 

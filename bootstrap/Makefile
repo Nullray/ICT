@@ -118,11 +118,13 @@ pmufw_distclean:
 dt: $(DTB)
 
 $(DTB): .dt_gen FORCE
-ifneq ($(wildcard $(SYS_DT)),)
-	@cp $(SYS_DT) $(DTS)
-endif
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
-	@sed -i '13i #include \"board.dtsi\"' $(DTS)
+ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi),)
+	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi $(DT_LOC)/board_top.dtsi
+endif
+ifneq ($(wildcard $(SYS_DT)),)
+	@cp $(SYS_DT) $(DT_LOC)/design_top.dtsi
+endif
 ifneq ($(wildcard $(PRJ_DT)),)
 	@cp $(PRJ_DT) $(DT_LOC)/pl.dtsi
 endif
@@ -134,6 +136,13 @@ endif
 
 .dt_gen:
 	$(HSI) $(DT_HSI_FLAGS)
+	@sed -i '13i #include \"board.dtsi\"' $(DTS)
+ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi),)
+	@sed -i '$$i #include \"board_top.dtsi\"' $(DTS)
+endif
+ifneq ($(wildcard $(SYS_DT)),)
+	@sed -i '$$i #include \"design_top.dtsi\"' $(DTS)
+endif
 	@touch $@
 
 dt_clean:
