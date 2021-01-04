@@ -1,0 +1,6 @@
+
+aliases {
+  ethernet0 = &gem1;
+  ethernet1 = &gem0;
+};
+
