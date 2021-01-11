@@ -125,6 +125,7 @@ proc create_root_design { parentCell } {
 				CONFIG.PSU__USE__S_AXI_GP6 {1} \
 				CONFIG.PSU__USE__M_AXI_GP0 {1} \
 				CONFIG.PSU__USE__M_AXI_GP1 {1} \
+				CONFIG.PSU__USE__M_AXI_GP2 {1} \
 				CONFIG.PSU__MAXIGP0__DATA_WIDTH {128} \
 				CONFIG.PSU__MAXIGP1__DATA_WIDTH {128} \
 				CONFIG.PSU__MAXIGP2__DATA_WIDTH {32} \
