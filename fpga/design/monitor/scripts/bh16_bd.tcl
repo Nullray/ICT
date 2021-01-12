@@ -392,7 +392,8 @@ proc create_root_design { parentCell } {
 
   # Create instance: AXI interrupt controller
   set axi_uart_intc [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 axi_uart_intc ]
-  set_property -dict [ list CONFIG.C_IRQ_CONNECTION {1} ] $axi_uart_intc
+  set_property -dict [ list CONFIG.C_IRQ_CONNECTION {1} \
+    CONFIG.C_IRQ_IS_LEVEL {0} ] $axi_uart_intc
 
   # Create instance: rst_ps8_0_99M, and set properties
   set rst_ps8_0_99M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps8_0_99M ]
