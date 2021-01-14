@@ -45,18 +45,34 @@ KERN_LOC := $(SW_LOC)/arm-linux
 include scripts/kernel.mk
 KERN_COMPILE_FLAGS += O=$(KERN_LOC)/$(OS)
 	
+# INSTALL_LOC is empty means native compilation
+# otherwise, it means cross compilation
 ifneq (${INSTALL_LOC},)
 KERN_COMPILE_FLAGS += CROSS_COMPILE=aarch64-linux-gnu-
 endif
 
 KERN_IMAGE_GEN := $(KERN_LOC)/$(OS)/arch/$(KERN_PLAT)/boot/Image
 
+# kernel image installation for BH motherboard and other embedded boards
 ifneq (${INSTALL_LOC},)
 KERN_INSTALL_LOC := $(INSTALL_LOC)/$(OS)
 endif
 KERN_INSTALL_LOC ?= $(KERN_LOC)/$(OS)
 
 KERN_IMAGE := $(KERN_INSTALL_LOC)/Image
+
+# vmlinuz installation for NF/Fidus card
+# INSTALL_LOC is empty means native compilation
+# otherwise, it means cross compilation
+ifneq (${INSTALL_LOC},)
+VMLINUZ_INSTALL_LOC := /mnt/$(OS)
+MODULES_INSTALL_LOC := /mnt/$(OS)/root
+endif
+
+#=====================================================
+# NOTE: Initramfs would be automatically updated 
+# after installation during native kernel compilation
+#=====================================================
 
 # XEN 
 XEN_SRC := $(SW_LOC)/xen
@@ -158,10 +174,10 @@ linux: $(KERN_LOC)/$(OS)/.config FORCE
 linux_install: FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
 		$(KERN_COMPILE_FLAGS) \
-		INSTALL_PATH=/mnt/$(OS)/boot install
+		INSTALL_PATH=$(VMLINUZ_INSTALL_LOC)/boot install
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
 		$(KERN_COMPILE_FLAGS) \
-		INSTALL_MOD_PATH=/mnt/$(OS)/root/usr modules_install
+		INSTALL_MOD_PATH=$(MODULES_INSTALL_LOC)/usr modules_install
 
 $(KERN_LOC)/%/.config: $($(OS)-kern-config-file)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
