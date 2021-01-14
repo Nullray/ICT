@@ -1,7 +1,6 @@
 # TODO: set your Linux kernel compilation flags and targets
 KERN_PLAT := arm64
-KERN_CROSS_COMPILE_FLAGS := ARCH=$(KERN_PLAT) \
-	CROSS_COMPILE=aarch64-linux-gnu-
+KERN_COMPILE_FLAGS := ARCH=$(KERN_PLAT)
 KERN_TARGET := all
 
 # TODO: Change to your own Linux kernel configuration file name for physical os

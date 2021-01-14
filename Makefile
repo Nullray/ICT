@@ -21,6 +21,9 @@ VIVADO_BIN := $(VIVADO_TOOL_PATH)/vivado
 HSI_BIN := $(SDK_TOOL_PATH)/hsi
 BOOT_GEN_BIN := $(SDK_TOOL_PATH)/bootgen
 
+# Host machine to determine if it is cross compilation for Linux kernel
+HOST := $(shell uname -m)
+
 # Board and Chipset
 FPGA_BD ?= nf
 FPGA_PRJ := mpsoc
@@ -38,13 +41,6 @@ OS_KERN := phy_os virt
 obj-sw-y := $(foreach obj,$(OS_KERN),$(obj).sw)
 obj-sw-clean-y := $(foreach obj,$(OS_KERN),$(obj).sw.clean)
 obj-sw-dist-y := $(foreach obj,$(OS_KERN),$(obj).sw.dist)
-
-# TODO: Change target file system
-ROOTFS := debian
-ROOTFS_VER := 10
-
-rootfs-obj := aarch64-$(ROOTFS)-$(ROOTFS_VER).tar.gz
-rootfs-path := rootfs/aarch64/$(ROOTFS)/release
 
 # Temporal directory to hold hardware design output files 
 # (i.e., bitstream, hardware definition file (HDF))
@@ -65,8 +61,12 @@ INSTALL_LOC := $(shell pwd)/ready_for_download/$(FPGA_TARGET)
 # FLAGS for sub-directory Makefile
 ATF_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) TOS=$(TOS)
 UBOOT_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) DTC_LOC=$(DTC_LOC)
-KERNEL_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) INSTALL_LOC=$(INSTALL_LOC)
 XEN_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) INSTALL_LOC=$(INSTALL_LOC)
+ifneq ($(HOST),aarch64)
+KERNEL_COMPILE_FLAGS := COMPILER_PATH=$(LINUX_GCC_PATH) INSTALL_LOC=$(INSTALL_LOC)
+else
+KERNEL_COMPILE_FLAGS := 
+endif
 
 # Device Tree Compiler (DTC)
 DTC_LOC := /opt/dtc
@@ -282,20 +282,6 @@ openbmc_clean:
 
 openbmc_distclean:
 	$(MAKE) -C ./software $@
-
-#==============================================
-# File system
-#==============================================
-FTP_ROOT := 172.16.128.201
-FTP_USER := ftpuser
-FTP_PASSWD := 123456
-
-rootfs: FORCE
-	@mkdir -p $(INSTALL_LOC)/$@
-	@cd $(INSTALL_LOC)/$@ && \
-		rm -f $(rootfs-obj) && \
-		wget ftp://$(FTP_ROOT)/$(rootfs-path)/$(rootfs-obj) \
-		--ftp-user=$(FTP_USER) --ftp-password=$(FTP_PASSWD)
 
 #==============================================
 # Intermediate files between HW and SW design
