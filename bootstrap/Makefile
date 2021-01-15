@@ -122,11 +122,14 @@ $(DTB): .dt_gen FORCE
 ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi $(DT_LOC)/board_top.dtsi
 endif
+ifneq ($(wildcard $(PS_DT)),)
+	@cp $(PS_DT) $(DT_LOC)/design.dtsi
+endif
 ifneq ($(wildcard $(SYS_DT)),)
 	@cp $(SYS_DT) $(DT_LOC)/design_top.dtsi
 endif
-ifneq ($(wildcard $(PRJ_DT)),)
-	@cp $(PRJ_DT) $(DT_LOC)/pl.dtsi
+ifneq ($(wildcard $(PL_DT)),)
+	@cp $(PL_DT) $(DT_LOC)/pl.dtsi
 endif
 	@mkdir -p $(O)
 	$(EXPORT_DTC_PATH) && \
@@ -137,6 +140,9 @@ endif
 .dt_gen:
 	$(HSI) $(DT_HSI_FLAGS)
 	@sed -i '13i #include \"board.dtsi\"' $(DTS)
+ifneq ($(wildcard $(PS_DT)),)
+	@sed -i '14i #include \"design.dtsi\"' $(DTS)
+endif
 ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi),)
 	@sed -i '$$i #include \"board_top.dtsi\"' $(DTS)
 endif
