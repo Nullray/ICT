@@ -62,9 +62,18 @@ KERN_INSTALL_LOC ?= $(KERN_LOC)/$(OS)
 KERN_IMAGE := $(KERN_INSTALL_LOC)/Image
 
 # vmlinuz installation for NF/Fidus card
-# INSTALL_LOC is empty means native compilation
+# It means native compilation when INSTALL_LOC is empty
 # otherwise, it means cross compilation
 ifneq (${INSTALL_LOC},)
+VMLINUZ_INSTALL_LOC := /mnt/$(OS)
+MODULES_INSTALL_LOC := /mnt/$(OS)/root
+endif
+
+# VM kernel compilation and installation 
+# is based on aarch64 physical machine
+# Boot partition of VM OS image would be mounted on /mnt/virt/boot
+# Root partition of VM OS image would be mounted on /mnt/virt/root
+ifeq ($(OS),virt)
 VMLINUZ_INSTALL_LOC := /mnt/$(OS)
 MODULES_INSTALL_LOC := /mnt/$(OS)/root
 endif
