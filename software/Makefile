@@ -62,16 +62,25 @@ KERN_INSTALL_LOC ?= $(KERN_LOC)/$(OS)
 KERN_IMAGE := $(KERN_INSTALL_LOC)/Image
 
 # vmlinuz installation for NF/Fidus card
-# INSTALL_LOC is empty means native compilation
+# It means native compilation when INSTALL_LOC is empty
 # otherwise, it means cross compilation
 ifneq (${INSTALL_LOC},)
 VMLINUZ_INSTALL_LOC := /mnt/$(OS)
 MODULES_INSTALL_LOC := /mnt/$(OS)/root
 endif
 
+# VM kernel compilation and installation 
+# is based on aarch64 physical machine
+# Boot partition of VM OS image would be mounted on /mnt/virt/boot
+# Root partition of VM OS image would be mounted on /mnt/virt/root
+ifeq ($(OS),virt)
+VMLINUZ_INSTALL_LOC := /mnt/$(OS)
+MODULES_INSTALL_LOC := /mnt/$(OS)/root
+endif
+
 #=====================================================
 # NOTE: Initramfs would be automatically updated 
-# after installation during native kernel compilation
+# after installation in the native kernel compilation
 #=====================================================
 
 # XEN 
@@ -86,7 +95,12 @@ XEN_INSTALL_LOC ?= $(KERN_LOC)
 
 XEN_UIMAGE := $(XEN_INSTALL_LOC)/xen.ub
 
-#OpenBMC image
+# QEMU 
+QEMU_SRC := $(SW_LOC)/qemu
+QEMU_LOC := $(SW_LOC)/arm-qemu
+include scripts/qemu.mk
+
+# OpenBMC image
 OBMC_IMG := $(OBMC_LOC)/*.rootfs.cpio.gz.u-boot
 
 .PHONY: FORCE
@@ -138,6 +152,27 @@ xen_clean:
 
 xen_distclean:
 	$(MAKE) -C $(XEN_SRC) distclean-xen
+
+#==================================
+# QEMU native compilation
+#==================================
+qemu: $(QEMU_LOC)/.qemu.cfg FORCE
+	$(MAKE) -C $(QEMU_LOC)
+
+qemu_install: FORCE
+	$(MAKE) -C $(QEMU_LOC) install
+
+$(QEMU_LOC)/.qemu.cfg:
+	@mkdir -p $(QEMU_LOC)
+	@cd $(QEMU_LOC) && \
+		$(QEMU_SRC)/configure $(QEMU_CONFIG_FLAGS)
+	@touch $(QEMU_LOC)/.qemu.cfg
+
+qemu_clean:
+	$(MAKE) -C $(QEMU_LOC) clean 
+
+qemu_distclean:
+	@rm -rf $(QEMU_LOC)
 
 #==================================
 # U-Boot compilation
