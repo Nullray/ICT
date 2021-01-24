@@ -7,3 +7,4 @@ arm-atf/
 arm-linux/
 arm-tee/
 arm-openbmc/
+arm-qemu/

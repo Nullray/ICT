@@ -80,7 +80,7 @@ endif
 
 #=====================================================
 # NOTE: Initramfs would be automatically updated 
-# after installation during native kernel compilation
+# after installation in the native kernel compilation
 #=====================================================
 
 # XEN 
@@ -95,7 +95,12 @@ XEN_INSTALL_LOC ?= $(KERN_LOC)
 
 XEN_UIMAGE := $(XEN_INSTALL_LOC)/xen.ub
 
-#OpenBMC image
+# QEMU 
+QEMU_SRC := $(SW_LOC)/qemu
+QEMU_LOC := $(SW_LOC)/arm-qemu
+include scripts/qemu.mk
+
+# OpenBMC image
 OBMC_IMG := $(OBMC_LOC)/*.rootfs.cpio.gz.u-boot
 
 .PHONY: FORCE
@@ -147,6 +152,27 @@ xen_clean:
 
 xen_distclean:
 	$(MAKE) -C $(XEN_SRC) distclean-xen
+
+#==================================
+# QEMU native compilation
+#==================================
+qemu: $(QEMU_LOC)/.qemu.cfg FORCE
+	$(MAKE) -C $(QEMU_LOC)
+
+qemu_install: FORCE
+	$(MAKE) -C $(QEMU_LOC) install
+
+$(QEMU_LOC)/.qemu.cfg:
+	@mkdir -p $(QEMU_LOC)
+	@cd $(QEMU_LOC) && \
+		$(QEMU_SRC)/configure $(QEMU_CONFIG_FLAGS)
+	@touch $(QEMU_LOC)/.qemu.cfg
+
+qemu_clean:
+	$(MAKE) -C $(QEMU_LOC) clean 
+
+qemu_distclean:
+	@rm -rf $(QEMU_LOC)
 
 #==================================
 # U-Boot compilation
