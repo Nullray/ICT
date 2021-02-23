@@ -14,11 +14,14 @@ read_checkpoint -cell [get_cells mpsoc_i/role_cell/inst] ${dcp_dir}/synth_role.d
 # create PBLOCK
 create_pblock role_pblk
 resize_pblock role_pblk -add { \
-    SLICE_X0Y180:SLICE_X40Y300 \
-    DSP48E2_X0Y72:DSP48E2_X5Y119 \
-    RAMB18_X0Y72:RAMB18_X3Y119 \
-    RAMB36_X0Y36:RAMB36_X3Y59 \
-    URAM288_X0Y0:URAM288_X0Y31}
+    URAM288_X0Y0:URAM288_X0Y31 \
+    RAMB36_X0Y36:RAMB36_X5Y59 \
+    RAMB18_X0Y72:RAMB18_X5Y119 \
+    PCIE40E4_X0Y2:PCIE40E4_X0Y2 \
+    IOB_X0Y156:IOB_X0Y259 \
+    DSP48E2_X0Y72:DSP48E2_X6Y119 \
+    CMACE4_X0Y0:CMACE4_X0Y0 \
+    SLICE_X0Y180:SLICE_X76Y299}
 
 add_cells_to_pblock role_pblk [get_cells [list mpsoc_i/role_cell/inst]] -clear_locs
 
