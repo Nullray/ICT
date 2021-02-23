@@ -225,15 +225,20 @@ if {${::board} == "fidus"} {
   set_property -dict [ list \
     CONFIG.ALL_PARAMS { \
       HAS_SIGNAL_CONTROL 0 \
-      HAS_SIGNAL_STATUS 0 \
+      HAS_SIGNAL_STATUS 1 \
       HAS_AXI_LITE 1 \
       INTF { \
-        clk { ID 0 VLNV xilinx.com:signal:clock_rtl:1.0 MODE slave } \
-        resetn { ID 1 VLNV xilinx.com:signal:reset_rtl:1.0 MODE slave } \
-        mmio { ID 2 VLNV xilinx.com:interface:aximm_rtl:1.0 MODE slave PROTOCOL axi4lite } \
+        resetn { ID 0 VLNV xilinx.com:signal:reset_rtl:1.0 MODE slave } \
       } \
     } \
   ] $pr_decoupler
+
+  # Create instance: axi_shutdown_mgr, and set properties
+  set pr_mmio_shutdown [ create_bd_cell -type ip -vlnv xilinx.com:ip:pr_axi_shutdown_manager:1.0 pr_mmio_shutdown ]
+  set_property -dict [ list \
+    CONFIG.DP_PROTOCOL {AXI4LITE} \
+    CONFIG.RP_IS_MASTER {false} \
+  ] $pr_mmio_shutdown
 
 #=============================================
 # Create modules
@@ -346,11 +351,9 @@ if {${::board} == "fidus"} {
         [get_bd_pins axi_ic_mmio/M02_ACLK] \
         [get_bd_pins axi_ic_mmio/M03_ACLK] \
         [get_bd_pins pr_decoupler/aclk] \
-        [get_bd_pins pr_decoupler/s_clk_CLK] \
+        [get_bd_pins pr_mmio_shutdown/clk] \
+        [get_bd_pins role_cell/aclk] \
 				[get_bd_pins pl_clk_sys_reset/slowest_sync_clk]
-
-  connect_bd_net -net pr_decoupler_rp_clk_CLK [get_bd_pins pr_decoupler/rp_clk_CLK] \
-        [get_bd_pins role_cell/aclk]
 
 #=============================================
 # System reset connection
@@ -390,6 +393,7 @@ if {${::board} == "fidus"} {
         [get_bd_pins axi_ic_mmio/M03_ARESETN] \
         [get_bd_pins pr_decoupler/s_axi_reg_aresetn] \
         [get_bd_pins pr_decoupler/s_resetn_RST] \
+        [get_bd_pins pr_mmio_shutdown/resetn] \
 				[get_bd_pins axi_ic_pcie_rc_bar/S00_ARESETN] \
 				[get_bd_pins axi_ic_pcie_rc_dma/M00_ARESETN] \
 				[get_bd_ports pcie_rc_perstn_0] \
@@ -443,11 +447,11 @@ if {${::board} == "fidus"} {
   connect_bd_intf_net -intf_net PCIE_RP_1_DMA [get_bd_intf_pins xdma_rp_1/M_AXI_B] \
 				[get_bd_intf_pins axi_ic_pcie_rc_dma/S01_AXI]
   
-  # Role module & PR decoupler
+  # Role module & AXI shutdown manager
   connect_bd_intf_net -intf_net axi_ic_mmio_M02_AXI [get_bd_intf_pins axi_ic_mmio/M02_AXI] \
-        [get_bd_intf_pins pr_decoupler/s_mmio]
+        [get_bd_intf_pins pr_mmio_shutdown/S_AXI]
 
-  connect_bd_intf_net -intf_net pr_decoupler_rp_mmio [get_bd_intf_pins pr_decoupler/rp_mmio] \
+  connect_bd_intf_net -intf_net pr_mmio [get_bd_intf_pins pr_mmio_shutdown/M_AXI] \
         [get_bd_intf_pins role_cell/axi_mmio]
 
   connect_bd_intf_net -intf_net axi_ic_mmio_M03_AXI [get_bd_intf_pins axi_ic_mmio/M03_AXI] \
@@ -491,6 +495,10 @@ if {${::board} == "fidus"} {
 
   connect_bd_net [get_bd_ports pcie_rc_user_link_up_0] [get_bd_pins xdma_rp_0/user_lnk_up]
   connect_bd_net [get_bd_ports pcie_rc_user_link_up_1] [get_bd_pins xdma_rp_1/user_lnk_up]
+
+  connect_bd_net -net pr_decoupler_decouple_status \
+    [get_bd_pins pr_mmio_shutdown/request_shutdown] \
+    [get_bd_pins pr_decoupler/decouple_status]
 
 #=============================================
 # Address segments
