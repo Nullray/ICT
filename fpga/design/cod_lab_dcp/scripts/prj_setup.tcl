@@ -18,7 +18,7 @@ foreach bd_design ${bd_list} {
 }
 
 # setup top module
-#set_property "top" ${project_name} [get_filesets sources_1]
+set_property "top" mpsoc_wrapper [get_filesets sources_1]
 
 # add constraints files
 set main_constraints ${script_dir}/../design/${prj}/constraints/${board}/top.xdc
