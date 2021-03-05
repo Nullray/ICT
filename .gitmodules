@@ -37,3 +37,6 @@
 	path = software/qemu
 	url = https://github.com/ict-accel-team/qemu/
 	branch = v4.2.0-dev
+[submodule "fpga/design/nf-accel-shell"]
+	path = fpga/design/nf-accel-shell
+	url = https://github.com/ict-accel-team/nf-accel-shell
