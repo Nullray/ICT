@@ -44,6 +44,9 @@ DT_HSI_FLAGS := $(HSI_FLAGS) -source $(DT_GEN_TCL) \
 DTS := $(DT_LOC)/system-top.dts
 DTB := $(DT_LOC)/zynqmp.dtb
 
+ROLE_DTSI := $(wildcard $(ROLE_DTBO_LOC)/*.dtsi)
+ROLE_DTBO := $(patsubst %.dtsi,%.dtbo,$(ROLE_DTSI))
+
 # BOOT.bin
 BOOT_BIN_LOC := $(BOOT_STRAP_LOC)/boot_bin
 
@@ -115,7 +118,12 @@ pmufw_distclean:
 #==========================================
 # Device Tree Source and Blob compilation 
 #==========================================
-dt: $(DTB)
+dt: $(DTB) $(ROLE_DTBO)
+
+%.dtbo: FORCE
+	$(EXPORT_DTC_PATH) && \
+		dtc -O dtb -o $@ -b 0 -@ $(patsubst %.dtbo,%.dtsi,$@)
+	@mv $@ $(O)/
 
 $(DTB): .dt_gen FORCE
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
