@@ -101,7 +101,6 @@ sw: FORCE
 	$(MAKE) bootbin
 	$(foreach obj,$(obj-sw-y),\
 		$(MAKE) $(patsubst %.sw,%.os,$(obj));)
-	$(MAKE) rootfs
 
 sw_clean:
 	$(MAKE) bootbin_clean
