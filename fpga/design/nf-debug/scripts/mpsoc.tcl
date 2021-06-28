@@ -117,22 +117,17 @@ proc create_root_design { parentCell } {
   # Create instance: Zynq MPSoC
   set zynq_mpsoc [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.3 zynq_mpsoc ]
   apply_bd_automation -rule xilinx.com:bd_rule:zynq_ultra_ps_e -config {apply_board_preset "1"} $zynq_mpsoc
-  set_property -dict [ list CONFIG.PSU__USE__M_AXI_GP0 {1} \
+  set_property -dict [ list CONFIG.PSU__USE__M_AXI_GP0 {0} \
         CONFIG.PSU__USE__M_AXI_GP1 {1} \
         CONFIG.PSU__USE__M_AXI_GP2 {1} \
-        CONFIG.PSU__CRL_APB__PL0_REF_CTRL__FREQMHZ {125} \
-        CONFIG.PSU__FPGA_PL1_ENABLE {1} \
-        CONFIG.PSU__CRL_APB__PL1_REF_CTRL__FREQMHZ {250} \
-        CONFIG.PSU__FPGA_PL2_ENABLE {1} \
-        CONFIG.PSU__CRL_APB__PL2_REF_CTRL__FREQMHZ {100} \
+        CONFIG.PSU__CRL_APB__PL0_REF_CTRL__FREQMHZ {100} \
         CONFIG.PSU__UART1__PERIPHERAL__ENABLE {1} \
         CONFIG.PSU__UART1__PERIPHERAL__IO {EMIO} \
         CONFIG.PSU__HIGH_ADDRESS__ENABLE {1} \
         CONFIG.PSU__EXPAND__LOWER_LPS_SLAVES {1} ] $zynq_mpsoc
 
-  connect_bd_net -net pl_clk1_out [get_bd_pins zynq_mpsoc/pl_clk1] \
+  connect_bd_net -net pl_clk1_out [get_bd_pins zynq_mpsoc/pl_clk0] \
         [get_bd_pins zynq_mpsoc/maxihpm1_fpd_aclk] \
-        [get_bd_pins zynq_mpsoc/maxihpm0_fpd_aclk] \
         [get_bd_pins zynq_mpsoc/maxihpm0_lpd_aclk]
 
 #=============================================
