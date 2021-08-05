@@ -1,10 +1,14 @@
 # TODO: Vivado IDE version and installed location
-VIVADO_VERSION ?= 2019.1
-VIVADO_TOOL_BASE ?= /opt/Xilinx_$(VIVADO_VERSION)
+VIVADO_VERSION_HW ?= 2020.2
+VIVADO_TOOL_BASE_HW ?= /opt/Xilinx_$(VIVADO_VERSION_HW)
+
+VIVADO_VERSION_SW ?= 2019.1
+VIVADO_TOOL_BASE_SW ?= /opt/Xilinx_$(VIVADO_VERSION_SW)
 
 # Vivado and SDK tool executable binary location
-VIVADO_TOOL_PATH := $(VIVADO_TOOL_BASE)/Vivado/$(VIVADO_VERSION)/bin
-SDK_TOOL_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/bin
+VIVADO_TOOL_PATH := $(VIVADO_TOOL_BASE_HW)/Vivado/$(VIVADO_VERSION_HW)/bin
+SDK_TOOL_PATH := $(VIVADO_TOOL_BASE_SW)/SDK/$(VIVADO_VERSION_SW)/bin
+SDK_COMPILE_PATH := $(VIVADO_TOOL_BASE_SW)/SDK/$(VIVADO_VERSION_SW)/gnu
 
 # Cross-compiler location
 #=================================================
@@ -12,9 +16,9 @@ SDK_TOOL_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/bin
 # aarch-none-gnu- : used for compilation of FSBL
 # mb- (microblaze-xilinx-elf-) : used for compilation of PMU Firmware
 #=================================================
-LINUX_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch64/lin/aarch64-linux/bin
-ELF_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch64/lin/aarch64-none/bin
-MB_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/microblaze/lin/bin
+LINUX_GCC_PATH := $(SDK_COMPILE_PATH)/aarch64/lin/aarch64-linux/bin
+ELF_GCC_PATH := $(SDK_COMPILE_PATH)/aarch64/lin/aarch64-none/bin
+MB_GCC_PATH := $(SDK_COMPILE_PATH)/microblaze/lin/bin
 
 # Leveraged Vivado tools
 VIVADO_BIN := $(VIVADO_TOOL_PATH)/vivado
