@@ -41,8 +41,15 @@ DT_GEN_TCL := $(BOOT_STRAP_LOC)/scripts/dt.tcl
 DT_HSI_FLAGS := $(HSI_FLAGS) -source $(DT_GEN_TCL) \
 	-tclargs $(HDF_FILE) $(DT_LOC) $(DT_GEN)
 
+PL_DT := $(FPGA_DESIGN_DT_LOC)/pl.dtsi
+PS_DT := $(FPGA_DESIGN_DT_LOC)/design.dtsi
+SYS_DT := $(FPGA_DESIGN_DT_LOC)/design_top.dtsi
+
 DTS := $(DT_LOC)/system-top.dts
 DTB := $(DT_LOC)/zynqmp.dtb
+
+OVERLAY_DTSI := $(wildcard $(FPGA_DESIGN_DT_LOC)/overlay/*.dtsi)
+OVERLAY_DTBO := $(patsubst %.dtsi,%.dtbo,$(OVERLAY_DTSI))
 
 # BOOT.bin
 BOOT_BIN_LOC := $(BOOT_STRAP_LOC)/boot_bin
@@ -115,7 +122,7 @@ pmufw_distclean:
 #==========================================
 # Device Tree Source and Blob compilation 
 #==========================================
-dt: $(DTB)
+dt: $(DTB) $(OVERLAY_DTBO)
 
 $(DTB): .dt_gen FORCE
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
@@ -136,6 +143,11 @@ endif
 		cpp -I $(DT_LOC) -E -P -x assembler-with-cpp $(DTS) | \
 		dtc -I dts -O dtb -o $@ -
 	@cp $@ $(KERN_DTB)
+
+%.dtbo: FORCE
+	$(EXPORT_DTC_PATH) && \
+		dtc -O dtb -o $@ -b 0 -@ $(patsubst %.dtbo,%.dtsi,$@)
+	@mv $@ $(O)/
 
 .dt_gen:
 	$(HSI) $(DT_HSI_FLAGS)

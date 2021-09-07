@@ -29,9 +29,7 @@ FPGA_BD ?= nf
 FPGA_PRJ := mpsoc
 FPGA_TARGET := $(FPGA_PRJ)_$(FPGA_BD)
 
-PL_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/pl.dtsi)
-PS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/design.dtsi)
-SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/design_top.dtsi)
+FPGA_DESIGN_DT_LOC := $(abspath ./fpga/design/$(FPGA_PRJ)/dt)
 
 # Optional Trusted OS
 TOS ?= 
@@ -145,7 +143,7 @@ dt: FORCE
 	$(MAKE) -C ./bootstrap DTC_LOC=$(DTC_LOC) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 		FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) \
-		PL_DT=$(PL_DT) PS_DT=$(PS_DT) SYS_DT=$(SYS_DT) $@
+		FPGA_DESIGN_DT_LOC=$(FPGA_DESIGN_DT_LOC) $@
 
 dt_install: FORCE
 	@cp $(INSTALL_LOC)/zynqmp.dtb \
