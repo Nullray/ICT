@@ -29,15 +29,21 @@ module debounce (
 endmodule
 
 module serve (
+  input   TMS,
+  input   TCK,
+  output  TDO,
+  input   TDI,
+  input   MODE
 	);
   
-  wire jtag_tms = 0;
-  wire jtag_tck = 0;
-  wire jtag_tdo = 0;
-  wire jtag_tdi = 0;
+  wire jtag_tms = TMS;
+  wire jtag_tck = TCK;
+  wire jtag_tdo;
+  wire jtag_tdi = TDI;
+  assign TDO = jtag_tdo;
 
   wire [3:0] btn = 0;
-  wire [1:0] sw = 0;
+  wire [1:0] sw = {1'b0, MODE};
   
   wire io_mac_int;
   wire io_sdio_int;
