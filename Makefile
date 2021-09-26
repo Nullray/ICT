@@ -332,9 +332,8 @@ openbmc_distclean:
 # Zynq baremetal firmware for SERVE
 #==============================================
 servefw: fsbl FORCE
-	@cp -r bootstrap/fsbl fpga/design/serve/pdk/bootstrap/
 	@mkdir -p fpga/design/serve/pdk/hw_plat/
-	@cp hw_plat/$(FPGA_TARGET)/system.hdf fpga/design/serve/pdk/hw_plat/ 
+	@cp hw_plat/$(FPGA_TARGET)/system.hdf fpga/design/serve/pdk/hw_plat/
 	$(MAKE) -C fpga/design/serve/pdk \
 		ARM_CC_PATH=$(ELF_GCC_PATH) SERVE=r \
 		FPGA_ARCH=$(FPGA_ARCH) BOOTBIN_WITH_BIT=y arm_bare_metal
