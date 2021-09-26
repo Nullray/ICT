@@ -53,6 +53,9 @@ ifeq ($(FPGA_ARCH),zynqmp)
 BOOTBIN_DEP += pmufw atf
 endif
 
+obj-bootbin-clean-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_clean)
+obj-bootbin-dist-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_distclean)
+
 LINUX_GCC_PATH := $($(FPGA_ARCH)_LINUX_GCC_PATH)
 ELF_GCC_PATH := $($(FPGA_ARCH)_ELF_GCC_PATH)
 
@@ -237,10 +240,10 @@ bootbin: $(BOOTBIN_DEP) FORCE
 		WITH_BIT=$(WITH_BIT) BIT_LOC=$(FPGA_TARGET) \
 		WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC) boot_bin
 
-bootbin_clean: atf_clean fsbl_clean pmufw_clean uboot_clean
+bootbin_clean: $(obj-bootbin-clean-y)
 	@rm -f $(INSTALL_LOC)/$(patsubst %.bootbin.clean,%,$@)/BOOT.bin
 
-bootbin_distclean: atf_distclean fsbl_distclean pmufw_distclean uboot_distclean
+bootbin_distclean: $(obj-bootbin-dist-y)
 	$(MAKE) -C ./bootstrap boot_bin_distclean
 	@rm -rf $(INSTALL_LOC)/$(patsubst %.bootbin.dist,%,$@)
 
