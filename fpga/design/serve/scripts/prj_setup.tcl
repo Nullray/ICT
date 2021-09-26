@@ -32,5 +32,5 @@ close_bd_design ${bd_design}
 set_property "top" serve [get_filesets sources_1]
 
 # add constraints files
-#set main_constraints ${script_dir}/../design/${prj}/constraints/${board}/top.xdc
-#add_files -fileset constrs_1 -norecurse ${main_constraints}
+set main_constraints ${script_dir}/../design/${prj}/constraints/${board}/top.xdc
+add_files -fileset constrs_1 -norecurse ${main_constraints}
