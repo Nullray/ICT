@@ -339,6 +339,8 @@ servefw: fsbl FORCE
 		FPGA_ARCH=$(FPGA_ARCH) BOOTBIN_WITH_BIT=y arm_bare_metal
 
 servefw_clean: FORCE
+	$(MAKE) -C fpga/design/serve/pdk/bootstrap fsbl_distclean
+	@rm -rf fpga/design/serve/pdk/hw_plat
 	$(MAKE) -C fpga/design/serve/pdk SERVE=r \
 		ARM_CC_PATH=$(ELF_GCC_PATH) arm_bare_metal_clean
 
