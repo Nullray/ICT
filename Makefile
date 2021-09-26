@@ -48,9 +48,11 @@ FPGA_ARCH := zynqmp
 FPGA_PROC := psu_cortexa53_0
 endif
 
-BOOTBIN_DEP := fsbl uboot
+BOOTBIN_DEP := fsbl
 ifeq ($(FPGA_ARCH),zynqmp)
-BOOTBIN_DEP += pmufw atf
+BOOTBIN_DEP += pmufw atf uboot
+else
+BOOTBIN_DEP += servefw
 endif
 
 obj-bootbin-clean-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_clean)
@@ -238,6 +240,7 @@ bootbin: $(BOOTBIN_DEP) FORCE
 	@mkdir -p $(INSTALL_LOC)
 	$(MAKE) -C ./bootstrap BOOT_GEN=$(BOOT_GEN_BIN) \
 		WITH_BIT=$(WITH_BIT) BIT_LOC=$(FPGA_TARGET) \
+		FPGA_ARCH=$(FPGA_ARCH) \
 		WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC) boot_bin
 
 bootbin_clean: $(obj-bootbin-clean-y)
@@ -324,6 +327,21 @@ openbmc_clean:
 
 openbmc_distclean:
 	$(MAKE) -C ./software $@
+
+#==============================================
+# Zynq baremetal firmware for SERVE
+#==============================================
+servefw: fsbl FORCE
+	@cp -r bootstrap/fsbl fpga/design/serve/pdk/bootstrap/
+	@mkdir -p fpga/design/serve/pdk/hw_plat/
+	@cp hw_plat/$(FPGA_TARGET)/system.hdf fpga/design/serve/pdk/hw_plat/ 
+	$(MAKE) -C fpga/design/serve/pdk \
+		ARM_CC_PATH=$(ELF_GCC_PATH) SERVE=r \
+		FPGA_ARCH=$(FPGA_ARCH) BOOTBIN_WITH_BIT=y arm_bare_metal
+
+servefw_clean: FORCE
+	$(MAKE) -C fpga/design/serve/pdk SERVE=r \
+		ARM_CC_PATH=$(ELF_GCC_PATH) arm_bare_metal_clean
 
 #==============================================
 # Intermediate files between HW and SW design

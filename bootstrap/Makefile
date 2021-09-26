@@ -118,7 +118,7 @@ pmufw_distclean:
 dt: $(DTB)
 
 $(DTB): .dt_gen FORCE
-	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
+	#@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
 ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi $(DT_LOC)/board_top.dtsi
 endif
@@ -166,7 +166,7 @@ $(BOOT_BIN): $(BIF_FILE)
 	@cd $(BOOT_BIN_LOC) && $(BOOT_GEN) $(BOOT_GEN_FLAGS)
 
 $(BIF_FILE): FORCE
-	@bash $(BIF_GEN) $(WITH_BIT) $(BIT_LOC) $(WITH_TOS)
+	@bash $(BIF_GEN) $(FPGA_ARCH) $(WITH_BIT) $(BIT_LOC) $(WITH_TOS)
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)
