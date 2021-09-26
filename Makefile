@@ -101,7 +101,6 @@ sw: FORCE
 	$(MAKE) bootbin
 	$(foreach obj,$(obj-sw-y),\
 		$(MAKE) $(patsubst %.sw,%.os,$(obj));)
-	$(MAKE) rootfs
 
 sw_clean:
 	$(MAKE) bootbin_clean
@@ -176,6 +175,21 @@ dt_distclean:
 %.os.dist:
 	$(MAKE) -C ./software $(KERNEL_COMPILE_FLAGS) \
 		OS=$(patsubst %.os.dist,%,$@) linux_distclean
+
+#==============================================
+# QEMU Compilation (native compilation on aarch64)
+#==============================================
+qemu: FORCE
+	$(MAKE) -C ./software $@
+
+qemu_install: FORCE
+	$(MAKE) -C ./software $@  
+
+qemu_clean:
+	$(MAKE) -C ./software $@
+
+qemu_distclean:
+	$(MAKE) -C ./software $@
 
 #==========================================
 # Compilation of XEN

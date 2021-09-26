@@ -125,10 +125,12 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:axi_iic:2.0\
-xilinx.com:ip:axi_uartlite:2.0\
+xilinx.com:ip:axi_intc:4.1\
 xilinx.com:ip:debug_bridge:3.0\
 xilinx.com:user:fan_con:1.0\
+xilinx.com:ip:util_ds_buf:2.1\
 xilinx.com:ip:proc_sys_reset:5.0\
+xilinx.com:ip:axi_uartlite:2.0\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:zynq_ultra_ps_e:3.3\
@@ -241,6 +243,38 @@ proc create_root_design { parentCell } {
   set fg_2 [ create_bd_port -dir I fg_2 ]
   set fg_3 [ create_bd_port -dir I fg_3 ]
   set iic_switch_reset_n [ create_bd_port -dir O -from 0 -to 0 iic_switch_reset_n ]
+  set nf_gpio_0_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_0_io ]
+  set nf_gpio_0_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_0_io_2 ]
+  set nf_gpio_10_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_10_io ]
+  set nf_gpio_10_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_10_io_2 ]
+  set nf_gpio_11_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_11_io ]
+  set nf_gpio_11_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_11_io_2 ]
+  set nf_gpio_12_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_12_io ]
+  set nf_gpio_12_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_12_io_2 ]
+  set nf_gpio_13_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_13_io ]
+  set nf_gpio_13_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_13_io_2 ]
+  set nf_gpio_14_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_14_io ]
+  set nf_gpio_14_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_14_io_2 ]
+  set nf_gpio_15_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_15_io ]
+  set nf_gpio_15_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_15_io_2 ]
+  set nf_gpio_1_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_1_io ]
+  set nf_gpio_1_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_1_io_2 ]
+  set nf_gpio_2_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_2_io ]
+  set nf_gpio_2_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_2_io_2 ]
+  set nf_gpio_3_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_3_io ]
+  set nf_gpio_3_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_3_io_2 ]
+  set nf_gpio_4_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_4_io ]
+  set nf_gpio_4_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_4_io_2 ]
+  set nf_gpio_5_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_5_io ]
+  set nf_gpio_5_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_5_io_2 ]
+  set nf_gpio_6_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_6_io ]
+  set nf_gpio_6_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_6_io_2 ]
+  set nf_gpio_7_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_7_io ]
+  set nf_gpio_7_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_7_io_2 ]
+  set nf_gpio_8_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_8_io ]
+  set nf_gpio_8_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_8_io_2 ]
+  set nf_gpio_9_io [ create_bd_port -dir IO -from 3 -to 0 nf_gpio_9_io ]
+  set nf_gpio_9_io_2 [ create_bd_port -dir IO -from 0 -to 0 nf_gpio_9_io_2 ]
   set pwm_0 [ create_bd_port -dir O pwm_0 ]
   set pwm_1 [ create_bd_port -dir O pwm_1 ]
   set pwm_2 [ create_bd_port -dir O pwm_2 ]
@@ -262,11 +296,405 @@ proc create_root_design { parentCell } {
    CONFIG.C_IS_DUAL {1} \
  ] $axi_gpio_0
 
+  # Create instance: axi_ic_nf_gpio, and set properties
+  set axi_ic_nf_gpio [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_ic_nf_gpio ]
+  set_property -dict [ list \
+   CONFIG.NUM_MI {16} \
+ ] $axi_ic_nf_gpio
+
   # Create instance: axi_iic_0, and set properties
   set axi_iic_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.0 axi_iic_0 ]
 
   # Create instance: axi_iic_1, and set properties
   set axi_iic_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.0 axi_iic_1 ]
+
+  # Create instance: axi_uart_intc, and set properties
+  set axi_uart_intc [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 axi_uart_intc ]
+  set_property -dict [ list \
+   CONFIG.C_IRQ_CONNECTION {1} \
+   CONFIG.C_IRQ_IS_LEVEL {0} \
+ ] $axi_uart_intc
+
+  # Create instance: debug_bridge_0, and set properties
+  set debug_bridge_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:debug_bridge:3.0 debug_bridge_0 ]
+  set_property -dict [ list \
+   CONFIG.C_DEBUG_MODE {3} \
+   CONFIG.C_DESIGN_TYPE {0} \
+   CONFIG.C_TCK_CLOCK_RATIO {20} \
+ ] $debug_bridge_0
+
+  # Create instance: fan_con_0, and set properties
+  set fan_con_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_0 ]
+
+  # Create instance: fan_con_1, and set properties
+  set fan_con_1 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_1 ]
+
+  # Create instance: fan_con_2, and set properties
+  set fan_con_2 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_2 ]
+
+  # Create instance: fan_con_3, and set properties
+  set fan_con_3 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_3 ]
+
+  # Create instance: nf_gpio_0, and set properties
+  set nf_gpio_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_0 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_0
+
+  # Create instance: nf_gpio_0_buf, and set properties
+  set nf_gpio_0_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_0_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_0_buf
+
+  # Create instance: nf_gpio_0_buf_2, and set properties
+  set nf_gpio_0_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_0_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_0_buf_2
+
+  # Create instance: nf_gpio_1, and set properties
+  set nf_gpio_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_1 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_1
+
+  # Create instance: nf_gpio_10, and set properties
+  set nf_gpio_10 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_10 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_10
+
+  # Create instance: nf_gpio_10_buf, and set properties
+  set nf_gpio_10_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_10_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_10_buf
+
+  # Create instance: nf_gpio_10_buf_2, and set properties
+  set nf_gpio_10_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_10_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_10_buf_2
+
+  # Create instance: nf_gpio_11, and set properties
+  set nf_gpio_11 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_11 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_11
+
+  # Create instance: nf_gpio_11_buf, and set properties
+  set nf_gpio_11_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_11_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_11_buf
+
+  # Create instance: nf_gpio_11_buf_2, and set properties
+  set nf_gpio_11_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_11_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_11_buf_2
+
+  # Create instance: nf_gpio_12, and set properties
+  set nf_gpio_12 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_12 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_12
+
+  # Create instance: nf_gpio_12_buf, and set properties
+  set nf_gpio_12_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_12_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_12_buf
+
+  # Create instance: nf_gpio_12_buf_2, and set properties
+  set nf_gpio_12_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_12_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_12_buf_2
+
+  # Create instance: nf_gpio_13, and set properties
+  set nf_gpio_13 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_13 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_13
+
+  # Create instance: nf_gpio_13_buf, and set properties
+  set nf_gpio_13_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_13_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_13_buf
+
+  # Create instance: nf_gpio_13_buf_2, and set properties
+  set nf_gpio_13_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_13_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_13_buf_2
+
+  # Create instance: nf_gpio_14, and set properties
+  set nf_gpio_14 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_14 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_14
+
+  # Create instance: nf_gpio_14_buf, and set properties
+  set nf_gpio_14_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_14_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_14_buf
+
+  # Create instance: nf_gpio_14_buf_2, and set properties
+  set nf_gpio_14_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_14_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_14_buf_2
+
+  # Create instance: nf_gpio_15, and set properties
+  set nf_gpio_15 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_15 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_15
+
+  # Create instance: nf_gpio_15_buf, and set properties
+  set nf_gpio_15_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_15_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_15_buf
+
+  # Create instance: nf_gpio_15_buf_2, and set properties
+  set nf_gpio_15_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_15_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_15_buf_2
+
+  # Create instance: nf_gpio_1_buf, and set properties
+  set nf_gpio_1_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_1_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_1_buf
+
+  # Create instance: nf_gpio_1_buf_2, and set properties
+  set nf_gpio_1_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_1_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_1_buf_2
+
+  # Create instance: nf_gpio_2, and set properties
+  set nf_gpio_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_2 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_2
+
+  # Create instance: nf_gpio_2_buf, and set properties
+  set nf_gpio_2_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_2_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_2_buf
+
+  # Create instance: nf_gpio_2_buf_2, and set properties
+  set nf_gpio_2_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_2_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_2_buf_2
+
+  # Create instance: nf_gpio_3, and set properties
+  set nf_gpio_3 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_3 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_3
+
+  # Create instance: nf_gpio_3_buf, and set properties
+  set nf_gpio_3_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_3_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_3_buf
+
+  # Create instance: nf_gpio_3_buf_2, and set properties
+  set nf_gpio_3_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_3_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_3_buf_2
+
+  # Create instance: nf_gpio_4, and set properties
+  set nf_gpio_4 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_4 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_4
+
+  # Create instance: nf_gpio_4_buf, and set properties
+  set nf_gpio_4_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_4_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_4_buf
+
+  # Create instance: nf_gpio_4_buf_2, and set properties
+  set nf_gpio_4_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_4_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_4_buf_2
+
+  # Create instance: nf_gpio_5, and set properties
+  set nf_gpio_5 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_5 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_5
+
+  # Create instance: nf_gpio_5_buf, and set properties
+  set nf_gpio_5_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_5_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_5_buf
+
+  # Create instance: nf_gpio_5_buf_2, and set properties
+  set nf_gpio_5_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_5_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_5_buf_2
+
+  # Create instance: nf_gpio_6, and set properties
+  set nf_gpio_6 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_6 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_6
+
+  # Create instance: nf_gpio_6_buf, and set properties
+  set nf_gpio_6_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_6_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_6_buf
+
+  # Create instance: nf_gpio_6_buf_2, and set properties
+  set nf_gpio_6_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_6_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_6_buf_2
+
+  # Create instance: nf_gpio_7, and set properties
+  set nf_gpio_7 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_7 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_7
+
+  # Create instance: nf_gpio_7_buf, and set properties
+  set nf_gpio_7_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_7_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_7_buf
+
+  # Create instance: nf_gpio_7_buf_2, and set properties
+  set nf_gpio_7_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_7_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_7_buf_2
+
+  # Create instance: nf_gpio_8, and set properties
+  set nf_gpio_8 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_8 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_8
+
+  # Create instance: nf_gpio_8_buf, and set properties
+  set nf_gpio_8_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_8_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_8_buf
+
+  # Create instance: nf_gpio_8_buf_2, and set properties
+  set nf_gpio_8_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_8_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_8_buf_2
+
+  # Create instance: nf_gpio_9, and set properties
+  set nf_gpio_9 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_gpio:2.0 nf_gpio_9 ]
+  set_property -dict [ list \
+   CONFIG.C_ALL_OUTPUTS_2 {0} \
+   CONFIG.C_GPIO2_WIDTH {1} \
+   CONFIG.C_GPIO_WIDTH {4} \
+   CONFIG.C_IS_DUAL {1} \
+ ] $nf_gpio_9
+
+  # Create instance: nf_gpio_9_buf, and set properties
+  set nf_gpio_9_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_9_buf ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+   CONFIG.C_SIZE {4} \
+ ] $nf_gpio_9_buf
+
+  # Create instance: nf_gpio_9_buf_2, and set properties
+  set nf_gpio_9_buf_2 [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 nf_gpio_9_buf_2 ]
+  set_property -dict [ list \
+   CONFIG.C_BUF_TYPE {IOBUF} \
+ ] $nf_gpio_9_buf_2
+
+  # Create instance: ps8_0_axi_periph, and set properties
+  set ps8_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps8_0_axi_periph ]
+  set_property -dict [ list \
+   CONFIG.NUM_MI {25} \
+ ] $ps8_0_axi_periph
+
+  # Create instance: rst_ps8_0_99M, and set properties
+  set rst_ps8_0_99M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps8_0_99M ]
 
   # Create instance: uartlite_00, and set properties
   set uartlite_00 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_uartlite:2.0 uartlite_00 ]
@@ -363,40 +791,6 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.C_BAUDRATE {115200} \
  ] $uartlite_15
-
-  # Create instance: debug_bridge_0, and set properties
-  set debug_bridge_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:debug_bridge:3.0 debug_bridge_0 ]
-  set_property -dict [ list \
-   CONFIG.C_DEBUG_MODE {3} \
-   CONFIG.C_DESIGN_TYPE {0} \
-   CONFIG.C_TCK_CLOCK_RATIO {20} \
- ] $debug_bridge_0
-
-  # Create instance: fan_con_0, and set properties
-  set fan_con_0 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_0 ]
-
-  # Create instance: fan_con_1, and set properties
-  set fan_con_1 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_1 ]
-
-  # Create instance: fan_con_2, and set properties
-  set fan_con_2 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_2 ]
-
-  # Create instance: fan_con_3, and set properties
-  set fan_con_3 [ create_bd_cell -type ip -vlnv xilinx.com:user:fan_con:1.0 fan_con_3 ]
-
-  # Create instance: ps8_0_axi_periph, and set properties
-  set ps8_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps8_0_axi_periph ]
-  set_property -dict [ list \
-   CONFIG.NUM_MI {25} \
- ] $ps8_0_axi_periph
-
-  # Create instance: AXI interrupt controller
-  set axi_uart_intc [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 axi_uart_intc ]
-  set_property -dict [ list CONFIG.C_IRQ_CONNECTION {1} \
-    CONFIG.C_IRQ_IS_LEVEL {0} ] $axi_uart_intc
-
-  # Create instance: rst_ps8_0_99M, and set properties
-  set rst_ps8_0_99M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_ps8_0_99M ]
 
   # Create instance: xlconcat_0, and set properties
   set xlconcat_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_0 ]
@@ -752,21 +1146,56 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__UART1__PERIPHERAL__IO {<Select>} \
    CONFIG.PSU__USE__IRQ0 {1} \
    CONFIG.PSU__USE__M_AXI_GP0 {1} \
-   CONFIG.PSU__USE__M_AXI_GP2 {0} \
+   CONFIG.PSU__USE__M_AXI_GP2 {1} \
    CONFIG.SUBPRESET1 {Custom} \
  ] $zynq_ultra_ps_e_0
 
   # Create interface connections
   connect_bd_intf_net -intf_net axi_gpio_0_GPIO [get_bd_intf_ports power_en_b] [get_bd_intf_pins axi_gpio_0/GPIO]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M00_AXI [get_bd_intf_pins axi_ic_nf_gpio/M00_AXI] [get_bd_intf_pins nf_gpio_0/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M01_AXI [get_bd_intf_pins axi_ic_nf_gpio/M01_AXI] [get_bd_intf_pins nf_gpio_1/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M02_AXI [get_bd_intf_pins axi_ic_nf_gpio/M02_AXI] [get_bd_intf_pins nf_gpio_2/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M03_AXI [get_bd_intf_pins axi_ic_nf_gpio/M03_AXI] [get_bd_intf_pins nf_gpio_3/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M04_AXI [get_bd_intf_pins axi_ic_nf_gpio/M04_AXI] [get_bd_intf_pins nf_gpio_4/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M05_AXI [get_bd_intf_pins axi_ic_nf_gpio/M05_AXI] [get_bd_intf_pins nf_gpio_5/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M06_AXI [get_bd_intf_pins axi_ic_nf_gpio/M06_AXI] [get_bd_intf_pins nf_gpio_6/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M07_AXI [get_bd_intf_pins axi_ic_nf_gpio/M07_AXI] [get_bd_intf_pins nf_gpio_7/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M08_AXI [get_bd_intf_pins axi_ic_nf_gpio/M08_AXI] [get_bd_intf_pins nf_gpio_8/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M09_AXI [get_bd_intf_pins axi_ic_nf_gpio/M09_AXI] [get_bd_intf_pins nf_gpio_9/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M10_AXI [get_bd_intf_pins axi_ic_nf_gpio/M10_AXI] [get_bd_intf_pins nf_gpio_10/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M11_AXI [get_bd_intf_pins axi_ic_nf_gpio/M11_AXI] [get_bd_intf_pins nf_gpio_11/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M12_AXI [get_bd_intf_pins axi_ic_nf_gpio/M12_AXI] [get_bd_intf_pins nf_gpio_12/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M13_AXI [get_bd_intf_pins axi_ic_nf_gpio/M13_AXI] [get_bd_intf_pins nf_gpio_13/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M14_AXI [get_bd_intf_pins axi_ic_nf_gpio/M14_AXI] [get_bd_intf_pins nf_gpio_14/S_AXI]
+  connect_bd_intf_net -intf_net axi_ic_nf_gpio_M15_AXI [get_bd_intf_pins axi_ic_nf_gpio/M15_AXI] [get_bd_intf_pins nf_gpio_15/S_AXI]
   connect_bd_intf_net -intf_net axi_iic_0_IIC [get_bd_intf_ports local_iic] [get_bd_intf_pins axi_iic_0/IIC]
   connect_bd_intf_net -intf_net axi_iic_1_IIC [get_bd_intf_ports main_iic] [get_bd_intf_pins axi_iic_1/IIC]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M00_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M01_AXI [get_bd_intf_pins axi_iic_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M01_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M02_AXI [get_bd_intf_pins axi_iic_1/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M02_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M03_AXI [get_bd_intf_pins fan_con_0/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M03_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M04_AXI [get_bd_intf_pins fan_con_1/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M04_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M05_AXI [get_bd_intf_pins fan_con_2/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M05_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M06_AXI [get_bd_intf_pins fan_con_3/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M06_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M07_AXI [get_bd_intf_pins debug_bridge_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M07_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M08_AXI [get_bd_intf_pins ps8_0_axi_periph/M08_AXI] [get_bd_intf_pins uartlite_00/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M09_AXI [get_bd_intf_pins ps8_0_axi_periph/M09_AXI] [get_bd_intf_pins uartlite_01/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M10_AXI [get_bd_intf_pins ps8_0_axi_periph/M10_AXI] [get_bd_intf_pins uartlite_02/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M11_AXI [get_bd_intf_pins ps8_0_axi_periph/M11_AXI] [get_bd_intf_pins uartlite_03/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M12_AXI [get_bd_intf_pins ps8_0_axi_periph/M12_AXI] [get_bd_intf_pins uartlite_04/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M13_AXI [get_bd_intf_pins ps8_0_axi_periph/M13_AXI] [get_bd_intf_pins uartlite_05/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M14_AXI [get_bd_intf_pins ps8_0_axi_periph/M14_AXI] [get_bd_intf_pins uartlite_06/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M15_AXI [get_bd_intf_pins ps8_0_axi_periph/M15_AXI] [get_bd_intf_pins uartlite_07/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M16_AXI [get_bd_intf_pins ps8_0_axi_periph/M16_AXI] [get_bd_intf_pins uartlite_08/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M17_AXI [get_bd_intf_pins ps8_0_axi_periph/M17_AXI] [get_bd_intf_pins uartlite_09/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M18_AXI [get_bd_intf_pins ps8_0_axi_periph/M18_AXI] [get_bd_intf_pins uartlite_10/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M19_AXI [get_bd_intf_pins ps8_0_axi_periph/M19_AXI] [get_bd_intf_pins uartlite_11/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M20_AXI [get_bd_intf_pins ps8_0_axi_periph/M20_AXI] [get_bd_intf_pins uartlite_12/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M21_AXI [get_bd_intf_pins ps8_0_axi_periph/M21_AXI] [get_bd_intf_pins uartlite_13/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M22_AXI [get_bd_intf_pins ps8_0_axi_periph/M22_AXI] [get_bd_intf_pins uartlite_14/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M23_AXI [get_bd_intf_pins ps8_0_axi_periph/M23_AXI] [get_bd_intf_pins uartlite_15/S_AXI]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M24_AXI [get_bd_intf_pins axi_uart_intc/s_axi] [get_bd_intf_pins ps8_0_axi_periph/M24_AXI]
   connect_bd_intf_net -intf_net uartlite_00_UART [get_bd_intf_ports uart_rtl_0] [get_bd_intf_pins uartlite_00/UART]
-  connect_bd_intf_net -intf_net uartlite_10_UART [get_bd_intf_ports uart_rtl_10] [get_bd_intf_pins uartlite_10/UART]
-  connect_bd_intf_net -intf_net uartlite_11_UART [get_bd_intf_ports uart_rtl_11] [get_bd_intf_pins uartlite_11/UART]
-  connect_bd_intf_net -intf_net uartlite_12_UART [get_bd_intf_ports uart_rtl_12] [get_bd_intf_pins uartlite_12/UART]
-  connect_bd_intf_net -intf_net uartlite_13_UART [get_bd_intf_ports uart_rtl_13] [get_bd_intf_pins uartlite_13/UART]
-  connect_bd_intf_net -intf_net uartlite_14_UART [get_bd_intf_ports uart_rtl_14] [get_bd_intf_pins uartlite_14/UART]
-  connect_bd_intf_net -intf_net uartlite_15_UART [get_bd_intf_ports uart_rtl_15] [get_bd_intf_pins uartlite_15/UART]
   connect_bd_intf_net -intf_net uartlite_01_UART [get_bd_intf_ports uart_rtl_1] [get_bd_intf_pins uartlite_01/UART]
   connect_bd_intf_net -intf_net uartlite_02_UART [get_bd_intf_ports uart_rtl_2] [get_bd_intf_pins uartlite_02/UART]
   connect_bd_intf_net -intf_net uartlite_03_UART [get_bd_intf_ports uart_rtl_3] [get_bd_intf_pins uartlite_03/UART]
@@ -776,58 +1205,51 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net uartlite_07_UART [get_bd_intf_ports uart_rtl_7] [get_bd_intf_pins uartlite_07/UART]
   connect_bd_intf_net -intf_net uartlite_08_UART [get_bd_intf_ports uart_rtl_8] [get_bd_intf_pins uartlite_08/UART]
   connect_bd_intf_net -intf_net uartlite_09_UART [get_bd_intf_ports uart_rtl_9] [get_bd_intf_pins uartlite_09/UART]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M00_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M01_AXI [get_bd_intf_pins axi_iic_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M01_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M02_AXI [get_bd_intf_pins axi_iic_1/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M02_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M03_AXI [get_bd_intf_pins fan_con_0/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M03_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M04_AXI [get_bd_intf_pins fan_con_1/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M04_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M05_AXI [get_bd_intf_pins fan_con_2/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M05_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M06_AXI [get_bd_intf_pins fan_con_3/s_axi_lite] [get_bd_intf_pins ps8_0_axi_periph/M06_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M07_AXI [get_bd_intf_pins debug_bridge_0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M07_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M08_AXI [get_bd_intf_pins uartlite_00/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M08_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M09_AXI [get_bd_intf_pins uartlite_01/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M09_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M10_AXI [get_bd_intf_pins uartlite_02/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M10_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M11_AXI [get_bd_intf_pins uartlite_03/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M11_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M12_AXI [get_bd_intf_pins uartlite_04/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M12_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M13_AXI [get_bd_intf_pins uartlite_05/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M13_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M14_AXI [get_bd_intf_pins uartlite_06/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M14_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M15_AXI [get_bd_intf_pins uartlite_07/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M15_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M16_AXI [get_bd_intf_pins uartlite_08/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M16_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M17_AXI [get_bd_intf_pins uartlite_09/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M17_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M18_AXI [get_bd_intf_pins uartlite_10/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M18_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M19_AXI [get_bd_intf_pins uartlite_11/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M19_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M20_AXI [get_bd_intf_pins uartlite_12/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M20_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M21_AXI [get_bd_intf_pins uartlite_13/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M21_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M22_AXI [get_bd_intf_pins uartlite_14/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M22_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M23_AXI [get_bd_intf_pins uartlite_15/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M23_AXI]
-  connect_bd_intf_net -intf_net ps8_0_axi_periph_M24_AXI [get_bd_intf_pins axi_uart_intc/s_axi] [get_bd_intf_pins ps8_0_axi_periph/M24_AXI]
+  connect_bd_intf_net -intf_net uartlite_10_UART [get_bd_intf_ports uart_rtl_10] [get_bd_intf_pins uartlite_10/UART]
+  connect_bd_intf_net -intf_net uartlite_11_UART [get_bd_intf_ports uart_rtl_11] [get_bd_intf_pins uartlite_11/UART]
+  connect_bd_intf_net -intf_net uartlite_12_UART [get_bd_intf_ports uart_rtl_12] [get_bd_intf_pins uartlite_12/UART]
+  connect_bd_intf_net -intf_net uartlite_13_UART [get_bd_intf_ports uart_rtl_13] [get_bd_intf_pins uartlite_13/UART]
+  connect_bd_intf_net -intf_net uartlite_14_UART [get_bd_intf_ports uart_rtl_14] [get_bd_intf_pins uartlite_14/UART]
+  connect_bd_intf_net -intf_net uartlite_15_UART [get_bd_intf_ports uart_rtl_15] [get_bd_intf_pins uartlite_15/UART]
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_FPD [get_bd_intf_pins ps8_0_axi_periph/S00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_FPD]
+  connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins axi_ic_nf_gpio/S00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_LPD]
 
   # Create port connections
+  connect_bd_net -net Net [get_bd_ports nf_gpio_0_io] [get_bd_pins nf_gpio_0_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net1 [get_bd_ports nf_gpio_0_io_2] [get_bd_pins nf_gpio_0_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net2 [get_bd_ports nf_gpio_1_io] [get_bd_pins nf_gpio_1_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net3 [get_bd_ports nf_gpio_1_io_2] [get_bd_pins nf_gpio_1_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net4 [get_bd_ports nf_gpio_2_io] [get_bd_pins nf_gpio_2_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net5 [get_bd_ports nf_gpio_2_io_2] [get_bd_pins nf_gpio_2_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net6 [get_bd_ports nf_gpio_3_io] [get_bd_pins nf_gpio_3_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net7 [get_bd_ports nf_gpio_3_io_2] [get_bd_pins nf_gpio_3_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net8 [get_bd_ports nf_gpio_4_io] [get_bd_pins nf_gpio_4_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net9 [get_bd_ports nf_gpio_4_io_2] [get_bd_pins nf_gpio_4_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net10 [get_bd_ports nf_gpio_5_io] [get_bd_pins nf_gpio_5_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net11 [get_bd_ports nf_gpio_5_io_2] [get_bd_pins nf_gpio_5_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net12 [get_bd_ports nf_gpio_6_io] [get_bd_pins nf_gpio_6_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net13 [get_bd_ports nf_gpio_6_io_2] [get_bd_pins nf_gpio_6_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net14 [get_bd_ports nf_gpio_7_io] [get_bd_pins nf_gpio_7_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net15 [get_bd_ports nf_gpio_7_io_2] [get_bd_pins nf_gpio_7_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net16 [get_bd_ports nf_gpio_8_io] [get_bd_pins nf_gpio_8_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net17 [get_bd_ports nf_gpio_8_io_2] [get_bd_pins nf_gpio_8_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net18 [get_bd_ports nf_gpio_9_io] [get_bd_pins nf_gpio_9_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net19 [get_bd_ports nf_gpio_9_io_2] [get_bd_pins nf_gpio_9_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net20 [get_bd_ports nf_gpio_10_io] [get_bd_pins nf_gpio_10_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net21 [get_bd_ports nf_gpio_10_io_2] [get_bd_pins nf_gpio_10_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net22 [get_bd_ports nf_gpio_11_io] [get_bd_pins nf_gpio_11_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net23 [get_bd_ports nf_gpio_11_io_2] [get_bd_pins nf_gpio_11_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net24 [get_bd_ports nf_gpio_12_io] [get_bd_pins nf_gpio_12_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net25 [get_bd_ports nf_gpio_12_io_2] [get_bd_pins nf_gpio_12_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net26 [get_bd_ports nf_gpio_13_io] [get_bd_pins nf_gpio_13_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net27 [get_bd_ports nf_gpio_13_io_2] [get_bd_pins nf_gpio_13_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net28 [get_bd_ports nf_gpio_14_io] [get_bd_pins nf_gpio_14_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net29 [get_bd_ports nf_gpio_14_io_2] [get_bd_pins nf_gpio_14_buf_2/IOBUF_IO_IO]
+  connect_bd_net -net Net30 [get_bd_ports nf_gpio_15_io] [get_bd_pins nf_gpio_15_buf/IOBUF_IO_IO]
+  connect_bd_net -net Net31 [get_bd_ports nf_gpio_15_io_2] [get_bd_pins nf_gpio_15_buf_2/IOBUF_IO_IO]
   connect_bd_net -net axi_gpio_0_gpio2_io_o [get_bd_pins axi_gpio_0/gpio2_io_o] [get_bd_pins xlslice_0/Din] [get_bd_pins xlslice_1/Din]
-  connect_bd_net -net uartlite_00_interrupt [get_bd_pins uartlite_00/interrupt] [get_bd_pins xlconcat_0/In0]
-  connect_bd_net -net uartlite_10_interrupt [get_bd_pins uartlite_10/interrupt] [get_bd_pins xlconcat_0/In10]
-  connect_bd_net -net uartlite_11_interrupt [get_bd_pins uartlite_11/interrupt] [get_bd_pins xlconcat_0/In11]
-  connect_bd_net -net uartlite_12_interrupt [get_bd_pins uartlite_12/interrupt] [get_bd_pins xlconcat_0/In12]
-  connect_bd_net -net uartlite_13_interrupt [get_bd_pins uartlite_13/interrupt] [get_bd_pins xlconcat_0/In13]
-  connect_bd_net -net uartlite_14_interrupt [get_bd_pins uartlite_14/interrupt] [get_bd_pins xlconcat_0/In14]
-  connect_bd_net -net uartlite_15_interrupt [get_bd_pins uartlite_15/interrupt] [get_bd_pins xlconcat_0/In15]
-  connect_bd_net -net uartlite_01_interrupt [get_bd_pins uartlite_01/interrupt] [get_bd_pins xlconcat_0/In1]
-  connect_bd_net -net uartlite_02_interrupt [get_bd_pins uartlite_02/interrupt] [get_bd_pins xlconcat_0/In2]
-  connect_bd_net -net uartlite_03_interrupt [get_bd_pins uartlite_03/interrupt] [get_bd_pins xlconcat_0/In3]
-  connect_bd_net -net uartlite_04_interrupt [get_bd_pins uartlite_04/interrupt] [get_bd_pins xlconcat_0/In4]
-  connect_bd_net -net uartlite_05_interrupt [get_bd_pins uartlite_05/interrupt] [get_bd_pins xlconcat_0/In5]
-  connect_bd_net -net uartlite_06_interrupt [get_bd_pins uartlite_06/interrupt] [get_bd_pins xlconcat_0/In6]
-  connect_bd_net -net uartlite_07_interrupt [get_bd_pins uartlite_07/interrupt] [get_bd_pins xlconcat_0/In7]
-  connect_bd_net -net uartlite_08_interrupt [get_bd_pins uartlite_08/interrupt] [get_bd_pins xlconcat_0/In8]
-  connect_bd_net -net uartlite_09_interrupt [get_bd_pins uartlite_09/interrupt] [get_bd_pins xlconcat_0/In9]
-
-  connect_bd_net -net uart_intr [get_bd_pins xlconcat_0/dout] [get_bd_pins axi_uart_intc/intr]
-
   connect_bd_net -net axi_i2c_0_intr [get_bd_pins axi_iic_0/iic2intc_irpt] [get_bd_pins xlconcat_1/In0]
   connect_bd_net -net axi_i2c_1_intr [get_bd_pins axi_iic_1/iic2intc_irpt] [get_bd_pins xlconcat_1/In1]
-  connect_bd_net -net uart_gic_intr [get_bd_pins axi_uart_intc/irq] [get_bd_pins xlconcat_1/In2]
-
   connect_bd_net -net debug_bridge_0_tap_tck [get_bd_ports tck] [get_bd_pins debug_bridge_0/tap_tck]
   connect_bd_net -net debug_bridge_0_tap_tdi [get_bd_ports tdi] [get_bd_pins debug_bridge_0/tap_tdi]
   connect_bd_net -net debug_bridge_0_tap_tms [get_bd_ports tms] [get_bd_pins debug_bridge_0/tap_tms]
@@ -839,26 +1261,156 @@ proc create_root_design { parentCell } {
   connect_bd_net -net fg_1_1 [get_bd_ports fg_1] [get_bd_pins fan_con_1/fg]
   connect_bd_net -net fg_2_1 [get_bd_ports fg_2] [get_bd_pins fan_con_2/fg]
   connect_bd_net -net fg_3_1 [get_bd_ports fg_3] [get_bd_pins fan_con_3/fg]
-  connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_iic_1/s_axi_aresetn] [get_bd_pins uartlite_00/s_axi_aresetn] [get_bd_pins uartlite_01/s_axi_aresetn] [get_bd_pins uartlite_10/s_axi_aresetn] [get_bd_pins uartlite_11/s_axi_aresetn] [get_bd_pins uartlite_12/s_axi_aresetn] [get_bd_pins uartlite_13/s_axi_aresetn] [get_bd_pins uartlite_14/s_axi_aresetn] [get_bd_pins uartlite_15/s_axi_aresetn] [get_bd_pins uartlite_02/s_axi_aresetn] [get_bd_pins uartlite_03/s_axi_aresetn] [get_bd_pins uartlite_04/s_axi_aresetn] [get_bd_pins uartlite_05/s_axi_aresetn] [get_bd_pins uartlite_06/s_axi_aresetn] [get_bd_pins uartlite_07/s_axi_aresetn] [get_bd_pins uartlite_08/s_axi_aresetn] [get_bd_pins uartlite_09/s_axi_aresetn] [get_bd_pins debug_bridge_0/s_axi_aresetn] [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins ps8_0_axi_periph/M02_ARESETN] [get_bd_pins ps8_0_axi_periph/M03_ARESETN] [get_bd_pins ps8_0_axi_periph/M04_ARESETN] [get_bd_pins ps8_0_axi_periph/M05_ARESETN] [get_bd_pins ps8_0_axi_periph/M06_ARESETN] [get_bd_pins ps8_0_axi_periph/M07_ARESETN] [get_bd_pins ps8_0_axi_periph/M08_ARESETN] [get_bd_pins ps8_0_axi_periph/M09_ARESETN] [get_bd_pins ps8_0_axi_periph/M10_ARESETN] [get_bd_pins ps8_0_axi_periph/M11_ARESETN] [get_bd_pins ps8_0_axi_periph/M12_ARESETN] [get_bd_pins ps8_0_axi_periph/M13_ARESETN] [get_bd_pins ps8_0_axi_periph/M14_ARESETN] [get_bd_pins ps8_0_axi_periph/M15_ARESETN] [get_bd_pins ps8_0_axi_periph/M16_ARESETN] [get_bd_pins ps8_0_axi_periph/M17_ARESETN] [get_bd_pins ps8_0_axi_periph/M18_ARESETN] [get_bd_pins ps8_0_axi_periph/M19_ARESETN] [get_bd_pins ps8_0_axi_periph/M20_ARESETN] [get_bd_pins ps8_0_axi_periph/M21_ARESETN] [get_bd_pins ps8_0_axi_periph/M22_ARESETN] [get_bd_pins ps8_0_axi_periph/M23_ARESETN] [get_bd_pins ps8_0_axi_periph/M24_ARESETN] [get_bd_pins axi_uart_intc/s_axi_aresetn] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps8_0_99M/peripheral_aresetn]
+  connect_bd_net -net nf_gpio_0_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_0/gpio2_io_i] [get_bd_pins nf_gpio_0_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_0_buf_IOBUF_IO_O [get_bd_pins nf_gpio_0/gpio_io_i] [get_bd_pins nf_gpio_0_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_0_gpio2_io_o [get_bd_pins nf_gpio_0/gpio2_io_o] [get_bd_pins nf_gpio_0_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_0_gpio2_io_t [get_bd_pins nf_gpio_0/gpio2_io_t] [get_bd_pins nf_gpio_0_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_0_gpio_io_o [get_bd_pins nf_gpio_0/gpio_io_o] [get_bd_pins nf_gpio_0_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_0_gpio_io_t [get_bd_pins nf_gpio_0/gpio_io_t] [get_bd_pins nf_gpio_0_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_10_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_10/gpio2_io_i] [get_bd_pins nf_gpio_10_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_10_buf_IOBUF_IO_O [get_bd_pins nf_gpio_10/gpio_io_i] [get_bd_pins nf_gpio_10_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_10_gpio2_io_o [get_bd_pins nf_gpio_10/gpio2_io_o] [get_bd_pins nf_gpio_10_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_10_gpio2_io_t [get_bd_pins nf_gpio_10/gpio2_io_t] [get_bd_pins nf_gpio_10_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_10_gpio_io_o [get_bd_pins nf_gpio_10/gpio_io_o] [get_bd_pins nf_gpio_10_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_10_gpio_io_t [get_bd_pins nf_gpio_10/gpio_io_t] [get_bd_pins nf_gpio_10_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_11_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_11/gpio2_io_i] [get_bd_pins nf_gpio_11_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_11_buf_IOBUF_IO_O [get_bd_pins nf_gpio_11/gpio_io_i] [get_bd_pins nf_gpio_11_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_11_gpio2_io_o [get_bd_pins nf_gpio_11/gpio2_io_o] [get_bd_pins nf_gpio_11_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_11_gpio2_io_t [get_bd_pins nf_gpio_11/gpio2_io_t] [get_bd_pins nf_gpio_11_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_11_gpio_io_o [get_bd_pins nf_gpio_11/gpio_io_o] [get_bd_pins nf_gpio_11_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_11_gpio_io_t [get_bd_pins nf_gpio_11/gpio_io_t] [get_bd_pins nf_gpio_11_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_12_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_12/gpio2_io_i] [get_bd_pins nf_gpio_12_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_12_buf_IOBUF_IO_O [get_bd_pins nf_gpio_12/gpio_io_i] [get_bd_pins nf_gpio_12_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_12_gpio2_io_o [get_bd_pins nf_gpio_12/gpio2_io_o] [get_bd_pins nf_gpio_12_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_12_gpio2_io_t [get_bd_pins nf_gpio_12/gpio2_io_t] [get_bd_pins nf_gpio_12_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_12_gpio_io_o [get_bd_pins nf_gpio_12/gpio_io_o] [get_bd_pins nf_gpio_12_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_12_gpio_io_t [get_bd_pins nf_gpio_12/gpio_io_t] [get_bd_pins nf_gpio_12_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_13_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_13/gpio2_io_i] [get_bd_pins nf_gpio_13_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_13_buf_IOBUF_IO_O [get_bd_pins nf_gpio_13/gpio_io_i] [get_bd_pins nf_gpio_13_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_13_gpio2_io_o [get_bd_pins nf_gpio_13/gpio2_io_o] [get_bd_pins nf_gpio_13_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_13_gpio2_io_t [get_bd_pins nf_gpio_13/gpio2_io_t] [get_bd_pins nf_gpio_13_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_13_gpio_io_o [get_bd_pins nf_gpio_13/gpio_io_o] [get_bd_pins nf_gpio_13_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_13_gpio_io_t [get_bd_pins nf_gpio_13/gpio_io_t] [get_bd_pins nf_gpio_13_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_14_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_14/gpio2_io_i] [get_bd_pins nf_gpio_14_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_14_buf_IOBUF_IO_O [get_bd_pins nf_gpio_14/gpio_io_i] [get_bd_pins nf_gpio_14_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_14_gpio2_io_o [get_bd_pins nf_gpio_14/gpio2_io_o] [get_bd_pins nf_gpio_14_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_14_gpio2_io_t [get_bd_pins nf_gpio_14/gpio2_io_t] [get_bd_pins nf_gpio_14_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_14_gpio_io_o [get_bd_pins nf_gpio_14/gpio_io_o] [get_bd_pins nf_gpio_14_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_14_gpio_io_t [get_bd_pins nf_gpio_14/gpio_io_t] [get_bd_pins nf_gpio_14_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_15_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_15/gpio2_io_i] [get_bd_pins nf_gpio_15_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_15_buf_IOBUF_IO_O [get_bd_pins nf_gpio_15/gpio_io_i] [get_bd_pins nf_gpio_15_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_15_gpio2_io_o [get_bd_pins nf_gpio_15/gpio2_io_o] [get_bd_pins nf_gpio_15_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_15_gpio2_io_t [get_bd_pins nf_gpio_15/gpio2_io_t] [get_bd_pins nf_gpio_15_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_15_gpio_io_o [get_bd_pins nf_gpio_15/gpio_io_o] [get_bd_pins nf_gpio_15_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_15_gpio_io_t [get_bd_pins nf_gpio_15/gpio_io_t] [get_bd_pins nf_gpio_15_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_1_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_1/gpio2_io_i] [get_bd_pins nf_gpio_1_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_1_buf_IOBUF_IO_O [get_bd_pins nf_gpio_1/gpio_io_i] [get_bd_pins nf_gpio_1_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_1_gpio2_io_o [get_bd_pins nf_gpio_1/gpio2_io_o] [get_bd_pins nf_gpio_1_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_1_gpio2_io_t [get_bd_pins nf_gpio_1/gpio2_io_t] [get_bd_pins nf_gpio_1_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_1_gpio_io_o [get_bd_pins nf_gpio_1/gpio_io_o] [get_bd_pins nf_gpio_1_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_1_gpio_io_t [get_bd_pins nf_gpio_1/gpio_io_t] [get_bd_pins nf_gpio_1_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_2_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_2/gpio2_io_i] [get_bd_pins nf_gpio_2_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_2_buf_IOBUF_IO_O [get_bd_pins nf_gpio_2/gpio_io_i] [get_bd_pins nf_gpio_2_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_2_gpio2_io_o [get_bd_pins nf_gpio_2/gpio2_io_o] [get_bd_pins nf_gpio_2_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_2_gpio2_io_t [get_bd_pins nf_gpio_2/gpio2_io_t] [get_bd_pins nf_gpio_2_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_2_gpio_io_o [get_bd_pins nf_gpio_2/gpio_io_o] [get_bd_pins nf_gpio_2_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_2_gpio_io_t [get_bd_pins nf_gpio_2/gpio_io_t] [get_bd_pins nf_gpio_2_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_3_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_3/gpio2_io_i] [get_bd_pins nf_gpio_3_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_3_buf_IOBUF_IO_O [get_bd_pins nf_gpio_3/gpio_io_i] [get_bd_pins nf_gpio_3_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_3_gpio2_io_o [get_bd_pins nf_gpio_3/gpio2_io_o] [get_bd_pins nf_gpio_3_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_3_gpio2_io_t [get_bd_pins nf_gpio_3/gpio2_io_t] [get_bd_pins nf_gpio_3_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_3_gpio_io_o [get_bd_pins nf_gpio_3/gpio_io_o] [get_bd_pins nf_gpio_3_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_3_gpio_io_t [get_bd_pins nf_gpio_3/gpio_io_t] [get_bd_pins nf_gpio_3_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_4_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_4/gpio2_io_i] [get_bd_pins nf_gpio_4_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_4_buf_IOBUF_IO_O [get_bd_pins nf_gpio_4/gpio_io_i] [get_bd_pins nf_gpio_4_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_4_gpio2_io_o [get_bd_pins nf_gpio_4/gpio2_io_o] [get_bd_pins nf_gpio_4_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_4_gpio2_io_t [get_bd_pins nf_gpio_4/gpio2_io_t] [get_bd_pins nf_gpio_4_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_4_gpio_io_o [get_bd_pins nf_gpio_4/gpio_io_o] [get_bd_pins nf_gpio_4_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_4_gpio_io_t [get_bd_pins nf_gpio_4/gpio_io_t] [get_bd_pins nf_gpio_4_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_5_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_5/gpio2_io_i] [get_bd_pins nf_gpio_5_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_5_buf_IOBUF_IO_O [get_bd_pins nf_gpio_5/gpio_io_i] [get_bd_pins nf_gpio_5_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_5_gpio2_io_o [get_bd_pins nf_gpio_5/gpio2_io_o] [get_bd_pins nf_gpio_5_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_5_gpio2_io_t [get_bd_pins nf_gpio_5/gpio2_io_t] [get_bd_pins nf_gpio_5_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_5_gpio_io_o [get_bd_pins nf_gpio_5/gpio_io_o] [get_bd_pins nf_gpio_5_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_5_gpio_io_t [get_bd_pins nf_gpio_5/gpio_io_t] [get_bd_pins nf_gpio_5_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_6_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_6/gpio2_io_i] [get_bd_pins nf_gpio_6_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_6_buf_IOBUF_IO_O [get_bd_pins nf_gpio_6/gpio_io_i] [get_bd_pins nf_gpio_6_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_6_gpio2_io_o [get_bd_pins nf_gpio_6/gpio2_io_o] [get_bd_pins nf_gpio_6_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_6_gpio2_io_t [get_bd_pins nf_gpio_6/gpio2_io_t] [get_bd_pins nf_gpio_6_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_6_gpio_io_o [get_bd_pins nf_gpio_6/gpio_io_o] [get_bd_pins nf_gpio_6_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_6_gpio_io_t [get_bd_pins nf_gpio_6/gpio_io_t] [get_bd_pins nf_gpio_6_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_7_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_7/gpio2_io_i] [get_bd_pins nf_gpio_7_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_7_buf_IOBUF_IO_O [get_bd_pins nf_gpio_7/gpio_io_i] [get_bd_pins nf_gpio_7_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_7_gpio2_io_o [get_bd_pins nf_gpio_7/gpio2_io_o] [get_bd_pins nf_gpio_7_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_7_gpio2_io_t [get_bd_pins nf_gpio_7/gpio2_io_t] [get_bd_pins nf_gpio_7_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_7_gpio_io_o [get_bd_pins nf_gpio_7/gpio_io_o] [get_bd_pins nf_gpio_7_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_7_gpio_io_t [get_bd_pins nf_gpio_7/gpio_io_t] [get_bd_pins nf_gpio_7_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_8_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_8/gpio2_io_i] [get_bd_pins nf_gpio_8_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_8_buf_IOBUF_IO_O [get_bd_pins nf_gpio_8/gpio_io_i] [get_bd_pins nf_gpio_8_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_8_gpio2_io_o [get_bd_pins nf_gpio_8/gpio2_io_o] [get_bd_pins nf_gpio_8_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_8_gpio2_io_t [get_bd_pins nf_gpio_8/gpio2_io_t] [get_bd_pins nf_gpio_8_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_8_gpio_io_o [get_bd_pins nf_gpio_8/gpio_io_o] [get_bd_pins nf_gpio_8_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_8_gpio_io_t [get_bd_pins nf_gpio_8/gpio_io_t] [get_bd_pins nf_gpio_8_buf/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_9_buf_2_IOBUF_IO_O [get_bd_pins nf_gpio_9/gpio2_io_i] [get_bd_pins nf_gpio_9_buf_2/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_9_buf_IOBUF_IO_O [get_bd_pins nf_gpio_9/gpio_io_i] [get_bd_pins nf_gpio_9_buf/IOBUF_IO_O]
+  connect_bd_net -net nf_gpio_9_gpio2_io_o [get_bd_pins nf_gpio_9/gpio2_io_o] [get_bd_pins nf_gpio_9_buf_2/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_9_gpio2_io_t [get_bd_pins nf_gpio_9/gpio2_io_t] [get_bd_pins nf_gpio_9_buf_2/IOBUF_IO_T]
+  connect_bd_net -net nf_gpio_9_gpio_io_o [get_bd_pins nf_gpio_9/gpio_io_o] [get_bd_pins nf_gpio_9_buf/IOBUF_IO_I]
+  connect_bd_net -net nf_gpio_9_gpio_io_t [get_bd_pins nf_gpio_9/gpio_io_t] [get_bd_pins nf_gpio_9_buf/IOBUF_IO_T]
+  connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_ic_nf_gpio/ARESETN] [get_bd_pins axi_ic_nf_gpio/M00_ARESETN] [get_bd_pins axi_ic_nf_gpio/M01_ARESETN] [get_bd_pins axi_ic_nf_gpio/M02_ARESETN] [get_bd_pins axi_ic_nf_gpio/M03_ARESETN] [get_bd_pins axi_ic_nf_gpio/M04_ARESETN] [get_bd_pins axi_ic_nf_gpio/M05_ARESETN] [get_bd_pins axi_ic_nf_gpio/M06_ARESETN] [get_bd_pins axi_ic_nf_gpio/M07_ARESETN] [get_bd_pins axi_ic_nf_gpio/M08_ARESETN] [get_bd_pins axi_ic_nf_gpio/M09_ARESETN] [get_bd_pins axi_ic_nf_gpio/M10_ARESETN] [get_bd_pins axi_ic_nf_gpio/M11_ARESETN] [get_bd_pins axi_ic_nf_gpio/M12_ARESETN] [get_bd_pins axi_ic_nf_gpio/M13_ARESETN] [get_bd_pins axi_ic_nf_gpio/M14_ARESETN] [get_bd_pins axi_ic_nf_gpio/M15_ARESETN] [get_bd_pins axi_ic_nf_gpio/S00_ARESETN] [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_iic_1/s_axi_aresetn] [get_bd_pins axi_uart_intc/s_axi_aresetn] [get_bd_pins debug_bridge_0/s_axi_aresetn] [get_bd_pins nf_gpio_0/s_axi_aresetn] [get_bd_pins nf_gpio_1/s_axi_aresetn] [get_bd_pins nf_gpio_10/s_axi_aresetn] [get_bd_pins nf_gpio_11/s_axi_aresetn] [get_bd_pins nf_gpio_12/s_axi_aresetn] [get_bd_pins nf_gpio_13/s_axi_aresetn] [get_bd_pins nf_gpio_14/s_axi_aresetn] [get_bd_pins nf_gpio_15/s_axi_aresetn] [get_bd_pins nf_gpio_2/s_axi_aresetn] [get_bd_pins nf_gpio_3/s_axi_aresetn] [get_bd_pins nf_gpio_4/s_axi_aresetn] [get_bd_pins nf_gpio_5/s_axi_aresetn] [get_bd_pins nf_gpio_6/s_axi_aresetn] [get_bd_pins nf_gpio_7/s_axi_aresetn] [get_bd_pins nf_gpio_8/s_axi_aresetn] [get_bd_pins nf_gpio_9/s_axi_aresetn] [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins ps8_0_axi_periph/M02_ARESETN] [get_bd_pins ps8_0_axi_periph/M03_ARESETN] [get_bd_pins ps8_0_axi_periph/M04_ARESETN] [get_bd_pins ps8_0_axi_periph/M05_ARESETN] [get_bd_pins ps8_0_axi_periph/M06_ARESETN] [get_bd_pins ps8_0_axi_periph/M07_ARESETN] [get_bd_pins ps8_0_axi_periph/M08_ARESETN] [get_bd_pins ps8_0_axi_periph/M09_ARESETN] [get_bd_pins ps8_0_axi_periph/M10_ARESETN] [get_bd_pins ps8_0_axi_periph/M11_ARESETN] [get_bd_pins ps8_0_axi_periph/M12_ARESETN] [get_bd_pins ps8_0_axi_periph/M13_ARESETN] [get_bd_pins ps8_0_axi_periph/M14_ARESETN] [get_bd_pins ps8_0_axi_periph/M15_ARESETN] [get_bd_pins ps8_0_axi_periph/M16_ARESETN] [get_bd_pins ps8_0_axi_periph/M17_ARESETN] [get_bd_pins ps8_0_axi_periph/M18_ARESETN] [get_bd_pins ps8_0_axi_periph/M19_ARESETN] [get_bd_pins ps8_0_axi_periph/M20_ARESETN] [get_bd_pins ps8_0_axi_periph/M21_ARESETN] [get_bd_pins ps8_0_axi_periph/M22_ARESETN] [get_bd_pins ps8_0_axi_periph/M23_ARESETN] [get_bd_pins ps8_0_axi_periph/M24_ARESETN] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps8_0_99M/peripheral_aresetn] [get_bd_pins uartlite_00/s_axi_aresetn] [get_bd_pins uartlite_01/s_axi_aresetn] [get_bd_pins uartlite_02/s_axi_aresetn] [get_bd_pins uartlite_03/s_axi_aresetn] [get_bd_pins uartlite_04/s_axi_aresetn] [get_bd_pins uartlite_05/s_axi_aresetn] [get_bd_pins uartlite_06/s_axi_aresetn] [get_bd_pins uartlite_07/s_axi_aresetn] [get_bd_pins uartlite_08/s_axi_aresetn] [get_bd_pins uartlite_09/s_axi_aresetn] [get_bd_pins uartlite_10/s_axi_aresetn] [get_bd_pins uartlite_11/s_axi_aresetn] [get_bd_pins uartlite_12/s_axi_aresetn] [get_bd_pins uartlite_13/s_axi_aresetn] [get_bd_pins uartlite_14/s_axi_aresetn] [get_bd_pins uartlite_15/s_axi_aresetn]
   connect_bd_net -net rst_ps8_0_99M_peripheral_reset [get_bd_pins fan_con_0/reset] [get_bd_pins fan_con_1/reset] [get_bd_pins fan_con_2/reset] [get_bd_pins fan_con_3/reset] [get_bd_pins rst_ps8_0_99M/peripheral_reset]
   connect_bd_net -net tap_tdo_0_1 [get_bd_ports tdo] [get_bd_pins debug_bridge_0/tap_tdo]
+  connect_bd_net -net uart_gic_intr [get_bd_pins axi_uart_intc/irq] [get_bd_pins xlconcat_1/In2]
+  connect_bd_net -net uart_intr [get_bd_pins axi_uart_intc/intr] [get_bd_pins xlconcat_0/dout]
+  connect_bd_net -net uartlite_00_interrupt [get_bd_pins uartlite_00/interrupt] [get_bd_pins xlconcat_0/In0]
+  connect_bd_net -net uartlite_01_interrupt [get_bd_pins uartlite_01/interrupt] [get_bd_pins xlconcat_0/In1]
+  connect_bd_net -net uartlite_02_interrupt [get_bd_pins uartlite_02/interrupt] [get_bd_pins xlconcat_0/In2]
+  connect_bd_net -net uartlite_03_interrupt [get_bd_pins uartlite_03/interrupt] [get_bd_pins xlconcat_0/In3]
+  connect_bd_net -net uartlite_04_interrupt [get_bd_pins uartlite_04/interrupt] [get_bd_pins xlconcat_0/In4]
+  connect_bd_net -net uartlite_05_interrupt [get_bd_pins uartlite_05/interrupt] [get_bd_pins xlconcat_0/In5]
+  connect_bd_net -net uartlite_06_interrupt [get_bd_pins uartlite_06/interrupt] [get_bd_pins xlconcat_0/In6]
+  connect_bd_net -net uartlite_07_interrupt [get_bd_pins uartlite_07/interrupt] [get_bd_pins xlconcat_0/In7]
+  connect_bd_net -net uartlite_08_interrupt [get_bd_pins uartlite_08/interrupt] [get_bd_pins xlconcat_0/In8]
+  connect_bd_net -net uartlite_09_interrupt [get_bd_pins uartlite_09/interrupt] [get_bd_pins xlconcat_0/In9]
+  connect_bd_net -net uartlite_10_interrupt [get_bd_pins uartlite_10/interrupt] [get_bd_pins xlconcat_0/In10]
+  connect_bd_net -net uartlite_11_interrupt [get_bd_pins uartlite_11/interrupt] [get_bd_pins xlconcat_0/In11]
+  connect_bd_net -net uartlite_12_interrupt [get_bd_pins uartlite_12/interrupt] [get_bd_pins xlconcat_0/In12]
+  connect_bd_net -net uartlite_13_interrupt [get_bd_pins uartlite_13/interrupt] [get_bd_pins xlconcat_0/In13]
+  connect_bd_net -net uartlite_14_interrupt [get_bd_pins uartlite_14/interrupt] [get_bd_pins xlconcat_0/In14]
+  connect_bd_net -net uartlite_15_interrupt [get_bd_pins uartlite_15/interrupt] [get_bd_pins xlconcat_0/In15]
   connect_bd_net -net xlconcat_1_dout [get_bd_pins xlconcat_1/dout] [get_bd_pins zynq_ultra_ps_e_0/pl_ps_irq0]
   connect_bd_net -net xlslice_0_Dout [get_bd_ports bcm_switch_reset_n] [get_bd_pins xlslice_0/Dout]
   connect_bd_net -net xlslice_1_Dout [get_bd_ports iic_switch_reset_n] [get_bd_pins xlslice_1/Dout]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_uart_intc/s_axi_aclk] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_iic_1/s_axi_aclk] [get_bd_pins uartlite_00/s_axi_aclk] [get_bd_pins uartlite_01/s_axi_aclk] [get_bd_pins uartlite_10/s_axi_aclk] [get_bd_pins uartlite_11/s_axi_aclk] [get_bd_pins uartlite_12/s_axi_aclk] [get_bd_pins uartlite_13/s_axi_aclk] [get_bd_pins uartlite_14/s_axi_aclk] [get_bd_pins uartlite_15/s_axi_aclk] [get_bd_pins uartlite_02/s_axi_aclk] [get_bd_pins uartlite_03/s_axi_aclk] [get_bd_pins uartlite_04/s_axi_aclk] [get_bd_pins uartlite_05/s_axi_aclk] [get_bd_pins uartlite_06/s_axi_aclk] [get_bd_pins uartlite_07/s_axi_aclk] [get_bd_pins uartlite_08/s_axi_aclk] [get_bd_pins uartlite_09/s_axi_aclk] [get_bd_pins debug_bridge_0/s_axi_aclk] [get_bd_pins fan_con_0/clk_100m] [get_bd_pins fan_con_1/clk_100m] [get_bd_pins fan_con_2/clk_100m] [get_bd_pins fan_con_3/clk_100m] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins ps8_0_axi_periph/M06_ACLK] [get_bd_pins ps8_0_axi_periph/M07_ACLK] [get_bd_pins ps8_0_axi_periph/M08_ACLK] [get_bd_pins ps8_0_axi_periph/M09_ACLK] [get_bd_pins ps8_0_axi_periph/M10_ACLK] [get_bd_pins ps8_0_axi_periph/M11_ACLK] [get_bd_pins ps8_0_axi_periph/M12_ACLK] [get_bd_pins ps8_0_axi_periph/M13_ACLK] [get_bd_pins ps8_0_axi_periph/M14_ACLK] [get_bd_pins ps8_0_axi_periph/M15_ACLK] [get_bd_pins ps8_0_axi_periph/M16_ACLK] [get_bd_pins ps8_0_axi_periph/M17_ACLK] [get_bd_pins ps8_0_axi_periph/M18_ACLK] [get_bd_pins ps8_0_axi_periph/M19_ACLK] [get_bd_pins ps8_0_axi_periph/M20_ACLK] [get_bd_pins ps8_0_axi_periph/M21_ACLK] [get_bd_pins ps8_0_axi_periph/M22_ACLK] [get_bd_pins ps8_0_axi_periph/M23_ACLK] [get_bd_pins ps8_0_axi_periph/M24_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk0 [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_ic_nf_gpio/ACLK] [get_bd_pins axi_ic_nf_gpio/M00_ACLK] [get_bd_pins axi_ic_nf_gpio/M01_ACLK] [get_bd_pins axi_ic_nf_gpio/M02_ACLK] [get_bd_pins axi_ic_nf_gpio/M03_ACLK] [get_bd_pins axi_ic_nf_gpio/M04_ACLK] [get_bd_pins axi_ic_nf_gpio/M05_ACLK] [get_bd_pins axi_ic_nf_gpio/M06_ACLK] [get_bd_pins axi_ic_nf_gpio/M07_ACLK] [get_bd_pins axi_ic_nf_gpio/M08_ACLK] [get_bd_pins axi_ic_nf_gpio/M09_ACLK] [get_bd_pins axi_ic_nf_gpio/M10_ACLK] [get_bd_pins axi_ic_nf_gpio/M11_ACLK] [get_bd_pins axi_ic_nf_gpio/M12_ACLK] [get_bd_pins axi_ic_nf_gpio/M13_ACLK] [get_bd_pins axi_ic_nf_gpio/M14_ACLK] [get_bd_pins axi_ic_nf_gpio/M15_ACLK] [get_bd_pins axi_ic_nf_gpio/S00_ACLK] [get_bd_pins axi_iic_0/s_axi_aclk] [get_bd_pins axi_iic_1/s_axi_aclk] [get_bd_pins axi_uart_intc/s_axi_aclk] [get_bd_pins debug_bridge_0/s_axi_aclk] [get_bd_pins fan_con_0/clk_100m] [get_bd_pins fan_con_1/clk_100m] [get_bd_pins fan_con_2/clk_100m] [get_bd_pins fan_con_3/clk_100m] [get_bd_pins nf_gpio_0/s_axi_aclk] [get_bd_pins nf_gpio_1/s_axi_aclk] [get_bd_pins nf_gpio_10/s_axi_aclk] [get_bd_pins nf_gpio_11/s_axi_aclk] [get_bd_pins nf_gpio_12/s_axi_aclk] [get_bd_pins nf_gpio_13/s_axi_aclk] [get_bd_pins nf_gpio_14/s_axi_aclk] [get_bd_pins nf_gpio_15/s_axi_aclk] [get_bd_pins nf_gpio_2/s_axi_aclk] [get_bd_pins nf_gpio_3/s_axi_aclk] [get_bd_pins nf_gpio_4/s_axi_aclk] [get_bd_pins nf_gpio_5/s_axi_aclk] [get_bd_pins nf_gpio_6/s_axi_aclk] [get_bd_pins nf_gpio_7/s_axi_aclk] [get_bd_pins nf_gpio_8/s_axi_aclk] [get_bd_pins nf_gpio_9/s_axi_aclk] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins ps8_0_axi_periph/M06_ACLK] [get_bd_pins ps8_0_axi_periph/M07_ACLK] [get_bd_pins ps8_0_axi_periph/M08_ACLK] [get_bd_pins ps8_0_axi_periph/M09_ACLK] [get_bd_pins ps8_0_axi_periph/M10_ACLK] [get_bd_pins ps8_0_axi_periph/M11_ACLK] [get_bd_pins ps8_0_axi_periph/M12_ACLK] [get_bd_pins ps8_0_axi_periph/M13_ACLK] [get_bd_pins ps8_0_axi_periph/M14_ACLK] [get_bd_pins ps8_0_axi_periph/M15_ACLK] [get_bd_pins ps8_0_axi_periph/M16_ACLK] [get_bd_pins ps8_0_axi_periph/M17_ACLK] [get_bd_pins ps8_0_axi_periph/M18_ACLK] [get_bd_pins ps8_0_axi_periph/M19_ACLK] [get_bd_pins ps8_0_axi_periph/M20_ACLK] [get_bd_pins ps8_0_axi_periph/M21_ACLK] [get_bd_pins ps8_0_axi_periph/M22_ACLK] [get_bd_pins ps8_0_axi_periph/M23_ACLK] [get_bd_pins ps8_0_axi_periph/M24_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins uartlite_00/s_axi_aclk] [get_bd_pins uartlite_01/s_axi_aclk] [get_bd_pins uartlite_02/s_axi_aclk] [get_bd_pins uartlite_03/s_axi_aclk] [get_bd_pins uartlite_04/s_axi_aclk] [get_bd_pins uartlite_05/s_axi_aclk] [get_bd_pins uartlite_06/s_axi_aclk] [get_bd_pins uartlite_07/s_axi_aclk] [get_bd_pins uartlite_08/s_axi_aclk] [get_bd_pins uartlite_09/s_axi_aclk] [get_bd_pins uartlite_10/s_axi_aclk] [get_bd_pins uartlite_11/s_axi_aclk] [get_bd_pins uartlite_12/s_axi_aclk] [get_bd_pins uartlite_13/s_axi_aclk] [get_bd_pins uartlite_14/s_axi_aclk] [get_bd_pins uartlite_15/s_axi_aclk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_fpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins rst_ps8_0_99M/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
 
   # Create address segments
   create_bd_addr_seg -range 0x00001000 -offset 0xA0000000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0001000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_iic_0/S_AXI/Reg] SEG_axi_iic_0_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0002000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_iic_1/S_AXI/Reg] SEG_axi_iic_1_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0007000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uart_intc/S_AXI/Reg] SEG_axi_uart_intc_reg0
+  create_bd_addr_seg -range 0x00010000 -offset 0xA0010000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs debug_bridge_0/S_AXI/Reg0] SEG_debug_bridge_0_Reg0
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0003000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_0/s_axi_lite/reg0] SEG_fan_con_0_reg0
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0004000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_1/s_axi_lite/reg0] SEG_fan_con_1_reg0
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0005000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_2/s_axi_lite/reg0] SEG_fan_con_2_reg0
+  create_bd_addr_seg -range 0x00001000 -offset 0xA0006000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_3/s_axi_lite/reg0] SEG_fan_con_3_reg0
+  create_bd_addr_seg -range 0x00001000 -offset 0x80200000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_0/S_AXI/Reg] SEG_nf_gpio_0_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x8020A000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_10/S_AXI/Reg] SEG_nf_gpio_10_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x8020B000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_11/S_AXI/Reg] SEG_nf_gpio_11_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x8020C000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_12/S_AXI/Reg] SEG_nf_gpio_12_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x8020D000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_13/S_AXI/Reg] SEG_nf_gpio_13_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x8020E000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_14/S_AXI/Reg] SEG_nf_gpio_14_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x8020F000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_15/S_AXI/Reg] SEG_nf_gpio_15_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80201000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_1/S_AXI/Reg] SEG_nf_gpio_1_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80202000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_2/S_AXI/Reg] SEG_nf_gpio_2_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80203000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_3/S_AXI/Reg] SEG_nf_gpio_3_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80204000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_4/S_AXI/Reg] SEG_nf_gpio_4_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80205000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_5/S_AXI/Reg] SEG_nf_gpio_5_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80206000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_6/S_AXI/Reg] SEG_nf_gpio_6_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80207000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_7/S_AXI/Reg] SEG_nf_gpio_7_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80208000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_8/S_AXI/Reg] SEG_nf_gpio_8_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0x80209000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs nf_gpio_9/S_AXI/Reg] SEG_nf_gpio_9_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0020000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_00/S_AXI/Reg] SEG_uartlite_00_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002A000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_10/S_AXI/Reg] SEG_uartlite_10_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002B000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_11/S_AXI/Reg] SEG_uartlite_11_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002C000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_12/S_AXI/Reg] SEG_uartlite_12_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002D000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_13/S_AXI/Reg] SEG_uartlite_13_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002E000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_14/S_AXI/Reg] SEG_uartlite_14_Reg
-  create_bd_addr_seg -range 0x00001000 -offset 0xA002F000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_15/S_AXI/Reg] SEG_uartlite_15_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0021000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_01/S_AXI/Reg] SEG_uartlite_01_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0022000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_02/S_AXI/Reg] SEG_uartlite_02_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0023000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_03/S_AXI/Reg] SEG_uartlite_03_Reg
@@ -868,12 +1420,12 @@ proc create_root_design { parentCell } {
   create_bd_addr_seg -range 0x00001000 -offset 0xA0027000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_07/S_AXI/Reg] SEG_uartlite_07_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0028000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_08/S_AXI/Reg] SEG_uartlite_08_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0xA0029000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_09/S_AXI/Reg] SEG_uartlite_09_Reg
-  create_bd_addr_seg -range 0x00010000 -offset 0xA0010000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs debug_bridge_0/S_AXI/Reg0] SEG_debug_bridge_0_Reg0
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0003000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_0/s_axi_lite/reg0] SEG_fan_con_0_reg0
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0004000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_1/s_axi_lite/reg0] SEG_fan_con_1_reg0
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0005000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_2/s_axi_lite/reg0] SEG_fan_con_2_reg0
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0006000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs fan_con_3/s_axi_lite/reg0] SEG_fan_con_3_reg0
-  create_bd_addr_seg -range 0x00001000 -offset 0xA0007000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs axi_uart_intc/s_axi/Reg] SEG_axi_uart_intc_reg0
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002A000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_10/S_AXI/Reg] SEG_uartlite_10_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002B000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_11/S_AXI/Reg] SEG_uartlite_11_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002C000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_12/S_AXI/Reg] SEG_uartlite_12_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002D000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_13/S_AXI/Reg] SEG_uartlite_13_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002E000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_14/S_AXI/Reg] SEG_uartlite_14_Reg
+  create_bd_addr_seg -range 0x00001000 -offset 0xA002F000 [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs uartlite_15/S_AXI/Reg] SEG_uartlite_15_Reg
 
 
   # Restore current instance

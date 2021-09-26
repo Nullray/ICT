@@ -33,3 +33,7 @@
 	path = software/linux
 	url = https://github.com/ict-accel-team/linux-xlnx
 	branch = xilinx-v2020.1-dev
+[submodule "software/qemu"]
+	path = software/qemu
+	url = https://github.com/ict-accel-team/qemu/
+	branch = v4.2.0-dev
