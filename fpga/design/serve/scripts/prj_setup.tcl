@@ -1,36 +1,23 @@
-# add source files
-add_files ${script_dir}/../design/${prj}/sources/hdl/
 
-# setup block design
-set bd_design mpsoc
-source ${script_dir}/../design/${prj}/scripts/${bd_design}.tcl
-		
-set_property synth_checkpoint_mode None [get_files ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/${bd_design}.bd]
-generate_target all [get_files ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/${bd_design}.bd]
-		
-make_wrapper -files [get_files ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/${bd_design}.bd] -top
-import_files -force -norecurse -fileset sources_1 ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/hdl/${bd_design}_wrapper.v
+if {${board} == "nf" || ${board} == "fidus"} {
+	set serve i
+} elseif {${board} == "ultraz"} {
+	set serve s
+} elseif {${board} == "pynq"} {
+	set serve r
+} elseif {${board} == "serve_d"} {
+	set serve d
+}
 
-validate_bd_design
-save_bd_design
-close_bd_design ${bd_design}
+# add common HDL source files of rocketchip
+add_files ${script_dir}/../design/${prj}/sources/hdl/freedom/
 
-set bd_design bram
-source ${script_dir}/../design/${prj}/scripts/${bd_design}.tcl
-		
-set_property synth_checkpoint_mode None [get_files ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/${bd_design}.bd]
-generate_target all [get_files ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/${bd_design}.bd]
-		
-make_wrapper -files [get_files ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/${bd_design}.bd] -top
-import_files -force -norecurse -fileset sources_1 ./${project_name}/${project_name}.srcs/sources_1/bd/${bd_design}/hdl/${bd_design}_wrapper.v
+# add top module 
+add_files ${script_dir}/../design/${prj}/sources/hdl/serve_top/serve_${serve}.v
 
-validate_bd_design
-save_bd_design
-close_bd_design ${bd_design}
+if {${serve} == "i"} {
+	source [file join ${design_dir}/serve_setup "serve_i.tcl"]
+} else {
+	source [file join ${design_dir}/serve_setup "serve.tcl"]
+}
 
-# setup top module
-set_property "top" serve [get_filesets sources_1]
-
-# add constraints files
-set main_constraints ${script_dir}/../design/${prj}/constraints/${board}/top.xdc
-add_files -fileset constrs_1 -norecurse ${main_constraints}

@@ -1,9 +1,4 @@
-source [file join $design_dir "pr_prologue.tcl"]
-
-# setting Synthesis options
-set_property strategy {Vivado Synthesis defaults} [get_runs synth_1]
-# keep module port names in the netlist
-set_property STEPS.SYNTH_DESIGN.ARGS.FLATTEN_HIERARCHY {none} [get_runs synth_1]
+source [file join $design_dir/flow "pr_prologue.tcl"]
 
 # HW_VAL can be pr_shell or pr_role for partial reconfiguration flow
 if {$val == "pr_shell" || $val == "pr_role"} {
@@ -27,7 +22,7 @@ if {$val == "pr_shell" || $val == "pr_role"} {
 
 } else {
     # synthesize top design
-    synth_design -top serve -part ${device}
+    synth_design -top serve -part ${device} -flatten_hierarchy rebuilt
 }
 
 # setup output logs and reports

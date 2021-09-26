@@ -315,15 +315,18 @@ $(BITSTREAM): FORCE
 
 prj_sw: FORCE
 	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
-		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+		FPGA_BD=$(FPGA_BD) \
+		PRJ_TARGET=$(PRJ_TARGET) PRJ_SW=$(PRJ_SW) $@
 
 prj_sw_clean: FORCE
 	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
-		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+		FPGA_BD=$(FPGA_BD) \
+		PRJ_TARGET=$(PRJ_TARGET) PRJ_SW=$(PRJ_SW) $@
 
 prj_sw_distclean: FORCE
 	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
-		FPGA_BD=$(FPGA_BD) PRJ_SW=$(PRJ_SW) $@
+		FPGA_BD=$(FPGA_BD) \
+		PRJ_TARGET=$(PRJ_TARGET) PRJ_SW=$(PRJ_SW) $@
 
 prj_hw: FORCE
 	$(MAKE) -C fpga/design/$(FPGA_PRJ) $@

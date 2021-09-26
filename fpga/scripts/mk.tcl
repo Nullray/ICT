@@ -13,8 +13,8 @@ if {$argc != 5} {
 	set act [lindex $argv 0]
 	set val [lindex $argv 1]
 	set out_dir [lindex $argv 2]
-  set board [lindex $argv 3]
-  set prj [lindex $argv 4]
+	set board [lindex $argv 3]
+	set prj [lindex $argv 4]
 }
 
 set script_dir [file dirname [info script]]
@@ -28,7 +28,7 @@ source [file join $script_dir "prologue.tcl"]
 #====================
 if {$act == "prj_gen"} {
 	# project setup
-  source [file join $script_dir "prj_setup.tcl"]
+	source [file join $script_dir "prj_setup.tcl"]
 	source [file join $design_dir "prj_setup.tcl"]
 	
 	# Generate HDF

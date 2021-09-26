@@ -1,4 +1,4 @@
-source [file join $design_dir "pr_prologue.tcl"]
+source [file join $design_dir/flow "pr_prologue.tcl"]
 
 # routing
 route_design

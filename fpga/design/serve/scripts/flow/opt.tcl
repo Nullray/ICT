@@ -1,9 +1,4 @@
-source [file join $design_dir "pr_prologue.tcl"]
-
-# setting Implementation options
-set_property steps.phys_opt_design.is_enabled true [get_runs impl_1]
-# the following implementation options will increase runtime, but get the best timing results
-set_property strategy Performance_Explore [get_runs impl_1]
+source [file join $design_dir/flow "pr_prologue.tcl"]
 
 # HW_VAL can be pr_shell or pr_role for partial reconfiguration flow
 if {$val == "pr_role"} {

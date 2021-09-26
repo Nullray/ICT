@@ -28,19 +28,19 @@ prj_hw_clean:
 # Target RISC-V software generation 
 #==================================
 prj_sw: FORCE
-	$(MAKE) -C $(SERVE_DIR) SERVE=i \
+	$(MAKE) -C $(SERVE_DIR) SERVE=$(PRJ_TARGET) \
 		TARGET_BD=$(FPGA_BD) \
 		RV_TARGET=$(RV_TARGET) RV_HART_CNT=$(RV_HART_CNT) \
 		$(PRJ_SW)
 
 prj_sw_clean:
-	$(MAKE) -C $(SERVE_DIR) SERVE=i \
+	$(MAKE) -C $(SERVE_DIR) SERVE=$(PRJ_TARGET) \
 		TARGET_BD=$(FPGA_BD) \
 		RV_TARGET=$(RV_TARGET) RV_HART_CNT=$(RV_HART_CNT) \
 		$(PRJ_SW)_clean
 
 prj_sw_distclean:
-	$(MAKE) -C $(SERVE_DIR) SERVE=i \
+	$(MAKE) -C $(SERVE_DIR) SERVE=$(PRJ_TARGET) \
 		TARGET_BD=$(FPGA_BD) \
 		RV_TARGET=$(RV_TARGET) RV_HART_CNT=$(RV_HART_CNT) \
 		$(PRJ_SW)_distclean
