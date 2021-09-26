@@ -17,7 +17,7 @@ HSI_FLAGS := -nojournal -nolog -mode batch
 FSBL_LOC := $(BOOT_STRAP_LOC)/fsbl
 FSBL_GEN_TCL := $(BOOT_STRAP_LOC)/scripts/fsbl.tcl
 FSBL_HSI_FLAGS := $(HSI_FLAGS) -source $(FSBL_GEN_TCL) \
-	-tclargs $(HDF_FILE) $(FSBL_LOC)
+	-tclargs $(HDF_FILE) $(FSBL_LOC) $(FPGA_ARCH) $(FPGA_PROC)
 
 FSBL_BIN_GEN := $(FSBL_LOC)/executable.elf
 FSBL_BIN := $(FSBL_LOC)/bl2.elf
