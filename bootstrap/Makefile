@@ -17,7 +17,7 @@ HSI_FLAGS := -nojournal -nolog -mode batch
 FSBL_LOC := $(BOOT_STRAP_LOC)/fsbl
 FSBL_GEN_TCL := $(BOOT_STRAP_LOC)/scripts/fsbl.tcl
 FSBL_HSI_FLAGS := $(HSI_FLAGS) -source $(FSBL_GEN_TCL) \
-	-tclargs $(HDF_FILE) $(FSBL_LOC)
+	-tclargs $(HDF_FILE) $(FSBL_LOC) $(FPGA_ARCH) $(FPGA_PROC)
 
 FSBL_BIN_GEN := $(FSBL_LOC)/executable.elf
 FSBL_BIN := $(FSBL_LOC)/bl2.elf
@@ -118,7 +118,9 @@ pmufw_distclean:
 dt: $(DTB)
 
 $(DTB): .dt_gen FORCE
+ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
+endif
 ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD)_top.dtsi $(DT_LOC)/board_top.dtsi
 endif
@@ -166,7 +168,7 @@ $(BOOT_BIN): $(BIF_FILE)
 	@cd $(BOOT_BIN_LOC) && $(BOOT_GEN) $(BOOT_GEN_FLAGS)
 
 $(BIF_FILE): FORCE
-	@bash $(BIF_GEN) $(WITH_BIT) $(BIT_LOC) $(WITH_TOS)
+	@bash $(BIF_GEN) $(FPGA_ARCH) $(WITH_BIT) $(BIT_LOC) $(WITH_TOS)
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)

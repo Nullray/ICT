@@ -8,12 +8,16 @@ SDK_TOOL_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/bin
 
 # Cross-compiler location
 #=================================================
-# aarch-linux-gnu- : used for compilation of uboot, Linux kernel, ATF and other drivers
-# aarch-none-gnu- : used for compilation of FSBL
+# aarch-linux-gnu- : used for compilation of uboot, Linux kernel, ATF and other drivers on ZynqMP
+# aarch-none-gnu- : used for compilation of FSBL on ZynqMP
+# arm-linux-gnueabihf- : used for compilation of uboot on Zynq
+# arm-none-eabi- : used for compilation of FSBL on Zynq
 # mb- (microblaze-xilinx-elf-) : used for compilation of PMU Firmware
 #=================================================
-LINUX_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch64/lin/aarch64-linux/bin
-ELF_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch64/lin/aarch64-none/bin
+zynqmp_LINUX_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch64/lin/aarch64-linux/bin
+zynqmp_ELF_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch64/lin/aarch64-none/bin
+zynq_LINUX_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch32/lin/gcc-arm-linux-gnueabi/bin
+zynq_ELF_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/aarch32/lin/gcc-arm-none-eabi/bin
 MB_GCC_PATH := $(VIVADO_TOOL_BASE)/SDK/$(VIVADO_VERSION)/gnu/microblaze/lin/bin
 
 # Leveraged Vivado tools
@@ -32,6 +36,30 @@ FPGA_TARGET := $(FPGA_PRJ)_$(FPGA_BD)
 PL_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/pl.dtsi)
 PS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/design.dtsi)
 SYS_DT := $(abspath ./fpga/design/$(FPGA_PRJ)/dt/design_top.dtsi)
+
+# Specify cross-compiler for target FPGA board
+ARMv7_BOARDS := pynq serve_d
+
+ifneq ($(findstring $(FPGA_BD),$(ARMv7_BOARDS)),)
+FPGA_ARCH := zynq
+FPGA_PROC := ps7_cortexa9_0
+else
+FPGA_ARCH := zynqmp
+FPGA_PROC := psu_cortexa53_0
+endif
+
+BOOTBIN_DEP := fsbl
+ifeq ($(FPGA_ARCH),zynqmp)
+BOOTBIN_DEP += pmufw atf uboot
+else
+BOOTBIN_DEP += servefw
+endif
+
+obj-bootbin-clean-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_clean)
+obj-bootbin-dist-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_distclean)
+
+LINUX_GCC_PATH := $($(FPGA_ARCH)_LINUX_GCC_PATH)
+ELF_GCC_PATH := $($(FPGA_ARCH)_ELF_GCC_PATH)
 
 # Optional Trusted OS
 TOS ?= 
@@ -207,17 +235,18 @@ xen_distclean: FORCE
 #==========================================
 # BOOT.bin generation
 #==========================================
-bootbin: atf fsbl pmufw uboot FORCE
+bootbin: $(BOOTBIN_DEP) FORCE
 	@echo "Generating BOOT.bin image..."
 	@mkdir -p $(INSTALL_LOC)
 	$(MAKE) -C ./bootstrap BOOT_GEN=$(BOOT_GEN_BIN) \
 		WITH_BIT=$(WITH_BIT) BIT_LOC=$(FPGA_TARGET) \
+		FPGA_ARCH=$(FPGA_ARCH) \
 		WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC) boot_bin
 
-bootbin_clean: atf_clean fsbl_clean pmufw_clean uboot_clean
+bootbin_clean: $(obj-bootbin-clean-y)
 	@rm -f $(INSTALL_LOC)/$(patsubst %.bootbin.clean,%,$@)/BOOT.bin
 
-bootbin_distclean: atf_distclean fsbl_distclean pmufw_distclean uboot_distclean
+bootbin_distclean: $(obj-bootbin-dist-y)
 	$(MAKE) -C ./bootstrap boot_bin_distclean
 	@rm -rf $(INSTALL_LOC)/$(patsubst %.bootbin.dist,%,$@)
 
@@ -243,6 +272,7 @@ fsbl: FORCE
 	@echo "Compiling FSBL..."
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(ELF_GCC_PATH) \
 		HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
+		FPGA_ARCH=$(FPGA_ARCH) FPGA_PROC=$(FPGA_PROC) \
 		FPGA_BD=$(FPGA_BD) $@
 
 fsbl_clean:
@@ -297,6 +327,22 @@ openbmc_clean:
 
 openbmc_distclean:
 	$(MAKE) -C ./software $@
+
+#==============================================
+# Zynq baremetal firmware for SERVE
+#==============================================
+servefw: fsbl FORCE
+	@mkdir -p fpga/design/serve/pdk/hw_plat/
+	@cp hw_plat/$(FPGA_TARGET)/system.hdf fpga/design/serve/pdk/hw_plat/
+	$(MAKE) -C fpga/design/serve/pdk \
+		ARM_CC_PATH=$(ELF_GCC_PATH) SERVE=r \
+		FPGA_ARCH=$(FPGA_ARCH) BOOTBIN_WITH_BIT=y arm_bare_metal
+
+servefw_clean: FORCE
+	$(MAKE) -C fpga/design/serve/pdk/bootstrap fsbl_distclean
+	@rm -rf fpga/design/serve/pdk/hw_plat
+	$(MAKE) -C fpga/design/serve/pdk SERVE=r \
+		ARM_CC_PATH=$(ELF_GCC_PATH) arm_bare_metal_clean
 
 #==============================================
 # Intermediate files between HW and SW design
