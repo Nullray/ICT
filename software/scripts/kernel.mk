@@ -30,12 +30,7 @@ KERN_CONFIG_SRC := $(KERN_SRC)/arch/$(KERN_PLAT)/configs
 # Empty $COMPILER_PATH means native compilation
 # otherwise, it means cross compilation
 ifneq ($(COMPILER_PATH),)
-ifeq ($(ARCH),)
-KERN_COMPILE_FLAGS += CROSS_COMPILE=aarch64-linux-gnu-
-endif
-ifeq ($(ARCH),riscv)
-KERN_COMPILE_FLAGS += CROSS_COMPILE=riscv64-unknown-linux-gnu-
-endif
+KERN_COMPILE_FLAGS += CROSS_COMPILE=$(CROSS_COMPILE)
 endif
 
 KERN_IMAGE_GEN := $(KERN_LOC)/$(OS)/arch/$(KERN_PLAT)/boot/Image
