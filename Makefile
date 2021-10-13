@@ -4,11 +4,12 @@ include build_scripts/toolset.mk
 # Specified FPGA board, chipset and project
 include build_scripts/fpga_config.mk
 
-# Optional Trusted OS
-TOS ?= 
+# Target ISA for compilation of bootstrap, firmware and system software
+# Default value is empty, which means ISA specified by FPGA chip
+ARCH ?= 
 
-# ARM compiler setup
-include build_scripts/arm_compiler.mk
+# target compiler setup
+include build_scripts/compiler.mk
 
 # Temporal directory to hold hardware design output files 
 # (i.e., bitstream, hardware definition file (HDF))
@@ -30,8 +31,11 @@ endif
 obj-bootbin-clean-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_clean)
 obj-bootbin-dist-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_distclean)
 
+# Optional Trusted OS
+TOS ?= 
+
 # BOOT.bin generation flags
-ifneq (${TOS},)
+ifneq ($(TOS),)
 WITH_TOS := y
 endif
 WITH_TOS ?= n

@@ -44,16 +44,18 @@ $(obj-sw-y): dt FORCE
 		OS=$(patsubst %.os.install,%,$@) linux_install
 
 $(obj-sw-clean-y):
-	$(MAKE) -C ./software $($(patsubst %_clean,%-flag,$@)) $@
+	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
+		$($(patsubst %_clean,%-flag,$@)) $@
 
 %.os.clean:
-	$(MAKE) -C ./software $(kernel-flag) \
+	$(MAKE) -C ./software $(SW_COMPILE_FLAG) $(kernel-flag) \
 		OS=$(patsubst %.os.clean,%,$@) linux_clean
 
 $(obj-sw-dist-y):
-	$(MAKE) -C ./software $($(patsubst %_distclean,%-flag,$@)) $@
+	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
+		$($(patsubst %_distclean,%-flag,$@)) $@
 
 %.os.dist:
-	$(MAKE) -C ./software $(kernel-flag) \
+	$(MAKE) -C ./software $(SW_COMPILE_FLAG) $(kernel-flag) \
 		OS=$(patsubst %.os.dist,%,$@) linux_distclean
 
