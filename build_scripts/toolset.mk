@@ -27,6 +27,11 @@ MB_GCC_PATH := $(COMPILER_BASE)/microblaze/lin/bin
 # TODO: Change to your install directory of RISC-V cross compiler
 riscv_LINUX_GCC_PATH := /opt/riscv64-linux/bin
 
+# TODO: change to your own prefix of cross compilers
+zynqmp_LINUX_GCC_PREFIX := aarch64-linux-gnu-
+zynq_LINUX_GCC_PREFIX := arm-linux-gnueabi-
+riscv_LINUX_GCC_PREFIX := riscv64-unknown-linux-gnu-
+
 # Leveraged Vivado tools
 VIVADO_BIN := $(VIVADO_TOOL_PATH)/vivado
 HSI_BIN := $(SDK_TOOL_PATH)/hsi

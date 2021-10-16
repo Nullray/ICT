@@ -2,9 +2,9 @@
 # Auto-generated files
 #
 
-arm-uboot/
-arm-atf/
-arm-linux/
-arm-tee/
-arm-openbmc/
-arm-qemu/
+*-uboot/
+*-atf/
+*-linux/
+*-tee/
+*-openbmc/
+*-qemu/

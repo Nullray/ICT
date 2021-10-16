@@ -50,9 +50,15 @@ bootbin-flag := BOOT_GEN=$(BOOT_GEN_BIN) \
 .PHONY: FORCE
 
 # bootstrap compilation
+ifneq ($(wildcard fpga/design/$(FPGA_PRJ)/$(PRJ_BS_MK)),)
+include fpga/design/$(FPGA_PRJ)/$(PRJ_BS_MK)
+endif
 include build_scripts/bootstrap.mk
 
 # software compilation
+ifneq ($(wildcard fpga/design/$(FPGA_PRJ)/$(PRJ_SW_MK)),)
+include fpga/design/$(FPGA_PRJ)/$(PRJ_SW_MK)
+endif
 include build_scripts/software.mk
 
 # fpga design flow

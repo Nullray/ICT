@@ -1,22 +1,29 @@
-PRJ_SPEC_DT_LOC := ./fpga/design/$(FPGA_PRJ)/dt
-PL_DT := $(abspath $(PRJ_SPEC_DT_LOC)/pl.dtsi)
-PS_DT := $(abspath $(PRJ_SPEC_DT_LOC)/design.dtsi)
-SYS_DT := $(abspath $(PRJ_SPEC_DT_LOC)/design_top.dtsi)
+PRJ_DT_LOC := ./fpga/design/$(FPGA_PRJ)/dt
+PL_DT := $(abspath $(PRJ_DT_LOC)/pl.dtsi)
+PS_DT := $(abspath $(PRJ_DT_LOC)/design.dtsi)
+SYS_DT := $(abspath $(PRJ_DT_LOC)/design_top.dtsi)
+ifneq ($(ARCH),)
+ifneq ($(user-dt-loc),)
+USER_DT_LOC := $(abspath $(PRJ_DT_LOC)/$(user-dt-loc))
+USER_DT := $(user-dt-top)
+endif
+endif
 
 # TODO: Change to your own compilation flags
-fsbl_flag := COMPILER_PATH=$(ELF_GCC_PATH) \
+fsbl-flag := COMPILER_PATH=$(ELF_GCC_PATH) \
 	    HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 	    FPGA_ARCH=$(FPGA_ARCH) FPGA_PROC=$(FPGA_PROC) FPGA_BD=$(FPGA_BD)
 
-pmufw_flag := COMPILER_PATH=$(MB_GCC_PATH) \
+pmufw-flag := COMPILER_PATH=$(MB_GCC_PATH) \
 	    HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF)
 
-dt_flag := DTC_LOC=$(DTC_LOC) \
+dt-flag := DTC_LOC=$(DTC_LOC) \
 	HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 	FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC) \
-	PL_DT=$(PL_DT) PS_DT=$(PS_DT) SYS_DT=$(SYS_DT)
+	PL_DT=$(PL_DT) PS_DT=$(PS_DT) SYS_DT=$(SYS_DT) \
+	USER_DT_LOC=$(USER_DT_LOC) USER_DT=$(USER_DT)
 
-ipxe_flag := COMPILER_PATH=$(LINUX_GCC_PATH) \
+ipxe-flag := COMPILER_PATH=$(LINUX_GCC_PATH) \
 	TARGET_IQN=$(IQN) TFTP_SERVER=$(TFTP) \
 	INSTALL_LOC=$(shell pwd)/ready_for_download
 
@@ -28,13 +35,16 @@ obj-bootstrap-dist-y := $(foreach obj,$(obj-bootstrap-y),$(obj)_distclean)
 # common bootstrap compilation
 $(obj-bootstrap-y): FORCE
 	@echo "Compiling $@..."
-	$(MAKE) -C ./bootstrap $($(patsubst %,%_flag,$@)) $@
+	$(MAKE) -C ./bootstrap \
+		$($(patsubst %,%-flag,$@)) $@
 
 $(obj-bootstrap-clean-y):
-	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
+	$(MAKE) -C ./bootstrap \
+		$($(patsubst %_clean,%-flag,$@)) $@
 
 $(obj-bootstrap-dist-y):
-	$(MAKE) -C ./bootstrap O=$(INSTALL_LOC) $@
+	$(MAKE) -C ./bootstrap \
+		$($(patsubst %_distclean,%-flag,$@)) $@
 
 # PMUFW binary generation for OpenBMC compilation
 pmufw_bin: FORCE

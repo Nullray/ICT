@@ -14,3 +14,6 @@ FPGA_ARCH := zynqmp
 FPGA_PROC := psu_cortexa53_0
 endif
 
+ifneq ($(wildcard $(abspath fpga/design/$(FPGA_PRJ)/$(FPGA_PRJ).mk)),)
+include $(abspath fpga/design/$(FPGA_PRJ)/$(FPGA_PRJ).mk)
+endif

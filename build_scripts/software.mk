@@ -32,7 +32,8 @@ openbmc-flag := $(NEED_INSTALL) OBMC_LOC=$(OBMC_LOC)
 $(obj-sw-y): dt FORCE
 	@echo "Compiling $@..."
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
-		$($(patsubst %,%-flag,$@)) $@
+		$($(patsubst %,%-flag,$@)) \
+		$($(patsubst %,%-prj-flag,$@)) $@
 
 %.os: FORCE
 	@echo "Compiling $@..."
@@ -45,7 +46,8 @@ $(obj-sw-y): dt FORCE
 
 $(obj-sw-clean-y):
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
-		$($(patsubst %_clean,%-flag,$@)) $@
+		$($(patsubst %_clean,%-flag,$@)) \
+		$($(patsubst %_clean,%-prj-flag,$@)) $@
 
 %.os.clean:
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) $(kernel-flag) \
@@ -53,7 +55,8 @@ $(obj-sw-clean-y):
 
 $(obj-sw-dist-y):
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
-		$($(patsubst %_distclean,%-flag,$@)) $@
+		$($(patsubst %_distclean,%-flag,$@)) \
+		$($(patsubst %_distclean,%-prj-flag,$@)) $@
 
 %.os.dist:
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) $(kernel-flag) \
