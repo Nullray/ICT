@@ -1,25 +1,42 @@
 DT_GEN := $(BOOT_STRAP_LOC)/dt-gen
+ifeq ($(USER_DT_LOC),)
 DT_LOC := $(BOOT_STRAP_LOC)/dt
+else
+DT_LOC := $(USER_DT_LOC)
+endif
 
 DT_GEN_TCL := $(BOOT_STRAP_LOC)/scripts/dt.tcl
 
 DT_HSI_FLAGS := $(HSI_FLAGS) -source $(DT_GEN_TCL) \
 	-tclargs $(HDF_FILE) $(DT_LOC) $(DT_GEN)
 
-DTS := $(DT_LOC)/system-top.dts
-DTB := $(DT_LOC)/zynqmp.dtb
+ifeq ($(USER_DT_LOC),)
+dts := system-top.dts
+dtb := zynqmp.dtb
+else
+dts := $(USER_DT).dts
+dtb := $(USER_DT).dtb
+endif
+
+DTS := $(DT_LOC)/$(dts)
+DTB := $(DT_LOC)/$(dtb)
 
 ifneq ($(O),)
-KERN_DTB := $(O)/zynqmp.dtb
+KERN_DTB := $(O)/$(USER_DT)/$(dtb)
 endif
-KERN_DTB ?= $(DT_LOC)/zynqmp.dtb
+KERN_DTB ?= $(DT_LOC)/$(dtb)
+
+ifeq ($(USER_DT_LOC),)
+obj-dt-dep := .dt_gen
+endif
 
 #==========================================
 # Device Tree Source and Blob compilation 
 #==========================================
 dt: $(DTB)
 
-$(DTB): .dt_gen FORCE
+$(DTB): $(obj-dt-dep) FORCE
+ifneq ($(obj-dt-dep),)
 ifneq ($(wildcard $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi),)
 	@cp $(BOOT_STRAP_LOC)/dt-board/$(FPGA_BD).dtsi $(DT_LOC)/board.dtsi
 endif
@@ -35,7 +52,8 @@ endif
 ifneq ($(wildcard $(PL_DT)),)
 	@cp $(PL_DT) $(DT_LOC)/pl.dtsi
 endif
-	@mkdir -p $(O)
+endif
+	@mkdir -p $(O)/$(USER_DT)
 	$(EXPORT_DTC_PATH) && \
 		cpp -I $(DT_LOC) -E -P -x assembler-with-cpp $(DTS) | \
 		dtc -I dts -O dtb -o $@ -
@@ -59,5 +77,8 @@ dt_clean:
 	@rm -f $(DTB) $(KERN_DTB)
 
 dt_distclean:
-	@rm -rf $(DT_LOC) .dt_gen $(KERN_DTB)
+	@rm -rf .dt_gen $(KERN_DTB) $(DTB)
+ifeq ($(USER_DT),)
+	@rm -rf $(DT_LOC)
+endif
 
