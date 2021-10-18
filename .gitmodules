@@ -37,3 +37,9 @@
 	path = software/qemu
 	url = https://github.com/ict-accel-team/qemu/
 	branch = v4.2.0-dev
+[submodule "software/opensbi/src"]
+	path = software/opensbi/src
+	url = https://github.com/ict-accel-team/opensbi
+[submodule "software/opensbi/sm"]
+	path = software/opensbi/sm
+	url = https://github.com/ict-accel-team/sm
