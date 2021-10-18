@@ -10,8 +10,10 @@ else
 BOOTBIN_DEP := $(bootbin-prj-dep)  
 endif
 
+ifeq ($(ARCH),)
 obj-bootbin-clean-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_clean)
 obj-bootbin-dist-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_distclean)
+endif
 
 # BOOT.bin generation flags
 ifeq ($(ARCH),)
@@ -45,9 +47,9 @@ endif
 bootbin_distclean: $(obj-bootbin-dist-y)
 ifeq ($(ARCH),)
 	$(MAKE) -C ./bootstrap boot_bin_distclean
+	@rm -rf $(INSTALL_LOC)/BOOT.bin
 endif
 ifeq ($(ARCH),riscv)
 	$(MAKE) $(bootbin-flag) opensbi_distclean
 endif
-	@rm -rf $(INSTALL_LOC)/$(ARCH)
 
