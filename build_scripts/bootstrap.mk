@@ -48,6 +48,9 @@ $(obj-bootstrap-clean-y):
 	$(MAKE) -C ./bootstrap \
 		$($(patsubst %_clean,%-flag,$@)) $@
 
+servefw_clean: FORCE
+	$(MAKE) -C ./bootstrap $@
+
 $(obj-bootstrap-dist-y):
 	$(MAKE) -C ./bootstrap \
 		$($(patsubst %_distclean,%-flag,$@)) $@

@@ -8,3 +8,4 @@ servefw: FORCE
 		FPGA_PROC=$(FPGA_PROC) all
 
 servefw_clean: FORCE
+	@rm -f servefw/*.o servefw/*.d servefw/*.elf
