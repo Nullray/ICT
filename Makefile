@@ -5,7 +5,7 @@ include build_scripts/toolset.mk
 include build_scripts/fpga_config.mk
 
 # Target ISA for compilation of bootstrap, firmware and system software
-# Default value is empty, which means ISA specified by FPGA chip
+# Default value is empty, which means ISA is specified by FPGA chip
 ARCH ?= 
 
 # target compiler setup
@@ -20,17 +20,6 @@ SYS_HDF := $(HW_PLATFORM)/system.hdf
 # Temporal directory to save all image files for porting
 INSTALL_LOC := $(shell pwd)/ready_for_download/$(FPGA_TARGET)
 
-# BOOT.bin dependency
-BOOTBIN_DEP := fsbl
-ifeq ($(FPGA_ARCH),zynqmp)
-BOOTBIN_DEP += pmufw atf uboot
-else
-BOOTBIN_DEP += servefw
-endif
-
-obj-bootbin-clean-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_clean)
-obj-bootbin-dist-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_distclean)
-
 # Optional Trusted OS
 TOS ?= 
 
@@ -41,11 +30,6 @@ endif
 WITH_TOS ?= n
 
 WITH_BIT ?= n
-
-bootbin-flag := BOOT_GEN=$(BOOT_GEN_BIN) \
-	    WITH_BIT=$(WITH_BIT) BIT_LOC=$(FPGA_TARGET) \
-	    FPGA_ARCH=$(FPGA_ARCH) \
-	    WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC)
 
 .PHONY: FORCE
 
@@ -64,18 +48,8 @@ include build_scripts/software.mk
 # fpga design flow
 include build_scripts/fpga.mk
 
-# BOOT.bin generation
-bootbin: $(BOOTBIN_DEP) FORCE
-	@echo "Generating BOOT.bin image..."
-	@mkdir -p $(INSTALL_LOC)
-	$(MAKE) -C ./bootstrap $(bootbin-flag) boot_bin
-
-bootbin_clean: $(obj-bootbin-clean-y)
-	@rm -f $(INSTALL_LOC)/BOOT.bin
-
-bootbin_distclean: $(obj-bootbin-dist-y)
-	$(MAKE) -C ./bootstrap boot_bin_distclean
-	@rm -rf $(INSTALL_LOC)
+# bootbin generation for various architectures
+include build_scripts/bootbin.mk
 
 sw: FORCE
 	$(MAKE) bootbin

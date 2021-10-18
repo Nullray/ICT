@@ -12,6 +12,9 @@ obj-os-dist-y := $(foreach obj,$(OS_KERN),$(obj).os.dist)
 
 # software list (QEMU needs native compilation on aarch64 machine)
 obj-sw-y := atf uboot qemu xen openbmc
+ifeq ($(ARCH),riscv)
+obj-sw-y += opensbi
+endif
 obj-sw-clean-y := $(foreach obj,$(obj-sw-y),$(obj)_clean)
 obj-sw-dist-y := $(foreach obj,$(obj-sw-y),$(obj)_distclean)
 
@@ -28,12 +31,28 @@ kernel-flag := $(NEED_INSTALL)
 
 openbmc-flag := $(NEED_INSTALL) OBMC_LOC=$(OBMC_LOC)
 
+ifeq ($(ARCH),riscv)
+opensbi-flag := HART_COUNT=$(RV_HART_CNT) \
+	RV_TARGET=$(RV_TARGET) \
+	PLATFORM=ict \
+	SERVE_PLAT=$(SERVE_PLAT) \
+	WITH_SM=$(WITH_SM) \
+	SM_ARM_ASSIST=$(SM_ARM_ASSIST)
+endif
+
 # compilation targets
 $(obj-sw-y): dt FORCE
 	@echo "Compiling $@..."
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
 		$($(patsubst %,%-flag,$@)) \
 		$($(patsubst %,%-prj-flag,$@)) $@
+
+ifeq ($(ARCH),riscv)
+uboot_bin: uboot FORCE
+	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
+		$($(patsubst %,%-flag,$@)) \
+		$($(patsubst %,%-prj-flag,$@)) $@
+endif
 
 %.os: FORCE
 	@echo "Compiling $@..."

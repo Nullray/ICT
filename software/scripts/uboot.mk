@@ -28,14 +28,14 @@ UBOOT_TARGET := u-boot.elf
 endif
 
 # TODO: Change to your own U-Boot configuration file name
-ifeq ($(ARCH),arm)
+ifeq ($(ARCH),)
 uboot-config := xilinx_zynqmp_virt_defconfig
 else
 uboot-config := $(USER_CONFIG)
 endif
 uboot-config-file := $(UBOOT_SRC)/configs/$(uboot-config)
 
-# TODO: Add your own U-Boot baremetal daemon
+# TODO: Add your own U-Boot baremetal daemon for ZynqMP
 uboot-app-y := zynqmp_daemon
 
 UBOOT_APP_LOC := $(UBOOT_LOC)/examples/standalone
@@ -46,9 +46,22 @@ UBOOT_MKIMG := $(UBOOT_LOC)/tools/mkimage
 UBOOT_SCR_FLAGS := -A arm -O linux -T script \
 	-C none -a 0 -e 0 -n 'Custom BOOT config' \
 
-#==================================
+# U-Boot binary file as the OpenSBI payload for RISC-V
+ifeq ($(ARCH),riscv)
+UBOOT_ELF := $(UBOOT_LOC)/$(UBOOT_TARGET)
+UBOOT_BIN := $(UBOOT_LOC)/uboot.bin
+
+UBOOT_OBJCOPY_FLAGS := -S -O binary --set-section-flags .bss=alloc,load,contents
+endif
+
 # U-Boot compilation
-#==================================
+ifeq ($(ARCH),riscv)
+uboot_bin: FORCE
+	$(EXPORT_CC_PATH) && \
+	$(CROSS_COMPILE)objcopy \
+	$(UBOOT_OBJCOPY_FLAGS) $(UBOOT_ELF) $(UBOOT_BIN)
+endif
+
 uboot: $(UBOOT_LOC)/.config FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(UBOOT_SRC) \
 		$(UBOOT_CROSS_COMPILE_FLAGS) $(UBOOT_TARGET) -j 10

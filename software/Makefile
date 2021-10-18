@@ -31,3 +31,5 @@ include scripts/xen.mk
 # OpenBMC
 include scripts/openbmc.mk
 
+# OpenSBI
+include scripts/opensbi.mk

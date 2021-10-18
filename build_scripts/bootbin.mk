@@ -1,0 +1,53 @@
+ifeq ($(ARCH),)
+# ZynqMP BOOT.bin dependency
+BOOTBIN_DEP := fsbl
+ifeq ($(FPGA_ARCH),zynqmp)
+BOOTBIN_DEP += pmufw atf uboot
+else
+BOOTBIN_DEP += servefw
+endif
+else
+BOOTBIN_DEP := $(bootbin-prj-dep)  
+endif
+
+obj-bootbin-clean-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_clean)
+obj-bootbin-dist-y := $(foreach obj,$(BOOTBIN_DEP),$(obj)_distclean)
+
+# BOOT.bin generation flags
+ifeq ($(ARCH),)
+bootbin-flag := BOOT_GEN=$(BOOT_GEN_BIN) \
+	    WITH_BIT=$(WITH_BIT) BIT_LOC=$(FPGA_TARGET) \
+	    FPGA_ARCH=$(FPGA_ARCH) \
+	    WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC)
+else
+bootbin-flag := $(bootbin-prj-flag) O=$(INSTALL_LOC)/$(ARCH)
+endif
+
+# BOOT.bin generation
+bootbin: $(BOOTBIN_DEP) FORCE
+	@echo "Generating BOOT.bin image..."
+	@mkdir -p $(INSTALL_LOC)/$(ARCH)
+ifeq ($(ARCH),)
+	$(MAKE) -C ./bootstrap $(bootbin-flag) boot_bin
+endif
+ifeq ($(ARCH),riscv)
+	$(MAKE) $(bootbin-flag) opensbi
+endif
+
+bootbin_clean: $(obj-bootbin-clean-y)
+ifeq ($(ARCH),)
+	@rm -f $(INSTALL_LOC)/BOOT.bin
+endif
+ifeq ($(ARCH),riscv)
+	$(MAKE) $(bootbin-flag) opensbi_clean
+endif
+
+bootbin_distclean: $(obj-bootbin-dist-y)
+ifeq ($(ARCH),)
+	$(MAKE) -C ./bootstrap boot_bin_distclean
+endif
+ifeq ($(ARCH),riscv)
+	$(MAKE) $(bootbin-flag) opensbi_distclean
+endif
+	@rm -rf $(INSTALL_LOC)/$(ARCH)
+
