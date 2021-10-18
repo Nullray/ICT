@@ -18,12 +18,12 @@ endif
 obj-sw-clean-y := $(foreach obj,$(obj-sw-y),$(obj)_clean)
 obj-sw-dist-y := $(foreach obj,$(obj-sw-y),$(obj)_distclean)
 
-NEED_INSTALL := INSTALL_LOC=$(INSTALL_LOC)
+NEED_INSTALL := INSTALL_LOC=$(INSTALL_LOC)/$(ARCH)
 
 # TODO: Change to your own compilation flags
 atf-flag := TOS=$(TOS)
 
-uboot-flag := FPGA_PRJ=$(FPGA_PRJ) DTC_LOC=$(DTC_LOC) DTB_LOC=$(FPGA_TARGET)
+uboot-flag := FPGA_PRJ=$(FPGA_PRJ) DTC_LOC=$(DTC_LOC) DTB_LOC=$(FPGA_TARGET)/$(ARCH)
 
 xen-flag := $(NEED_INSTALL)
 	 

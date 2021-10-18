@@ -37,11 +37,7 @@ KERN_IMAGE_GEN := $(KERN_LOC)/$(OS)/arch/$(KERN_PLAT)/boot/Image
 
 # kernel installation for cross compilation
 ifneq ($(INSTALL_LOC),)
-ifeq ($(ARCH),)
-KERN_INSTALL_LOC := $(INSTALL_LOC)/arm_$(OS)
-else
-KERN_INSTALL_LOC := $(INSTALL_LOC)/$(ARCH)_$(OS)
-endif
+KERN_INSTALL_LOC := $(INSTALL_LOC)/$(OS)
 endif
 KERN_INSTALL_LOC ?= $(KERN_LOC)/$(OS)
 
