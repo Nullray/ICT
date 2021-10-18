@@ -6,7 +6,9 @@ else
 LINUX_GCC_PATH := $($(ARCH)_LINUX_GCC_PATH)
 LINUX_GCC_PREFIX := $($(ARCH)_LINUX_GCC_PREFIX)
 endif
+
 ELF_GCC_PATH := $($(FPGA_ARCH)_ELF_GCC_PATH)
+ELF_GCC_PREFIX := $($(FPGA_ARCH)_ELF_GCC_PREFIX)
 
 # Host machine to determine if it is cross compilation for Linux kernel
 HOST := $(shell uname -m)

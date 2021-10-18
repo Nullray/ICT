@@ -50,7 +50,7 @@ if [ "$1" == "zynqmp" ]
 then
 	echo -e "	[destination_cpu = a53-0, exception_level = el-2] ../../software/arm-uboot/u-boot.elf" >> $BIF_FILE
 else
-	echo -e "	../../fpga/design/serve/pdk/bootstrap/rv_boot_env_setup/executable.elf" >> $BIF_FILE
+	echo -e "	../servefw/executable.elf" >> $BIF_FILE
 fi
 
 echo "}" >> $BIF_FILE

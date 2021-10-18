@@ -14,6 +14,8 @@ fsbl-flag := COMPILER_PATH=$(ELF_GCC_PATH) \
 	    HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 	    FPGA_ARCH=$(FPGA_ARCH) FPGA_PROC=$(FPGA_PROC) FPGA_BD=$(FPGA_BD)
 
+servefw-flag := $(fsbl-flag) CROSS_COMPILE=$(ELF_GCC_PREFIX) WITH_BIT=$(WITH_BIT)
+
 pmufw-flag := COMPILER_PATH=$(MB_GCC_PATH) \
 	    HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF)
 
@@ -38,6 +40,10 @@ $(obj-bootstrap-y): FORCE
 	$(MAKE) -C ./bootstrap \
 		$($(patsubst %,%-flag,$@)) $@
 
+servefw: fsbl FORCE
+	$(MAKE) -C ./bootstrap \
+		$($(patsubst %,%-flag,$@)) $@
+
 $(obj-bootstrap-clean-y):
 	$(MAKE) -C ./bootstrap \
 		$($(patsubst %_clean,%-flag,$@)) $@
@@ -56,18 +62,4 @@ pmufw_bin: FORCE
 dt_install: FORCE
 	@cp $(INSTALL_LOC)/zynqmp.dtb \
 		/mnt/phy_os/boot/efi/dtb/xilinx/
-
-# Zynq baremetal firmware for SERVE
-servefw: fsbl FORCE
-	@mkdir -p fpga/design/serve/pdk/hw_plat/
-	@cp hw_plat/$(FPGA_TARGET)/system.hdf fpga/design/serve/pdk/hw_plat/
-	$(MAKE) -C fpga/design/serve/pdk \
-		ARM_CC_PATH=$(ELF_GCC_PATH) SERVE=r \
-		FPGA_ARCH=$(FPGA_ARCH) BOOTBIN_WITH_BIT=y arm_bare_metal
-
-servefw_clean: FORCE
-	$(MAKE) -C fpga/design/serve/pdk/bootstrap fsbl_distclean
-	@rm -rf fpga/design/serve/pdk/hw_plat
-	$(MAKE) -C fpga/design/serve/pdk SERVE=r \
-		ARM_CC_PATH=$(ELF_GCC_PATH) arm_bare_metal_clean
 	

@@ -15,8 +15,11 @@ HSI_FLAGS := -nojournal -nolog -mode batch
 
 .PHONY: FORCE
 
-# BL2: ZynqMP First-Stage Boot Loader (FSBL)
+# BL2: ZynqMP/Zynq First-Stage Boot Loader (FSBL)
 include scripts/fsbl.mk
+
+# Zynq/ZynqMP Baremetal: mainly for SERVE 
+include scripts/servefw.mk
 
 # PMU Firmware (PMUFW)
 include scripts/pmufw.mk
