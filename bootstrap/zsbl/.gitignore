@@ -1,0 +1,10 @@
+#
+# Auto-generated files
+#
+
+*.o
+sha3/*.o
+ed25519/*.o
+*.elf
+*.bin
+*.img

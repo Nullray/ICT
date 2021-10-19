@@ -33,3 +33,8 @@ include scripts/boot_bin.mk
 # iPXE for ZynqMP net-boot
 include scripts/ipxe.mk
 
+# RISC-V Zero Stage Boot Loader (in BootROM or SPI flash)
+ifeq ($(ARCH),riscv)
+include scripts/zsbl.mk
+endif
+

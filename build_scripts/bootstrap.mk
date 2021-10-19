@@ -29,8 +29,16 @@ ipxe-flag := COMPILER_PATH=$(LINUX_GCC_PATH) \
 	TARGET_IQN=$(IQN) TFTP_SERVER=$(TFTP) \
 	INSTALL_LOC=$(shell pwd)/ready_for_download
 
+ifeq ($(ARCH),riscv)
+zsbl-flag := COMPILER_PATH=$(ELF_GCC_PATH) \
+	CROSS_COMPILE=$(ELF_GCC_PREFIX)
+endif
+
 # common bootstrap target
 obj-bootstrap-y := fsbl pmufw dt ipxe
+ifeq ($(ARCH),riscv)
+obj-bootstrap-y += zsbl
+endif
 obj-bootstrap-clean-y := $(foreach obj,$(obj-bootstrap-y),$(obj)_clean)
 obj-bootstrap-dist-y := $(foreach obj,$(obj-bootstrap-y),$(obj)_distclean)
 
@@ -38,7 +46,8 @@ obj-bootstrap-dist-y := $(foreach obj,$(obj-bootstrap-y),$(obj)_distclean)
 $(obj-bootstrap-y): FORCE
 	@echo "Compiling $@..."
 	$(MAKE) -C ./bootstrap \
-		$($(patsubst %,%-flag,$@)) $@
+		$($(patsubst %,%-flag,$@)) \
+		$($(patsubst %,%-prj-flag,$@)) $@
 
 servefw: fsbl FORCE
 	$(MAKE) -C ./bootstrap \

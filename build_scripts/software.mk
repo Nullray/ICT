@@ -31,15 +31,6 @@ kernel-flag := $(NEED_INSTALL)
 
 openbmc-flag := $(NEED_INSTALL) OBMC_LOC=$(OBMC_LOC)
 
-ifeq ($(ARCH),riscv)
-opensbi-flag := HART_COUNT=$(RV_HART_CNT) \
-	RV_TARGET=$(RV_TARGET) \
-	PLATFORM=ict \
-	SERVE_PLAT=$(SERVE_PLAT) \
-	WITH_SM=$(WITH_SM) \
-	SM_ARM_ASSIST=$(SM_ARM_ASSIST)
-endif
-
 # compilation targets
 $(obj-sw-y): dt FORCE
 	@echo "Compiling $@..."

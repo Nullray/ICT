@@ -26,6 +26,7 @@ zynq_ELF_GCC_PATH := $(COMPILER_BASE)/aarch32/lin/gcc-arm-none-eabi/bin
 MB_GCC_PATH := $(COMPILER_BASE)/microblaze/lin/bin
 # TODO: Change to your install directory of RISC-V cross compiler
 riscv_LINUX_GCC_PATH := /opt/riscv64-linux/bin
+riscv_ELF_GCC_PATH := $(riscv_LINUX_GCC_PATH)
 
 # TODO: change to your own prefix of cross compilers
 zynqmp_LINUX_GCC_PREFIX := aarch64-linux-gnu-
@@ -33,6 +34,7 @@ zynqmp_ELF_GCC_PREFIX := aarch64-none-elf-
 zynq_LINUX_GCC_PREFIX := arm-linux-gnueabi-
 zynq_ELF_GCC_PREFIX := arm-none-eabi-
 riscv_LINUX_GCC_PREFIX := riscv64-unknown-linux-gnu-
+riscv_ELF_GCC_PREFIX := $(riscv_LINUX_GCC_PREFIX)
 
 # Leveraged Vivado tools
 VIVADO_BIN := $(VIVADO_TOOL_PATH)/vivado
