@@ -22,7 +22,7 @@ bootbin-flag := BOOT_GEN=$(BOOT_GEN_BIN) \
 	    FPGA_ARCH=$(FPGA_ARCH) \
 	    WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC)
 else
-bootbin-flag := $(bootbin-prj-flag) O=$(INSTALL_LOC)/$(ARCH)
+bootbin-flag := O=$(INSTALL_LOC)/$(ARCH)
 endif
 
 # BOOT.bin generation
@@ -33,7 +33,7 @@ ifeq ($(ARCH),)
 	$(MAKE) -C ./bootstrap $(bootbin-flag) boot_bin
 endif
 ifeq ($(ARCH),riscv)
-	$(MAKE) $(bootbin-flag) opensbi
+	$(MAKE) $(bootbin-flag) $(bootbin-prj-flag) opensbi
 endif
 
 bootbin_clean: $(obj-bootbin-clean-y)
