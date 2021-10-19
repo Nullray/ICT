@@ -45,12 +45,21 @@ then
 fi
 fi
 
-# U-Boot for zynqmp and baremetal for zynq
+# U-Boot or baremetal
+if [ "$4" == "y" ]
+then
+if [ "$1" == "zynqmp" ]
+then
+	echo -e "	[destination_cpu = a53-0, exception_level = el-2] ../servefw/executable.elf" >> $BIF_FILE
+else
+	echo -e "	../servefw/executable.elf" >> $BIF_FILE
+fi
+else
 if [ "$1" == "zynqmp" ]
 then
 	echo -e "	[destination_cpu = a53-0, exception_level = el-2] ../../software/arm-uboot/u-boot.elf" >> $BIF_FILE
 else
-	echo -e "	../servefw/executable.elf" >> $BIF_FILE
+	echo -e "	../../software/arm-uboot/u-boot.elf" >> $BIF_FILE
 fi
-
+fi
 echo "}" >> $BIF_FILE
