@@ -7,9 +7,11 @@ fsbl/
 hw_plat/
 pmufw/
 dt/
+*-dt/
 .pmufw_gen
 .fsbl_gen
 .dt_gen
+.dt_cp
 .Xil
 .ipxe_pre
 
