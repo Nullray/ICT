@@ -20,6 +20,12 @@ if {$argc != 5} {
 set script_dir [file dirname [info script]]
 set design_dir ${script_dir}/../design/${prj}/scripts
 
+if { [file exists ${design_dir}/flow_setup.tcl] == 1 } {
+	source [file join $design_dir "flow_setup.tcl"]
+} else {
+	set flow_dir ${design_dir}/flow
+}
+
 source [file join $script_dir "board/${board}.tcl"]
 source [file join $script_dir "prologue.tcl"]
 
@@ -39,18 +45,18 @@ if {$act == "prj_gen"} {
 } elseif {$act == "run_syn"} {
 	open_project ${prj_file}
 
-	source [file join $design_dir "flow/synth.tcl"]
+	source [file join $flow_dir "synth.tcl"]
 
 	close_project
 
 } elseif {$act == "bit_gen"} {
 	open_project ${prj_file}
 	# Design optimization
-	source [file join $design_dir "flow/opt.tcl"]
+	source [file join $flow_dir "opt.tcl"]
 	# Placement
-	source [file join $design_dir "flow/place.tcl"]
+	source [file join $flow_dir "place.tcl"]
 	# routing
-	source [file join $design_dir "flow/route.tcl"]
+	source [file join $flow_dir "route.tcl"]
 	# bitstream generation
 	write_bitstream -force ${out_dir}/system.bit
 
