@@ -40,3 +40,6 @@
 [submodule "software/opensbi/sm"]
 	path = software/opensbi/sm
 	url = https://github.com/ict-accel-team/sm
+[submodule "fpga/design/serve"]
+	path = fpga/design/serve
+	url = https://github.com/ict-accel-team/SERVE
