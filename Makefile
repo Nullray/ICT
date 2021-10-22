@@ -65,29 +65,8 @@ sw_distclean:
 	@rm -rf software/arm-linux software/arm-uboot \
 		software/arm-tee bootstrap/.Xil
 
-#==========================================
-# Specific FPGA project design
-#==========================================
-.PHONY: prj_hw prj_sw
-
-prj_sw: FORCE
-	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
-		FPGA_BD=$(FPGA_BD) \
-		PRJ_TARGET=$(PRJ_TARGET) PRJ_SW=$(PRJ_SW) $@
-
-prj_sw_clean: FORCE
-	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
-		FPGA_BD=$(FPGA_BD) \
-		PRJ_TARGET=$(PRJ_TARGET) PRJ_SW=$(PRJ_SW) $@
-
-prj_sw_distclean: FORCE
-	$(MAKE) -C fpga/design/$(FPGA_PRJ) \
-		FPGA_BD=$(FPGA_BD) \
-		PRJ_TARGET=$(PRJ_TARGET) PRJ_SW=$(PRJ_SW) $@
-
-prj_hw: FORCE
-	$(MAKE) -C fpga/design/$(FPGA_PRJ) $@
-
-prj_hw_clean:
-	$(MAKE) -C fpga/design/$(FPGA_PRJ) $@
+# FPGA project-specific hardware design compilation/generation
+ifneq ($(wildcard fpga/design/$(FPGA_PRJ)/$(PRJ_HW_MK)),)
+include fpga/design/$(FPGA_PRJ)/$(PRJ_HW_MK)
+endif
 
