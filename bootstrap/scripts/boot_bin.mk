@@ -20,7 +20,7 @@ $(BOOT_BIN): $(BIF_FILE)
 	@cd $(BOOT_BIN_LOC) && $(BOOT_GEN) $(BOOT_GEN_FLAGS)
 
 $(BIF_FILE): FORCE
-	@bash $(BIF_GEN) $(FPGA_ARCH) $(WITH_BIT) $(BIT_LOC) $(WITH_TOS) $(SERVE_FW)
+	bash $(BIF_GEN) $(FPGA_ARCH) $(WITH_BIT) $(BIT_LOC) $(WITH_TOS) $(SERVE_FW)
 
 boot_bin_distclean:
 	@rm -rf $(BOOT_BIN_LOC)

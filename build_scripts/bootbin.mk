@@ -26,7 +26,7 @@ endif
 # BOOT.bin generation flags
 ifeq ($(ARCH),)
 bootbin-flag := BOOT_GEN=$(BOOT_GEN_BIN) \
-	    SERVE_FW=$(obj-servefw)
+	    SERVE_FW=$(obj-servefw) \
 	    WITH_BIT=$(WITH_BIT) BIT_LOC=$(FPGA_TARGET) \
 	    FPGA_ARCH=$(FPGA_ARCH) \
 	    WITH_TOS=$(WITH_TOS) O=$(INSTALL_LOC)

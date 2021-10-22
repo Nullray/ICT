@@ -46,7 +46,7 @@ fi
 fi
 
 # U-Boot or baremetal
-if [ "$4" == "y" ]
+if [ "$5" == "y" ]
 then
 if [ "$1" == "zynqmp" ]
 then

@@ -14,7 +14,8 @@ fsbl-flag := COMPILER_PATH=$(ELF_GCC_PATH) \
 	    HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 	    FPGA_ARCH=$(FPGA_ARCH) FPGA_PROC=$(FPGA_PROC) FPGA_BD=$(FPGA_BD)
 
-servefw-flag := $(fsbl-flag) CROSS_COMPILE=$(ELF_GCC_PREFIX) WITH_BIT=$(WITH_BIT)
+servefw-flag := CROSS_COMPILE=$(ELF_GCC_PREFIX) WITH_BIT=$(WITH_BIT) \
+	    FPGA_ARCH=$(FPGA_ARCH) FPGA_PROC=$(FPGA_PROC)
 
 pmufw-flag := COMPILER_PATH=$(MB_GCC_PATH) \
 	    HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF)
@@ -50,14 +51,14 @@ $(obj-bootstrap-y): FORCE
 		$($(patsubst %,%-prj-flag,$@)) $@
 
 servefw: fsbl FORCE
-	$(MAKE) -C ./bootstrap \
-		$($(patsubst %,%-flag,$@)) $@
+	$(MAKE) -C ./bootstrap COMPILER_PATH=$(ELF_GCC_PATH) \
+		USER_FLAGS="$($(patsubst %,%-flag,$@))" $@
 
 $(obj-bootstrap-clean-y):
 	$(MAKE) -C ./bootstrap \
 		$($(patsubst %_clean,%-flag,$@)) $@
 
-servefw_clean: FORCE
+servefw_clean servefw_distclean: fsbl_distclean 
 	$(MAKE) -C ./bootstrap $@
 
 $(obj-bootstrap-dist-y):
