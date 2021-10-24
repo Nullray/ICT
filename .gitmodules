@@ -43,3 +43,6 @@
 [submodule "fpga/design/serve"]
 	path = fpga/design/serve
 	url = https://github.com/ict-accel-team/SERVE
+[submodule "software/modules/keystone-driver"]
+	path = software/modules/keystone-driver
+	url = https://github.com/ict-accel-team/linux-keystone-driver
