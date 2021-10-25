@@ -1,4 +1,5 @@
 KERN_SRC := $(SW_LOC)/linux
+MODULE_SRC := $(SW_LOC)/modules
 ifeq ($(ARCH),)
 KERN_LOC := $(SW_LOC)/arm-linux
 else
@@ -60,14 +61,30 @@ VMLINUZ_INSTALL_LOC := /mnt/$(OS)
 MODULES_INSTALL_LOC := /mnt/$(OS)/root
 endif
 
+# Modules compilation objects
+obj-modules-y := $(MODULES)
+obj-modules-build-y := $(foreach obj,$(obj-modules-y),$(MODULE_SRC)/$(obj).ko)
+obj-modules-objects-y := $(foreach obj,$(obj-modules-y),$(MODULE_SRC)/$(obj)/$(obj).ko)
+obj-modules-clean-y := $(foreach obj,$(obj-modules-y),$(MODULE_SRC)/$(obj).ko.clean)
+
 #==================================
 # Linux kernel compilation
 #==================================
-linux: $(KERN_LOC)/$(OS)/.config FORCE
+linux: $(KERN_IMAGE_GEN) $(obj-modules-build-y) FORCE
+	@mkdir -p $(KERN_INSTALL_LOC)/modules
+	@cp $(KERN_IMAGE_GEN) $(KERN_IMAGE)
+ifneq ($(wildcard $(obj-modules-objects-y)),)
+	@mv $(obj-modules-objects-y) $(KERN_INSTALL_LOC)/modules
+endif
+
+$(KERN_IMAGE_GEN): $(KERN_LOC)/$(OS)/.config FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
 		$(KERN_COMPILE_FLAGS) $(KERN_TARGET) -j 10
-	@mkdir -p $(KERN_INSTALL_LOC)
-	@cp $(KERN_IMAGE_GEN) $(KERN_IMAGE)
+
+%.ko: FORCE
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
+		$(KERN_COMPILE_FLAGS) \
+		M=$(patsubst %.ko,%,$@) modules
 
 linux_install: FORCE
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
@@ -81,10 +98,15 @@ $(KERN_LOC)/%/.config: $(KERN_CONFIG_SRC)/$($(OS)-kern-config)
 	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
 		$(KERN_COMPILE_FLAGS) $($(OS)-kern-config) olddefconfig
 
-linux_clean:
+linux_clean: $(obj-modules-clean-y)
 	$(MAKE) -C $(KERN_SRC) O=$(KERN_LOC)/$(OS) clean 
 	@rm -f $(KERN_IMAGE)
 
-linux_distclean:
+linux_distclean: $(obj-modules-clean-y)
 	@rm -rf $(KERN_LOC)/$(OS) $(KERN_INSTALL_LOC)
+
+%.ko.clean:
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(KERN_SRC) \
+		$(KERN_COMPILE_FLAGS) \
+		M=$(patsubst %.ko.clean,%,$@) clean
 

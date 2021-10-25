@@ -10,6 +10,15 @@ obj-os-install-y := $(foreach obj,$(OS_KERN),$(obj).os.install)
 obj-os-clean-y := $(foreach obj,$(OS_KERN),$(obj).os.clean)
 obj-os-dist-y := $(foreach obj,$(OS_KERN),$(obj).os.dist)
 
+# Project-specific Linux kernel modules
+ifeq ($(ARCH),)
+obj-phy_os-modules-y := $(modules-arm-phy_os-y)
+obj-virt-modules-y := $(modules-arm-virt-y)
+else
+obj-phy_os-modules-y := $(modules-$(ARCH)-phy_os-y)
+obj-virt-modules-y :=
+endif
+
 # software list (QEMU needs native compilation on aarch64 machine)
 obj-sw-y := atf uboot qemu xen openbmc
 ifeq ($(ARCH),riscv)
@@ -48,7 +57,8 @@ endif
 %.os: FORCE
 	@echo "Compiling $@..."
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
-		$(kernel-flag) OS=$(patsubst %.os,%,$@) linux
+		$(kernel-flag) OS=$(patsubst %.os,%,$@) \
+		MODULES=$($(patsubst %.os,obj-%-modules-y,$@)) linux
 
 %.os.install: FORCE
 	$(MAKE) -C ./software $(kernel-flag) \
@@ -61,7 +71,8 @@ $(obj-sw-clean-y):
 
 %.os.clean:
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) $(kernel-flag) \
-		OS=$(patsubst %.os.clean,%,$@) linux_clean
+		OS=$(patsubst %.os.clean,%,$@) \
+		MODULES=$($(patsubst %.os.clean,obj-%-modules-y,$@)) linux_clean
 
 $(obj-sw-dist-y):
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) \
@@ -70,5 +81,6 @@ $(obj-sw-dist-y):
 
 %.os.dist:
 	$(MAKE) -C ./software $(SW_COMPILE_FLAG) $(kernel-flag) \
-		OS=$(patsubst %.os.dist,%,$@) linux_distclean
+		OS=$(patsubst %.os.dist,%,$@) \
+		MODULES=$($(patsubst %.os.dist,obj-%-modules-y,$@)) linux_distclean
 
