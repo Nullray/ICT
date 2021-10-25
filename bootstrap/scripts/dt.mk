@@ -60,7 +60,6 @@ ifeq ($(obj-dt-dep),.dt_cp)
 ifneq ($(wildcard $(DT_LOC)/pcw_$(FPGA_BD).dtsi),)
 	cp $(DT_LOC)/pcw_$(FPGA_BD).dtsi $(DT_LOC)/pcw.dtsi
 endif
-	cat $(DT_LOC)/vendor_$(VENDOR).dtsi
 ifneq ($(wildcard $(DT_LOC)/vendor_$(VENDOR).dtsi),)
 	cp $(DT_LOC)/vendor_$(VENDOR).dtsi $(DT_LOC)/vendor.dtsi
 endif
