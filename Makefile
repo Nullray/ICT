@@ -51,6 +51,9 @@ include build_scripts/fpga.mk
 # bootbin generation for various architectures
 include build_scripts/bootbin.mk
 
+# workload generation (user applications)
+include build_scripts/workload.mk
+
 sw: FORCE
 	$(MAKE) bootbin
 	$(MAKE) phy_os.os
