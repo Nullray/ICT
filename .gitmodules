@@ -46,3 +46,9 @@
 [submodule "software/modules/keystone-driver"]
 	path = software/modules/keystone-driver
 	url = https://github.com/ict-accel-team/linux-keystone-driver
+[submodule "software/workload/keystone/sdk"]
+	path = software/workload/keystone/sdk
+	url = https://github.com/ict-accel-team/keystone-sdk
+[submodule "software/workload/keystone/eyrie"]
+	path = software/workload/keystone/eyrie
+	url = https://github.com/ict-accel-team/keystone-runtime
