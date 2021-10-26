@@ -1,0 +1,15 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+	fragment@0 {
+		target-path = "/amba_pl@0/i2c@a0002000/i2c-mux@72";
+		__overlay__ {
+			i2c@7 {
+                                #address-cells = <1>;
+                                #size-cells = <0>;
+                                reg = <7>;
+			};
+		};
+	};
+};
