@@ -52,3 +52,6 @@
 [submodule "software/workload/keystone/eyrie"]
 	path = software/workload/keystone/eyrie
 	url = https://github.com/ict-accel-team/keystone-runtime
+[submodule "fpga/design/nf-accel-shell"]
+	path = fpga/design/nf-accel-shell
+	url = https://github.com/ict-accel-team/nf-accel-shell

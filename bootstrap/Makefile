@@ -27,6 +27,9 @@ include scripts/pmufw.mk
 # Device Tree Source and Blob (DTS and DTB)
 include scripts/dt.mk
 
+ROLE_DTSI := $(wildcard $(ROLE_DTBO_LOC)/*.dtsi)
+ROLE_DTBO := $(patsubst %.dtsi,%.dtbo,$(ROLE_DTSI))
+
 # BOOT.bin
 include scripts/boot_bin.mk
 
