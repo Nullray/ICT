@@ -65,7 +65,7 @@ $(obj-bootstrap-dist-y):
 pmufw_bin: FORCE
 	@echo "Generating PMU Firmware Binary..."
 	$(MAKE) -C ./bootstrap COMPILER_PATH=$(MB_GCC_PATH) $@ 
-	@cp ./bootstrap/pmufw/*.bin $(OBMC_LOC)
+	@cp ./bootstrap/pmufw/*.bin $(OBMC_PMUFW_LOC)
 
 # Device Tree install for vmlinux install in cross compilation
 dt_install: FORCE

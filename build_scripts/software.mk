@@ -1,6 +1,8 @@
 # OpenBMC
 OBMC_MACHINE := zcu102-zynqmp
-OBMC_LOC := $(abspath ./software/arm-openbmc/tmp/deploy/images/$(OBMC_MACHINE))
+OBMC_LOC := arm-openbmc
+OBMC_IMG_LOC := tmp/deploy/images/$(OBMC_MACHINE)
+OBMC_PMUFW_LOC := $(abspath ./software/$(OBMC_LOC)/$(OBMC_IMG_LOC))
 
 # Linux kernel (i.e., Physical machine and Virtual machine)
 OS_KERN := phy_os virt
@@ -38,7 +40,9 @@ xen-flag := $(NEED_INSTALL)
 	 
 kernel-flag := $(NEED_INSTALL)
 
-openbmc-flag := $(NEED_INSTALL) OBMC_LOC=$(OBMC_LOC)
+openbmc-flag := $(NEED_INSTALL) \
+	OBMC_LOC=$(OBMC_LOC) OBMC_BD=$(OBMC_MACHINE) \
+	OBMC_IMG_LOC=$(OBMC_IMG_LOC)
 
 # compilation targets
 $(obj-sw-y): dt FORCE
