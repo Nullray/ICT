@@ -1,12 +1,8 @@
-PRJ_DT_LOC := ./fpga/design/$(FPGA_PRJ)/dt
-PL_DT := $(abspath $(PRJ_DT_LOC)/pl.dtsi)
-PS_DT := $(abspath $(PRJ_DT_LOC)/design.dtsi)
-SYS_DT := $(abspath $(PRJ_DT_LOC)/design_top.dtsi)
+PRJ_DT_LOC := $(abspath ./fpga/design/$(FPGA_PRJ)/dt)
+
 ifneq ($(ARCH),)
-ifneq ($(user-dt-loc),)
-USER_DT_LOC := $(abspath $(PRJ_DT_LOC)/$(user-dt-loc))
+USER_DT_LOC := $(user-dt-loc)
 USER_DT := $(user-dt-top)
-endif
 endif
 
 # TODO: Change to your own compilation flags
@@ -23,7 +19,7 @@ pmufw-flag := COMPILER_PATH=$(MB_GCC_PATH) \
 dt-flag := DTC_LOC=$(DTC_LOC) \
 	HSI=$(HSI_BIN) HDF_FILE=$(SYS_HDF) \
 	FPGA_BD=$(FPGA_BD) O=$(INSTALL_LOC)/$(ARCH) \
-	PL_DT=$(PL_DT) PS_DT=$(PS_DT) SYS_DT=$(SYS_DT) \
+	PRJ_DT_LOC=$(PRJ_DT_LOC) \
 	USER_DT_LOC=$(USER_DT_LOC) USER_DT=$(USER_DT) $(user-dt-flag)
 
 ipxe-flag := COMPILER_PATH=$(LINUX_GCC_PATH) \
