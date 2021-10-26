@@ -9,11 +9,11 @@ VIVADO_TOOL_BASE_SW ?= /opt/Xilinx_$(VIVADO_VERSION_SW)
 DTC_LOC := /opt/dtc
 
 # Vivado and SDK tool executable binary location
-VIVADO_TOOL_PATH := $(VIVADO_TOOL_BASE_HW)/Vivado/$(VIVADO_VERSION)/bin
-SDK_TOOL_PATH := $(VIVADO_TOOL_BASE_SW)/SDK/$(VIVADO_VERSION)/bin
+VIVADO_TOOL_PATH := $(VIVADO_TOOL_BASE_HW)/Vivado/$(VIVADO_VERSION_HW)/bin
+SDK_TOOL_PATH := $(VIVADO_TOOL_BASE_SW)/SDK/$(VIVADO_VERSION_SW)/bin
 
 # Cross-compiler location
-COMPILER_BASE := $(VIVADO_TOOL_BASE_SW)/SDK/$(VIVADO_VERSION)/gnu
+COMPILER_BASE := $(VIVADO_TOOL_BASE_SW)/SDK/$(VIVADO_VERSION_SW)/gnu
 #=================================================
 # aarch-linux-gnu- (zynqmp_LINUX) : used for compilation of uboot, Linux kernel, ATF and other drivers on ZynqMP
 # aarch-none-gnu- (zynqmp_ELF) : used for compilation of FSBL on ZynqMP

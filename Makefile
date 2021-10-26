@@ -34,13 +34,13 @@ WITH_BIT ?= n
 .PHONY: FORCE
 
 # bootstrap compilation
-ifneq ($(wildcard fpga/design/$(FPGA_PRJ)/$(PRJ_BS_MK)),)
+ifneq ($(PRJ_BS_MK),)
 include fpga/design/$(FPGA_PRJ)/$(PRJ_BS_MK)
 endif
 include build_scripts/bootstrap.mk
 
 # software compilation
-ifneq ($(wildcard fpga/design/$(FPGA_PRJ)/$(PRJ_SW_MK)),)
+ifneq ($(PRJ_SW_MK),)
 include fpga/design/$(FPGA_PRJ)/$(PRJ_SW_MK)
 endif
 include build_scripts/software.mk
@@ -69,7 +69,7 @@ sw_distclean:
 		software/arm-tee bootstrap/.Xil
 
 # FPGA project-specific hardware design compilation/generation
-ifneq ($(wildcard fpga/design/$(FPGA_PRJ)/$(PRJ_HW_MK)),)
+ifneq ($(PRJ_HW_MK),)
 include fpga/design/$(FPGA_PRJ)/$(PRJ_HW_MK)
 endif
 
