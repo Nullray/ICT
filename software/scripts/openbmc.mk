@@ -7,8 +7,8 @@ OBMC_IMG := *.rootfs.cpio.gz.u-boot
 #==================================
 openbmc: FORCE
 	@bash scripts/openbmc.sh $(OBMC_BD) $(OBMC_LOC)
-	@cp $(shell find $(OBMC_LOC)/$(OBMC_IMG_LOC)/ -name "$(OBMC_IMG)") \
-		$(INSTALL_LOC)/obmc.cpio.gz
+	@cd $(OBMC_LOC)/$(OBMC_IMG_LOC)/ && \
+		cp $(OBMC_IMG) $(INSTALL_LOC)/obmc.cpio.gz && cd -
 
 openbmc_clean:
 	@rm -f $(INSTALL_LOC)/obmc.cpio.gz
