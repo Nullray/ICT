@@ -4,8 +4,9 @@ ATF_LOC := $(SW_LOC)/arm-atf
 # TODO: set your ATF compilation flags and targets
 ATF_PLAT := zynqmp
 ATF_CROSS_COMPILE_FLAGS := PLAT=$(ATF_PLAT) \
+	ARCH=aarch64 \
 	RESET_TO_BL31=1 \
-	CROSS_COMPILE=aarch64-linux-gnu- \
+	CROSS_COMPILE=$(CROSS_COMPILE) \
 	LOG_LEVEL=20 \
 	BUILD_BASE=$(ATF_LOC)
 ATF_TARGET := bl31
