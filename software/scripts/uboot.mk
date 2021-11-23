@@ -46,6 +46,17 @@ UBOOT_MKIMG := $(UBOOT_LOC)/tools/mkimage
 UBOOT_SCR_FLAGS := -A arm -O linux -T script \
 	-C none -a 0 -e 0 -n 'Custom BOOT config' \
 
+# select custom boot script
+ifeq ($(ARCH),)
+UBOOT_SCR := $(SW_LOC)/../fpga/design/$(FPGA_PRJ)/boot/boot.script
+else
+ifneq ($(BOOT_SCR),)
+UBOOT_SCR := $(SW_LOC)/../fpga/design/$(FPGA_PRJ)/boot/$(BOOT_SCR)
+else
+UBOOT_SCR :=
+endif
+endif
+
 # U-Boot binary file as the OpenSBI payload for RISC-V
 ifeq ($(ARCH),riscv)
 UBOOT_ELF := $(UBOOT_LOC)/$(UBOOT_TARGET)
@@ -68,10 +79,10 @@ uboot: $(UBOOT_LOC)/.config FORCE
 ifneq ($(wildcard $(UBOOT_APP)),)
 	@cp $(UBOOT_APP) $(UBOOT_LOC)/../../ready_for_download/$(DTB_LOC)/
 endif
-ifeq ($(ARCH),)
-ifneq ($(wildcard $(SW_LOC)/../fpga/design/$(FPGA_PRJ)/boot/boot.script),)
+ifneq ($(UBOOT_SCR),)
+ifneq ($(wildcard $(UBOOT_SCR)),)
 	$(UBOOT_MKIMG) $(UBOOT_SCR_FLAGS) \
-		-d $(abspath $(SW_LOC)/../fpga/design/$(FPGA_PRJ)/boot/boot.script) \
+		-d $(abspath $(UBOOT_SCR)) \
 		$(UBOOT_LOC)/../../ready_for_download/$(DTB_LOC)/boot.scr.uimg
 endif
 endif
