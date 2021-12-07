@@ -1,5 +1,5 @@
 # TODO: Vivado IDE version and installed location
-VIVADO_VERSION_HW ?= 2019.1
+VIVADO_VERSION_HW ?= 2020.2
 VIVADO_TOOL_BASE_HW ?= /opt/Xilinx_$(VIVADO_VERSION_HW)
 
 VIVADO_VERSION_SW ?= 2019.1
