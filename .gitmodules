@@ -55,3 +55,6 @@
 [submodule "fpga/design/nf-accel-shell"]
 	path = fpga/design/nf-accel-shell
 	url = https://github.com/ict-accel-team/nf-accel-shell
+[submodule "fpga/design/nf-firesim"]
+	path = fpga/design/nf-firesim
+	url = https://github.com/ict-accel-team/nf-firesim
