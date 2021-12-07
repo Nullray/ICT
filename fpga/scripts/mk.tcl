@@ -67,6 +67,10 @@ if {$act == "prj_gen"} {
 	}
 	open_checkpoint ${dcp_dir}/${val}.dcp
 
+} elseif {$act == "dcp_gen"} {
+	source [file join $script_dir "prj_setup.tcl"]
+	# Launch tcl script whose name is specified by $val
+	source [file join $design_dir "dcp_gen.tcl"]
 } else {
 	puts "No specified action command for Vivado project"
 	exit

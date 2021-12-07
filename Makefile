@@ -46,6 +46,9 @@ endif
 include build_scripts/software.mk
 
 # fpga design flow
+ifneq ($(PRJ_FPGA_MK),)
+include fpga/design/$(FPGA_PRJ)/$(PRJ_FPGA_MK)
+endif
 include build_scripts/fpga.mk
 
 # bootbin generation for various architectures

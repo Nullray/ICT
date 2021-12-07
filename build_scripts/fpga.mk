@@ -5,6 +5,9 @@
 # run_syn: Synthesizing design
 # bit_gen: Generating bitstream file (.bit) via automatically 
 #          launching placement and routing
+# dcp_gen: Generate a checkpoint (.dcp) for a specified part in a design
+#          and later integrate the .dcp file into the design project via
+#          the command read_checkpoint
 # dcp_chk: Opening a checkpoint (.dcp) file generated in a certain step 
 #          of synthesis, placement and routing. 
 #          You can optionally setup hardware debug cores when opening 
