@@ -38,7 +38,11 @@ uboot-flag := FPGA_PRJ=$(FPGA_PRJ) DTC_LOC=$(DTC_LOC) DTB_LOC=$(FPGA_TARGET)/$(A
 
 xen-flag := $(NEED_INSTALL)
 	 
+ifneq ($(HOST),aarch64)
 kernel-flag := $(NEED_INSTALL)
+else
+kernel-flag := 
+endif
 
 openbmc-flag := $(NEED_INSTALL) \
 	OBMC_LOC=$(OBMC_LOC) OBMC_BD=$(OBMC_MACHINE) \
