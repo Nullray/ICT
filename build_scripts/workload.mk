@@ -10,7 +10,7 @@ endif
 obj-apps-build-y := $(foreach obj,$(obj-apps-y),$(obj).app)
 obj-apps-clean-y := $(foreach obj,$(obj-apps-y),$(obj).app.clean)
 
-.PHONY: apps apps_clean
+.PHONY: workload workload_clean
 workload: $(obj-apps-build-y)
 
 %.app:
