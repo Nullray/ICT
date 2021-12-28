@@ -1,0 +1,14 @@
+prefix=/home/chenfeiyu/firesim-run/target-design/chipyard/riscv-tools-install
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: libelf
+Description: elfutils libelf library to read and write ELF files
+Version: 0.175
+URL: http://elfutils.org/
+
+Libs: -L${libdir} -lelf
+Cflags: -I${includedir}
+
+Requires.private: zlib

@@ -1,0 +1,60 @@
+libdwarf_la-pro_encode_nm.lo: pro_encode_nm.c /usr/include/stdc-predef.h \
+ ../config.h libdwarfdefs.h /usr/include/string.h /usr/include/features.h \
+ /usr/include/x86_64-linux-gnu/sys/cdefs.h \
+ /usr/include/x86_64-linux-gnu/bits/wordsize.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs.h \
+ /usr/include/x86_64-linux-gnu/gnu/stubs-64.h \
+ /usr/lib/gcc/x86_64-linux-gnu/8/include/stddef.h /usr/include/xlocale.h \
+ pro_incl.h /usr/include/elf.h \
+ /usr/lib/gcc/x86_64-linux-gnu/8/include/stdint.h /usr/include/stdint.h \
+ /usr/include/x86_64-linux-gnu/bits/wchar.h \
+ /usr/include/x86_64-linux-gnu/bits/auxv.h dwarf.h libdwarf.h \
+ pro_opaque.h pro_error.h pro_util.h pro_encode_nm.h pro_alloc.h
+
+/usr/include/stdc-predef.h:
+
+../config.h:
+
+libdwarfdefs.h:
+
+/usr/include/string.h:
+
+/usr/include/features.h:
+
+/usr/include/x86_64-linux-gnu/sys/cdefs.h:
+
+/usr/include/x86_64-linux-gnu/bits/wordsize.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs.h:
+
+/usr/include/x86_64-linux-gnu/gnu/stubs-64.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/8/include/stddef.h:
+
+/usr/include/xlocale.h:
+
+pro_incl.h:
+
+/usr/include/elf.h:
+
+/usr/lib/gcc/x86_64-linux-gnu/8/include/stdint.h:
+
+/usr/include/stdint.h:
+
+/usr/include/x86_64-linux-gnu/bits/wchar.h:
+
+/usr/include/x86_64-linux-gnu/bits/auxv.h:
+
+dwarf.h:
+
+libdwarf.h:
+
+pro_opaque.h:
+
+pro_error.h:
+
+pro_util.h:
+
+pro_encode_nm.h:
+
+pro_alloc.h:
