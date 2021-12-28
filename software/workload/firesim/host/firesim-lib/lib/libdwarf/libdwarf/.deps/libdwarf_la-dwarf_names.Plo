@@ -1,0 +1,8 @@
+libdwarf_la-dwarf_names.lo: dwarf_names.c /usr/include/stdc-predef.h \
+ dwarf.h libdwarf.h
+
+/usr/include/stdc-predef.h:
+
+dwarf.h:
+
+libdwarf.h:
