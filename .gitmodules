@@ -58,3 +58,6 @@
 [submodule "fpga/design/nf-firesim"]
 	path = fpga/design/nf-firesim
 	url = https://github.com/ict-accel-team/nf-firesim
+[submodule "fpga/design/ucas-cod"]
+	path = fpga/design/ucas-cod
+	url = https://github.com/ict-accel-team/ucas-cod
