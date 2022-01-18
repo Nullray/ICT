@@ -20,6 +20,17 @@ if {$argc != 5} {
 set script_dir [file dirname [info script]]
 set design_dir ${script_dir}/../design/${prj}/scripts
 
+# * For an FPGA design w/ both SHELL and ROLEs
+## variable target:     specifies "shell" or "role" 
+## variable component:  -- if ($target == "role" ): $component specifies a component to be implemented in the ROLE region 
+##                      -- if ($target == "shell"): $component specifies the number of valid ROLEs in a SHELL
+#
+# * For an ordinary FPGA design
+## variable target:     specifies the project name 
+## variable component:  specifies the target FPGA board 
+set target [lindex $val 0]
+set component [lindex $val 1]
+
 if { [file exists ${design_dir}/flow_setup.tcl] == 1 } {
 	source [file join $design_dir "flow_setup.tcl"]
 } else {
@@ -58,18 +69,21 @@ if {$act == "prj_gen"} {
 	# routing
 	source [file join $flow_dir "route.tcl"]
 	# bitstream generation
-	write_bitstream -force ${out_dir}/system.bit
+	if {$target == "shell"} {
+		write_bitstream -force ${out_dir}/system.bit
+	}
 
 } elseif {$act == "dcp_chk"} {
-	if {$val != "synth" && $val != "place" && $val != "route"} {
+	set dcp_obj [lindex $val 2]
+	if {${dcp_obj} != "synth" && ${dcp_obj} != "place" && ${dcp_obj} != "route"} {
 		puts "Error: Please specify the name of .dcp file to be opened"
 		exit
 	}
-	open_checkpoint ${dcp_dir}/${val}.dcp
+	open_checkpoint ${dcp_dir}/${dcp_obj}.dcp
 
 } elseif {$act == "dcp_gen"} {
 	source [file join $script_dir "prj_setup.tcl"]
-	# Launch tcl script whose name is specified by $val
+	# Launch tcl script whose name is specified by $target
 	source [file join $design_dir "dcp_gen.tcl"]
 } else {
 	puts "No specified action command for Vivado project"
