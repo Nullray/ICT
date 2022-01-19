@@ -30,6 +30,12 @@ MB_GCC_PATH := $(COMPILER_BASE)/microblaze/lin/bin
 # TODO: Change to your install directory of RISC-V cross compiler
 riscv_LINUX_GCC_PATH := /opt/riscv64-linux/bin
 riscv_ELF_GCC_PATH := $(riscv_LINUX_GCC_PATH)
+# TODO: Change to your install directory of RISC-V 32-bit cross compiler
+riscv32_LINUX_GCC_PATH :=
+riscv32_ELF_GCC_PATH := /opt/riscv32-none/bin
+# TODO: Change to your install directory of MIPS 32-bit cross compiler
+mips_LINUX_GCC_PATH :=
+mips_ELF_GCC_PATH := /opt/barebones-toolchain/cross/x86_64/bin
 
 # TODO: change to your own prefix of cross compilers
 zynqmp_LINUX_GCC_PREFIX := aarch64-linux-gnu-
@@ -38,6 +44,10 @@ zynq_LINUX_GCC_PREFIX := arm-linux-gnueabi-
 zynq_ELF_GCC_PREFIX := arm-none-eabi-
 riscv_LINUX_GCC_PREFIX := riscv64-unknown-linux-gnu-
 riscv_ELF_GCC_PREFIX := $(riscv_LINUX_GCC_PREFIX)
+riscv32_LINUX_GCC_PREFIX :=
+riscv32_ELF_GCC_PREFIX := riscv32-unknown-elf-
+mips_LINUX_GCC_PREFIX :=
+mips_ELF_GCC_PREFIX := mips-
 
 # Leveraged Vivado tools
 VIVADO_BIN := $(VIVADO_TOOL_PATH)/vivado
