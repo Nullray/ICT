@@ -20,33 +20,31 @@ all: $(obj-bench-y)
 endif
 
 %.bench: FORCE 
-	@mkdir -p $(INSTALL_LOC)/$(patsubst %.bench,%,$@)
-	$(EXPORT_CC_PATH) && $(MAKE) -C $(patsubst %.bench,%,$@) \
-		$(WORKLOAD_FLAGS)
-	@cp -r $(patsubst %.bench,%,$@)/bin \
-		$(patsubst %.bench,%,$@)/elf \
-		$(INSTALL_LOC)/$(patsubst %.bench,%,$@)
+	@mkdir -p $(INSTALL_LOC)/$(patsubst %.bench,benchmark/%,$@)
+	$(MAKE) -C $(patsubst %.bench,benchmark/%,$@) \
+		ARCH=$(ARCH) COMPILER_PATH=$(COMPILER_PATH) \
+		CROSS_COMPILE=$(CROSS_COMPILE)
 
 %.tool: FORCE
-	@mkdir -p $(INSTALL_LOC)/$(patsubst %.tool,%,$@)
+	@mkdir -p $(INSTALL_LOC)/$(patsubst %.tool,host/%,$@)
 
-	$(EXPORT_CC_PATH) && $(MAKE) -C host/$(patsubst %.tool,%,$@) ROLE_ID=0
-	$(MAKE) -C host/$(patsubst %.tool,%,$@) clean
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(patsubst %.tool,host/%,$@) ROLE_ID=0
+	$(MAKE) -C $(patsubst %.tool,host/%,$@) clean
 
-	$(EXPORT_CC_PATH) && $(MAKE) -C host/$(patsubst %.tool,%,$@) ROLE_ID=1
-	$(MAKE) -C host/$(patsubst %.tool,%,$@) clean
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(patsubst %.tool,host/%,$@) ROLE_ID=1
+	$(MAKE) -C $(patsubst %.tool,host/%,$@) clean
 
-	$(EXPORT_CC_PATH) && $(MAKE) -C host/$(patsubst %.tool,%,$@) ROLE_ID=2
-	$(MAKE) -C host/$(patsubst %.tool,%,$@) clean
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(patsubst %.tool,host/%,$@) ROLE_ID=2
+	$(MAKE) -C $(patsubst %.tool,host/%,$@) clean
 
-	$(EXPORT_CC_PATH) && $(MAKE) -C host/$(patsubst %.tool,%,$@) ROLE_ID=3
-	$(MAKE) -C host/$(patsubst %.tool,%,$@) clean
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(patsubst %.tool,host/%,$@) ROLE_ID=3
+	$(MAKE) -C $(patsubst %.tool,host/%,$@) clean
 
-	$(EXPORT_CC_PATH) && $(MAKE) -C host/$(patsubst %.tool,%,$@) ROLE_ID=4
-	$(MAKE) -C host/$(patsubst %.tool,%,$@) clean
+	$(EXPORT_CC_PATH) && $(MAKE) -C $(patsubst %.tool,host/%,$@) ROLE_ID=4
+	$(MAKE) -C $(patsubst %.tool,host/%,$@) clean
 
-	@cp -r host/$(patsubst %.tool,%,$@)/elf/* \
-		$(INSTALL_LOC)/$(patsubst %.tool,%,$@)
+	@cp -r $(patsubst %.tool,host/%,$@)/elf/* \
+		$(INSTALL_LOC)/$(patsubst %.tool,host/%,$@)
 
 ifeq ($(ARCH),)
 clean: $(obj-tool-clean-y)
@@ -55,10 +53,10 @@ clean: $(obj-bench-clean-y)
 endif
 
 %.clean:
-	$(MAKE) -C $(patsubst %.clean,%,$@) clean
-	@rm -rf $(INSTALL_LOC)/$(patsubst %.clean,%,$@)
+	$(MAKE) -C $(patsubst %.clean,benchmark/%,$@) clean
+	@rm -rf $(INSTALL_LOC)/$(patsubst %.clean,benchmark/%,$@)
 
 %.toolclean:
-	$(MAKE) -C host/$(patsubst %.toolclean,%,$@) clean
-	@rm -rf $(INSTALL_LOC)/$(patsubst %.toolclean,%,$@)
+	$(MAKE) -C $(patsubst %.toolclean,host/%,$@) clean
+	@rm -rf $(INSTALL_LOC)/$(patsubst %.toolclean,host/%,$@)
 
