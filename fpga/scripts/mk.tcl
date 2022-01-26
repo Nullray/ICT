@@ -82,7 +82,10 @@ if {$act == "prj_gen"} {
 	open_checkpoint ${dcp_dir}/${dcp_obj}.dcp
 
 } elseif {$act == "dcp_gen"} {
-	source [file join $script_dir "prj_setup.tcl"]
+	set dcp_obj [lindex $val 2]
+	if {$dcp_obj != "shell"} {
+		source [file join $script_dir "prj_setup.tcl"]
+	}
 	# Launch tcl script whose name is specified by $target
 	source [file join $design_dir "dcp_gen.tcl"]
 } else {
