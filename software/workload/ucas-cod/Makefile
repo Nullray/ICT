@@ -7,7 +7,7 @@ obj-bench-y := $(foreach obj,$(obj-y),$(obj).bench)
 obj-bench-clean-y := $(foreach obj,$(obj-y),$(obj).clean)
 
 # Host tools on ARMv8 of Zynq MPSoC on NF card
-obj-host-y := example reg_file alu simple_cpu
+obj-host-y := example reg_file alu simple_cpu custom_cpu
 obj-tool-y := $(foreach obj,$(obj-host-y),$(obj).tool)
 obj-tool-clean-y := $(foreach obj,$(obj-host-y),$(obj).toolclean)
 
