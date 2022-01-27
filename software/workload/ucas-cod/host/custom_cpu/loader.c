@@ -224,9 +224,14 @@ void init_map()
 	mem_map_base_mmio = (uint32_t *)mem_map_base;
 	mem_map_base_mem = (uint64_t *)mem_map_base;
 
-	// MMIO space mapping
-	reg_map_base = mmap(NULL, MMIO_TOTAL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, ROLE_BASE);
+	//clear 16KB memory region
+	for(i = 0; i < MEM_SHOW_SIZE / sizeof(int); i++)
+		mem_map_base_mmio[i] = 0;
 	
+	// MMIO space mapping
+	reg_map_base = mmap(NULL, MMIO_TOTAL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, 
+			fd, (ROLE_BASE + CPU_RESET_REG_OFFSET));
+
 	if (reg_map_base == NULL) {  
 		perror("init_map reg mmap failed:");
 		close(fd);
@@ -234,10 +239,6 @@ void init_map()
 	}  
 
 	reg_map_base_mmio = (uint32_t *)reg_map_base;
-
-	//clear 16KB memory region
-	for(i = 0; i < MEM_SHOW_SIZE / sizeof(int); i++)
-		mem_map_base_mmio[i] = 0;
 }
 
 void resetn(int val) {
