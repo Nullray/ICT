@@ -44,10 +44,10 @@
 #include "printf.h"
 
 #define UART_TX_FIFO		0x04
-#define UART_STATUS			0x08
+#define UART_STATUS		0x08
 #define UART_TX_FIFO_FULL	(1 << 3)
 
-volatile unsigned int *uart = (void *)0x40010000;
+volatile unsigned int *uart = (void *)0x60000000;
 
 static char outbuf[256];
 
