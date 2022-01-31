@@ -38,12 +38,18 @@
 #define MMIO_BASE    0x82000000
 #define ROLE_BASE    (MMIO_BASE + (ROLE_ID << 20)) 
 
-#define MMIO_TOTAL_SIZE        (1 << 10)
+#define MMIO_TOTAL_SIZE        (1 << 14)
 #define CPU_RESET_REG_OFFSET   0x20000
+
+#define PC_OFFSET      (0x1000 >> 2)
+#define INST_OFFSET    (0x1008 >> 2)
 
 #define MEM_BASE       0x4800000000ULL
 #define MEM_ALIGN      0x80000000ULL
 #define ROLE_MEM_BASE  (MEM_BASE + (ROLE_ID * MEM_ALIGN))
+
+#define _HOST_TTY(id)  "/dev/ttyUL"#id
+#define HOST_TTY(id)   _HOST_TTY(id)
 
 #define MEM_TOTAL_SIZE		(1 << 30)
 #define MEM_SHOW_SIZE		(1 << 14)
@@ -213,7 +219,8 @@ void init_map()
 	} 
 
 	// Memory space mapping
-	mem_map_base = mmap(NULL, MEM_TOTAL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, fd, ROLE_MEM_BASE);
+	mem_map_base = mmap(NULL, MEM_TOTAL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, 
+			fd, ROLE_MEM_BASE);
 	
 	if (mem_map_base == NULL) {  
 		perror("init_map mmap failed:");
@@ -241,7 +248,7 @@ void init_map()
 	reg_map_base_mmio = (uint32_t *)reg_map_base;
 }
 
-void resetn(int val) {
+void reset(int val) {
 	*(reg_map_base_mmio) = val;
 }
 
@@ -298,6 +305,10 @@ int wait_for_finish()
 		if (rst == 0 || rst == 1) {
 			return rst;
 		}
+
+		printf("%s: current PC: %08x\n", __func__, *(reg_map_base_mmio + PC_OFFSET));
+		printf("%s: current Inst: %08x\n", __func__, *(reg_map_base_mmio + INST_OFFSET));
+
 		sleep(SLEEP_TIME);
 	}
 	
@@ -453,7 +464,7 @@ int main(int argc, char *argv[])
 		}
 		
 		else if (strcmp(opt, "uart") == 0) {
-			init_uart_reader("/dev/ttyPS1");
+			init_uart_reader(HOST_TTY(ROLE_ID));
 		}
 		
 		else if (strcmp(opt, "--dump") == 0) {  // --dump <filename>
@@ -468,9 +479,9 @@ int main(int argc, char *argv[])
 
 	/* mapping memory space of custom CPU into the address space of this program */
 	init_map();
-
+		
 	/* resetting custom CPU */
-	resetn(0);
+	reset(1);
 
 	/* loading target binary executable file to memory space of custom CPU */
 	loader(argv[1]);
@@ -478,28 +489,28 @@ int main(int argc, char *argv[])
 	memdump(NULL);
 
 	/* releasing reset signal to custom CPU */
-	resetn(1);
+	reset(0);
 
 	/* waiting for custom CPU to finish execution */
 	log("Waiting for custom CPU to finish...\n");
 	int result = wait_for_finish();
-	log("custom CPU Execution is finished...\n");
+	log("custom CPU execution is finished...\n");
 
 	/* resetting custom CPU */
-	resetn(0);
+	reset(1);
 
 	/* dump all distributed memory */
 	int dump_result = memdump(dump_filename);
 	
 	/* compare memory */
 	result = dump_result || result;
-	
+
 	finish_map();
 	
 	if (result == 0)
-		log("%s passed\n", argv[1]);
+		printf("%s passed\n", argv[1]);
 	else
-		log("%s failed\n", argv[1]);
+		printf("%s failed\n", argv[1]);
 
 	if(verbose)
 		fclose(log_fp);
