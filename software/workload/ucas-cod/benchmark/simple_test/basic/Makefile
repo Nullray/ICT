@@ -16,7 +16,7 @@ CFLAGS = -fno-pic -static -fno-strict-aliasing -fno-delayed-branch -fno-builtin 
 endif
 LDFLAGS := -EL -N -e start -T user.ld
 
-DIRS := bin elf obj disassembly
+DIRS := bin elf obj disassembly sim
 DIR_OBJS := $(foreach obj,$(DIRS),$(ARCH)/$(obj))
 
 TARGET := memcpy
@@ -30,6 +30,8 @@ $(ARCH)/elf/%: $(ARCH)/obj/%.o
 	@cd $(ARCH) && \
 		$(OBJDUMP) -j .text -DS ../$@ > disassembly/$(patsubst $(ARCH)/elf/%,%,$@).S && \
 		$(OBJCOPY) -S -O binary -j .text -j .data ../$@ bin/$(patsubst $(ARCH)/elf/%,%,$@).bin
+	@cd $(ARCH) && xxd -e -c 4 bin/$(patsubst $(ARCH)/elf/%,%,$@).bin | awk -F ":" '{print $$2}' | awk -F " " '{print $$1}' \
+				> sim/$(patsubst $(ARCH)/elf/%,%,$@).mem
 
 $(ARCH)/obj/%.o: $(ARCH)/%.S
 	@mkdir -p $(DIR_OBJS)
