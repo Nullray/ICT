@@ -2,32 +2,7 @@
 #include <benchmark.h>
 #include <trap.h>
 #include <limits.h>
-
-typedef struct Result {
-  int pass;
-  unsigned long msec;
-} Result;
-
-unsigned long _uptime() {
-  // TODO [COD]
-  //   You can use this function to access performance counter related with time or cycle.
-  return 0;
-}
-
-static void bench_prepare(Result *res) {
-  // TODO [COD]
-  //   Add preprocess code, record performance counters' initial states.
-  //   You can communicate between bench_prepare() and bench_done() through
-  //   static variables or add additional fields in `struct Result`
-  res->msec = _uptime();
-}
-
-static void bench_done(Result *res) {
-  // TODO [COD]
-  //  Add postprocess code, record performance counters' current states.
-  res->msec = _uptime() - res->msec;
-}
-
+#include "perf_cnt.h"
 
 Benchmark *current;
 Setting *setting;

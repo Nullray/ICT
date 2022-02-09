@@ -27,13 +27,11 @@ DIR_OBJS := $(foreach obj,$(DIRS),$(ARCH)/$(obj))
 TARGET := data_mover_dma data_mover_dma_simu data_mover_no_dma
 ELFS := $(addprefix $(ARCH)/elf/,$(TARGET))
 
-LIB        := $(wildcard lib/*.c)
-DMA_COMMON := $(wildcard $(ARCH)/common/*.S)
-COMMON     := $(wildcard ../common/*.c)
+LIB    := $(wildcard ../common/*.c)
+COMMON := $(wildcard $(ARCH)/common/*.S)
 
-OBJS   := $(patsubst %.S,%.o,$(DMA_COMMON)) \
-	  $(patsubst lib/%.c,$(ARCH)/obj/%.o,$(LIB)) \
-	  $(patsubst ../common/%.c,$(ARCH)/obj/%.o,$(COMMON))
+OBJS   := $(patsubst %.S,%.o,$(COMMON)) \
+	  $(patsubst ../common/%.c,$(ARCH)/obj/%.o,$(LIB))
 
 CFLAGS_data_mover_dma      := -DUSE_DMA
 CFLAGS_data_mover_dma_simu := -DUSE_DMA -DDMA_SIMU
@@ -59,10 +57,6 @@ $(ARCH)/obj/%/data_mover.o: src/data_mover.c
 	@mkdir -p $(DIR_OBJS)
 	@mkdir -p $(ARCH)/obj/$(patsubst $(ARCH)/obj/%/data_mover.o,%,$@)
 	$(CC) -c $(CFLAGS) $(CFLAGS_$(patsubst $(ARCH)/obj/%/data_mover.o,%,$@)) -O2 -o $@ $<
-
-$(ARCH)/obj/%.o: lib/%.c
-	@mkdir -p $(DIR_OBJS)
-	$(CC) -c $(CFLAGS) -O2 -o $@ $<
 
 $(ARCH)/obj/%.o: ../common/%.c
 	@mkdir -p $(DIR_OBJS)
