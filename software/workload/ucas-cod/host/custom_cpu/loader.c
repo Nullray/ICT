@@ -198,10 +198,23 @@ void loader(char *file)
 				zero_sz += 8;
 			}
 			if (zero_sz < rest) {
-				if ((zero_sz + 4) != rest)
+				if ((zero_sz + 6) == rest) {
+					*(mem_map_base_mmio + (va >> 2)) = 0;
+					*((uint16_t *)mem_map_base_mmio + (va >> 1)) = 0;
+					zero_sz += 6;
+					va += 6;
+				} else if ((zero_sz + 4) == rest) {
+					*(mem_map_base_mmio + (va >> 2)) = 0;
+					zero_sz += 4;
+					va += 4;
+				} else if ((zero_sz + 2) == rest) {
+					*((uint16_t *)mem_map_base_mmio + (va >> 1)) = 0;
+					zero_sz += 2;
+					va += 2;
+				} else {
+					fprintf(stderr, "Invalid bss space size %d.", rest);
 					exit(-1);
-				
-				*(mem_map_base_mmio + (va >> 2)) = 0;
+				}
 			}
 		}
 	}
