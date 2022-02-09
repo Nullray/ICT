@@ -22,7 +22,7 @@ CFLAGS += -DSETTING_TEST -DMICROBENCH
 ASFLAGS := -EL
 LDFLAGS := -EL -N -e start -T user.ld
 
-DIRS := bin elf obj disassembly
+DIRS := bin elf obj disassembly sim
 DIR_OBJS := $(foreach obj,$(DIRS),$(ARCH)/$(obj))
 
 BENCH_C_DIR := $(shell find src/ -type f -name "*.c")
@@ -54,6 +54,8 @@ $(ARCH)/elf/%: $(COMMON_O) $(ARCH)/obj/%/bench.o $(ARCH)/obj/%.o
 		    -j .sbss --set-section-flags .sbss=alloc,contents \
 		    -j .scommon --set-section-flags .scommon=alloc,contents \
 		    ../$@ bin/$(patsubst $(ARCH)/elf/%,%,$@).bin
+	@cd $(ARCH) && xxd -e -c 4 bin/$(patsubst $(ARCH)/elf/%,%,$@).bin | awk -F ":" '{print $$2}' | awk -F " " '{print $$1}' \
+				> sim/$(patsubst $(ARCH)/elf/%,%,$@).mem
 
 $(ARCH)/obj/%/bench.o: bench.c
 	@mkdir -p $(DIR_OBJS)

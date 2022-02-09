@@ -20,7 +20,7 @@ CFLAGS += -I ../include
 ASFLAGS := -EL
 LDFLAGS := -EL -N -e start -T user.ld
 
-DIRS := bin elf obj disassembly
+DIRS := bin elf obj disassembly sim
 DIR_OBJS := $(foreach obj,$(DIRS),$(ARCH)/$(obj))
 
 TARGET := $(patsubst src/%.c,%,$(wildcard src/*.c))
@@ -40,6 +40,8 @@ $(ARCH)/elf/%: $(ARCH)/obj/common/start.o $(ARCH)/obj/common/printf.o $(ARCH)/ob
 		    -j .sbss --set-section-flags .sbss=alloc,contents \
 		    -j .scommon --set-section-flags .scommon=alloc,contents \
 		    ../$@ bin/$(patsubst $(ARCH)/elf/%,%,$@).bin
+	@cd $(ARCH) && xxd -e -c 4 bin/$(patsubst $(ARCH)/elf/%,%,$@).bin | awk -F ":" '{print $$2}' | awk -F " " '{print $$1}' \
+				> sim/$(patsubst $(ARCH)/elf/%,%,$@).mem
 
 $(ARCH)/obj/%.o: src/%.c
 	@mkdir -p $(DIR_OBJS)
