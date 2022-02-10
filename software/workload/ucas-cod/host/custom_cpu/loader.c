@@ -198,10 +198,9 @@ void loader(char *file)
 				zero_sz += 8;
 			}
 			if (zero_sz < rest) {
-				if ((zero_sz + 4) != rest)
-					exit(-1);
-				
-				*(mem_map_base_mmio + (va >> 2)) = 0;
+				assert((rest - zero_sz) < 8);
+				// aligned to 64-bit
+				*(mem_map_base_mem + (va >> 3)) = 0;
 			}
 		}
 	}
@@ -306,8 +305,8 @@ int wait_for_finish()
 			return rst;
 		}
 
-		printf("%s: current PC: %08x\n", __func__, *(reg_map_base_mmio + PC_OFFSET));
-		printf("%s: current Inst: %08x\n", __func__, *(reg_map_base_mmio + INST_OFFSET));
+		log("%s: current PC: %08x\n", __func__, *(reg_map_base_mmio + PC_OFFSET));
+		log("%s: current Inst: %08x\n", __func__, *(reg_map_base_mmio + INST_OFFSET));
 
 		sleep(SLEEP_TIME);
 	}
