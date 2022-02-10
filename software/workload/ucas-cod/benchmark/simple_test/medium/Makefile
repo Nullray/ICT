@@ -38,7 +38,7 @@ $(ARCH)/elf/%: $(ARCH)/common/start.o $(ARCH)/obj/%.o
 		$(OBJDUMP) -DS ../$@ > disassembly/$(patsubst $(ARCH)/elf/%,%,$@).S && \
 		$(OBJCOPY) -S -O binary \
 		    -j .text -j .text.startup -j .MIPS.abiflags \
-		    -j .data -j .rodata \
+		    -j .data -j .rodata -j .sdata \
 		    -j .bss --set-section-flags .bss=alloc,contents \
 		    -j .sbss --set-section-flags .sbss=alloc,contents \
 		    -j .scommon --set-section-flags .scommon=alloc,contents \

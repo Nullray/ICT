@@ -87,124 +87,24 @@ void set_blocking(int fd, int should_block);
 
 void loader(char *file)
 {
-	FILE *fp = fopen(file, "rb");
-	assert(fp);
-
-	Elf32_Ehdr *elf;
-	Elf32_Phdr *ph = NULL;
-
-	int i;
-	uint8_t buf[4096];
-	uint8_t buf_temp[16];
-
-	// the program header should be located within the first
-	// 4096 byte of the ELF file
-	fread(buf, 4096, 1, fp);
-	elf = (void *)buf;
-
-	// TODO: fix the magic number with the correct one
-	const uint32_t elf_magic = 0x464c457f; // 0xBadC0de;
-	uint32_t *p_magic = (uint32_t *)buf;
-	// check the magic number
-	assert(*p_magic == elf_magic);
-
-	// our MIPS CPU can only reset with PC = 0
-	assert(elf->e_entry == 0);
+	int fd = open(file, O_RDONLY);
+	assert(fd != -1);
 	
-	for(i = 0, ph = (void *)buf + elf->e_phoff; i < elf->e_phnum; i ++) {
-		// scan the program header table, load each segment into memory
-		if(ph[i].p_type == PT_LOAD) {
-			uint64_t va = ph[i].p_vaddr;
-			
-			if(va >= MEM_TOTAL_SIZE)
-				continue;
-
-			uint64_t size = 0;
-
-			// TODO: read the content of the segment from the ELF file
-			// to the memory region [VirtAddr, VirtAddr + FileSiz)
-
-			//align va to 64-bit boundary
-			if(va & ALIGN_MASK_8_BYTES)
-			{
-				assert((va & ALIGN_MASK_4_BYTES) == 0);
-				assert(ph[i].p_filesz >= 4);
-
-				memset(buf_temp, 0, 16);
-				fseek(fp, ph[i].p_offset, SEEK_SET);
-				fread(buf_temp, 4, 1, fp);		//read out unaligned size to temporal buffer
-
-				for(int i = 0; i < 4; i++)
-					log("%02x ", buf_temp[i]);
-
-				log("\n");
-
-				*(mem_map_base_mmio + (va >> 2)) = *(uint32_t *)buf_temp;
-
-				va += 4;
-				size += 4;
-			}
-
-			//aligned copy
-			while((size + 8) <= ph[i].p_filesz)
-			{
-				memset(buf_temp, 0, 16);
-				fseek(fp, ph[i].p_offset + size, SEEK_SET);
-				fread(buf_temp, 8, 1, fp);		//read out unaligned size to temporal buffer
-
-				for(int i = 0; i < 8; i++)
-					log("%02x ", buf_temp[i]);
-
-				log("\n");
-
-				*(mem_map_base_mem + (va >> 3)) = *(uint64_t *)buf_temp;
-
-				va += 8;
-				size += 8;
-			}
-
-			//check if remaining a 32-bit word
-			if(size != ph[i].p_filesz)
-			{
-				uint64_t lastsz = ph[i].p_filesz - size;
-
-				assert((va & ALIGN_MASK_4_BYTES) == 0);
-				assert(lastsz == 4);
-
-				memset(buf_temp, 0, 16);
-				fseek(fp, ph[i].p_offset + size, SEEK_SET);
-				fread(buf_temp, 4, 1, fp);
-
-				for(int i = 0; i < 4; i++)
-					log("%02x ", buf_temp[i]);
-
-				log("\n");
-
-				*(mem_map_base_mmio + (va >> 2)) = *(uint32_t *)buf_temp;
-				va += 4;
-			}
-			
-			uint64_t rest = ph[i].p_memsz - ph[i].p_filesz;
-			uint64_t zero_sz = 0;
-			
-			if (zero_sz < rest && (va & ALIGN_MASK_8_BYTES)) {
-				*(mem_map_base_mmio + (va >> 2)) = 0;
-				va += 4;
-				zero_sz += 4;
-			}
-			while ((zero_sz + 8) <= rest) {
-				*(mem_map_base_mem + (va >> 3)) = 0;
-				va += 8;
-				zero_sz += 8;
-			}
-			if (zero_sz < rest) {
-				assert((rest - zero_sz) < 8);
-				// aligned to 64-bit
-				*(mem_map_base_mem + (va >> 3)) = 0;
-			}
-		}
+	struct stat file_info;
+	
+	if (fstat(fd, &file_info) == -1) {
+		perror("fstat failed");
+		exit(1);
 	}
-	fclose(fp);
+	
+	// use mmap to map file into memory
+	struct stat fd_stat;
+	fstat(fd, &fd_stat);
+	char *buf = mmap(NULL, fd_stat.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+	
+	// copy memory to location 0
+	memcpy((char *)mem_map_base_mem, buf, file_info.st_size);
+	close(fd);
 }
 
 void init_map()
