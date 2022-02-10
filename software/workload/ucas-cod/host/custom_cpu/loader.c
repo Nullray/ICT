@@ -198,6 +198,7 @@ void loader(char *file)
 				zero_sz += 8;
 			}
 			if (zero_sz < rest) {
+<<<<<<< HEAD
 				if ((zero_sz + 6) == rest) {
 					*(mem_map_base_mmio + (va >> 2)) = 0;
 					*((uint16_t *)mem_map_base_mmio + (va >> 1)) = 0;
@@ -215,6 +216,11 @@ void loader(char *file)
 					fprintf(stderr, "Invalid bss space size %d.", rest);
 					exit(-1);
 				}
+=======
+				assert((rest - zero_sz) < 8);
+				// aligned to 64-bit
+				*(mem_map_base_mem + (va >> 3)) = 0;
+>>>>>>> b4a223e71843d873b227147b4fb0408811493f24
 			}
 		}
 	}
@@ -319,8 +325,8 @@ int wait_for_finish()
 			return rst;
 		}
 
-		printf("%s: current PC: %08x\n", __func__, *(reg_map_base_mmio + PC_OFFSET));
-		printf("%s: current Inst: %08x\n", __func__, *(reg_map_base_mmio + INST_OFFSET));
+		log("%s: current PC: %08x\n", __func__, *(reg_map_base_mmio + PC_OFFSET));
+		log("%s: current Inst: %08x\n", __func__, *(reg_map_base_mmio + INST_OFFSET));
 
 		sleep(SLEEP_TIME);
 	}
