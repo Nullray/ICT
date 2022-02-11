@@ -30,7 +30,7 @@ ELFS := $(addprefix $(ARCH)/elf/,$(TARGET))
 
 all: $(ELFS)
 
-$(ARCH)/elf/%: $(ARCH)/obj/common/start.o $(ARCH)/obj/common/printf.o $(ARCH)/obj/data/%_data.o $(ARCH)/obj/data/%_weight.o $(ARCH)/obj/%.o
+$(ARCH)/elf/%: $(ARCH)/obj/common/start.o $(ARCH)/obj/common/printf.o $(ARCH)/obj/data/%_data.o $(ARCH)/obj/data/%_weight.o $(ARCH)/obj/data/%_result.o $(ARCH)/obj/%.o
 	@mkdir -p $(DIR_OBJS)
 	$(LD) $(LDFLAGS) -o $@ $^
 	@cd $(ARCH) && \
