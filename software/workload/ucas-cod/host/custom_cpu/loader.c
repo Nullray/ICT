@@ -73,6 +73,8 @@ int  fd;
 
 static int verbose = 0;
 
+static time_t uart_timeout = 0;
+
 static FILE *log_fp = NULL;
 #define log(fmt, ...) do { if (verbose) fprintf(log_fp, fmt, ## __VA_ARGS__); } while(0)
 
@@ -151,7 +153,7 @@ void reset(int val) {
 	*(reg_map_base_mmio) = val;
 }
 
-void read_uart(time_t limit)
+void read_uart()
 {
 	const char * const magic = "benchmark finished\n";
 	const char *p = magic;
@@ -173,7 +175,7 @@ void read_uart(time_t limit)
 		} else {
 			time_t curr = time(NULL);
 			
-			if (curr - prev > limit) {
+			if (curr - prev > uart_timeout) {
 				log("time up\n");
 				break;
 			}
@@ -192,7 +194,7 @@ int wait_for_finish()
 	uint32_t rst = -1;
 	
 	if (UART_FD > 0)
-		read_uart(60); // 1 minute
+		read_uart(); // 1 minute
 
 	clock_gettime(CLOCK_REALTIME, &end);
 	uint64_t slack = (end.tv_sec - start.tv_sec) * 1000000000ULL + (end.tv_nsec - start.tv_nsec);
@@ -334,8 +336,10 @@ void set_blocking(int fd, int should_block)
 		perror("setting term attributes");
 }
 
-void init_uart_reader(const char *dev)
+void init_uart_reader(const char *dev, int timeout)
 {
+	uart_timeout = timeout;
+
 	UART_FD = open(dev, O_RDWR | O_NOCTTY | O_SYNC | O_NONBLOCK);
 	if (UART_FD < 0) {
 		fprintf(stderr, "opening %s: %s\n", dev, strerror(errno));
@@ -361,11 +365,14 @@ int main(int argc, char *argv[])
 			snprintf(log_path, sizeof(log_path), "%s.log", argv[1]);
 			log_fp = fopen(log_path, "w");
 		}
-		
+
 		else if (strcmp(opt, "uart") == 0) {
-			init_uart_reader(HOST_TTY(ROLE_ID));
+			int timeout;
+			sscanf(argv[++i], "%d", &timeout);
+			log("uart timeout: %d\n", timeout);
+			init_uart_reader(HOST_TTY(ROLE_ID), timeout);
 		}
-		
+
 		else if (strcmp(opt, "--dump") == 0) {  // --dump <filename>
 			dump_filename = argv[++i];
 		}

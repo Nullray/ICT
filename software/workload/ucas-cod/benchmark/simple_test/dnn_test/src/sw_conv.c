@@ -265,7 +265,7 @@ int comparing()
 	{
 		if (*(out + i) != *(result + i))
 		{
-			printf("Failed!\n");
+			printf("Failed! at address %x and %x with data %x and %x\n", out + i, result + i, *(out + i), *(result + i));
 			return 1;
 		}
 	}
@@ -281,7 +281,8 @@ int main()
 	printf("starting pooling\n");
 	pooling();
 	int result = comparing();
-	if (result) {
+	printf("benchmark finished\n");
+	if (result == 0) {
 		hit_good_trap();
 	} else {
 		nemu_assert(0);

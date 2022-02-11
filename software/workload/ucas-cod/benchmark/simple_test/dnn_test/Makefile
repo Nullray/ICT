@@ -40,7 +40,7 @@ $(ARCH)/elf/%: $(ARCH)/obj/common/start.o $(ARCH)/obj/common/printf.o $(ARCH)/ob
 		    -j .data -j .rodata -j .sdata -j .rodata.str1.4 \
 		    -j .bss --set-section-flags .bss=alloc,contents \
 		    -j .sbss --set-section-flags .sbss=alloc,contents \
-			-j .input.data -j .input.weight \
+			-j .input.data -j .input.weight -j .input.result \
 		    -j .scommon --set-section-flags .scommon=alloc,contents \
 		    ../$@ bin/$(patsubst $(ARCH)/elf/%,%,$@).bin
 	@cd $(ARCH) && xxd -e -c 4 bin/$(patsubst $(ARCH)/elf/%,%,$@).bin | awk -F ":" '{print $$2}' | awk -F " " '{print $$1}' \
