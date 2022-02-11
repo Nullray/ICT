@@ -280,5 +280,11 @@ int main()
 	convolution();
 	printf("starting pooling\n");
 	pooling();
-	return comparing();
+	int result = comparing();
+	if (result) {
+		hit_good_trap();
+	} else {
+		nemu_assert(0);
+	}
+	return 0;
 }
