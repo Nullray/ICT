@@ -1,12 +1,7 @@
 
 EXPORT_CC_PATH := export PATH=$(COMPILER_PATH):$$PATH
 
-# compile dma_test only when ARCH is mips
-ifeq ($(ARCH), "mips")
-	DMA_TEST = dma_test
-endif
-
-obj-y := basic medium advanced hello microbench $(DMA_TEST) dnn_test
+obj-y := basic medium advanced hello microbench dma_test dnn_test
 obj-bench-y := $(foreach obj,$(obj-y),$(obj).bench)
 obj-clean-y := $(foreach obj,$(obj-y),$(obj).clean)
 
