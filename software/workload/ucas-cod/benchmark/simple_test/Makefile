@@ -1,7 +1,7 @@
 
 EXPORT_CC_PATH := export PATH=$(COMPILER_PATH):$$PATH
 
-obj-y := basic medium advanced hello microbench dma_test
+obj-y := basic medium advanced hello microbench dma_test dnn_test
 obj-bench-y := $(foreach obj,$(obj-y),$(obj).bench)
 obj-clean-y := $(foreach obj,$(obj-y),$(obj).clean)
 
