@@ -29,6 +29,10 @@
 #define KERN_ATTR_POOL_KERN_SIZE 2
 #define KERN_ATTR_POOL_STRIDE 2
 
+//MMIO register address of DNN accelerator
+#define GPIO_START_ADDR		0x40040000
+#define GPIO_DONE_ADDR		0x40040008
+
 struct size_vec4
 {
 	unsigned d0;
@@ -46,7 +50,11 @@ struct mem_addr
 
 int mul(short a, short b)
 {
+#ifndef USE_MUL
 	int ans = mul_ll(a, b);
+#else
+	int ans = a * b;
+#endif
 	return ans;
 }
 
@@ -57,8 +65,8 @@ struct size_vec4 weight_size = {WEIGHT_SIZE_D0, WEIGHT_SIZE_D1, WEIGHT_SIZE_D2, 
 
 struct size_vec4 conv_size;
 
-extern char _binary_lib_sw_conv_result_bin_start[];
-extern char _binary_lib_sw_conv_result_bin_size[];
+extern char _binary_data_result_bin_start[];
+extern char _binary_data_result_bin_size[];
 
 void convolution()
 {
@@ -257,9 +265,9 @@ void pooling()
 int comparing()
 {
 	char *out = (char *)addr.wr_addr;
-	char *result = (char *)_binary_lib_sw_conv_result_bin_start;
+	char *result = (char *)_binary_data_result_bin_start;
 
-	int count = (int)_binary_lib_sw_conv_result_bin_size;
+	int count = (int)_binary_data_result_bin_size;
 
 	for (int i = 0; i < count; i++)
 	{
@@ -276,16 +284,32 @@ int comparing()
 
 int main()
 {
+#ifdef USE_HW_ACCEL
+	volatile int* gpio_start = (void*)(GPIO_START_ADDR);
+	volatile int* gpio_done = (void*)(GPIO_DONE_ADDR);
+#endif
+
+#ifdef USE_HW_ACCEL
+	printf("Launching task...\n");
+	*gpio_start = 1;
+	*gpio_start = 0;
+
+	while(*(gpio_done) != 1);
+#else
 	printf("starting convolution\n");
 	convolution();
 	printf("starting pooling\n");
 	pooling();
+#endif
+
 	int result = comparing();
 	printf("benchmark finished\n");
+
 	if (result == 0) {
 		hit_good_trap();
 	} else {
 		nemu_assert(0);
 	}
+
 	return 0;
 }
