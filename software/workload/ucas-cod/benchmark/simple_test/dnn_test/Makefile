@@ -15,7 +15,7 @@ endif
 ifeq ($(ARCH),riscv32)
 CFLAGS := -fno-pic -static -fno-strict-aliasing -fno-delayed-branch -fno-builtin \
 	  -ffreestanding -Wno-unused-function \
-	  -fno-stack-protector -Wall -Werror -march=rv32i -O0
+	  -fno-stack-protector -Wall -Werror -march=rv32im -O0
 OBJCPFLAGS := -I binary -O elf32-littleriscv -B riscv
 endif
 
