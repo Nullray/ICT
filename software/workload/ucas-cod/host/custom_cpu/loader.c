@@ -48,6 +48,20 @@
 #define MEM_ALIGN      0x80000000ULL
 #define ROLE_MEM_BASE  (MEM_BASE + (ROLE_ID * MEM_ALIGN))
 
+//AXI firewall
+#define FIREWALL_BASE  0x81020000
+#define FIREWALL_ROLE  (FIREWALL_BASE + (ROLE_ID << 12))
+#define FIREWALL_SIZE  0x1000
+
+#define FIREWALL_SI_UNBLOCK        0x108
+#define FIREWALL_SI_CMD_UNBLOCK    (1 << 0)
+
+#define FIREWALL_SI_FAULT_STATUS   0x100
+#define SI_FAULT_WR_STATUS_MASK    ((1 << 27) - (1 << 17))
+#define SI_FAULT_RD_STATUS_MASK    ((1 <<  7) - (1 <<  1))
+#define WR_RESP_BUSY               (1 << 16)
+#define RD_RESP_BUSY               (1 << 0)
+
 #define _HOST_TTY(id)  "/dev/ttyUL"#id
 #define HOST_TTY(id)   _HOST_TTY(id)
 
@@ -68,6 +82,9 @@ volatile uint64_t *mem_map_base_mem;
 
 void              *reg_map_base;
 volatile uint32_t *reg_map_base_mmio;
+
+void              *firewall_map_base;
+volatile uint32_t *firewall_map_base_mmio;
 
 int  fd;
 
@@ -247,10 +264,45 @@ void init_map()
 	}  
 
 	reg_map_base_mmio = (uint32_t *)reg_map_base;
+
+	// AXI firewall mapping
+	firewall_map_base = mmap(NULL, FIREWALL_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, 
+			fd, FIREWALL_ROLE);
+
+	if (firewall_map_base == NULL) {  
+		perror("init_map firewall mmap failed:");
+		close(fd);
+		exit(1);
+	}  
+
+	firewall_map_base_mmio = (uint32_t *)firewall_map_base;
+}
+
+void axi_firewall_unblock()
+{
+	unsigned int firewall_status;
+
+	//waiting for firewall timer timeout
+	sleep(5);
+
+	//checking firewall status
+	printf("%s: checking firewall status...\n", __func__);
+
+	//waiting for firewall out of BUSY status
+	do {
+		firewall_status = *(firewall_map_base_mmio + (FIREWALL_SI_FAULT_STATUS >> 2));
+		printf("%s: firewall status: %08x\n", __func__, firewall_status);
+		sleep(1);
+	} while (firewall_status & (WR_RESP_BUSY | RD_RESP_BUSY));
+
+	//unblock AXI firewall
+	*(firewall_map_base_mmio + (FIREWALL_SI_UNBLOCK >> 2)) = FIREWALL_SI_CMD_UNBLOCK;
 }
 
 void reset(int val) {
+	printf("%s: before MMIO access...\n", __func__);
 	*(reg_map_base_mmio) = val;
+	printf("%s: MMIO accessed\n", __func__);
 }
 
 void read_uart()
@@ -292,6 +344,7 @@ int wait_for_finish()
 	clock_gettime(CLOCK_REALTIME, &start);
 	
 	uint32_t rst = -1;
+	uint32_t firewall_status;
 	
 	if (UART_FD > 0)
 		read_uart(); // 1 minute
@@ -313,7 +366,10 @@ int wait_for_finish()
 		sleep(SLEEP_TIME);
 	}
 	
-	log("custom cpu running time out");
+	printf("custom cpu running time out\n");
+	
+	firewall_status = *(firewall_map_base_mmio + (FIREWALL_SI_FAULT_STATUS >> 2));
+	printf("%s: AXI firewall status: %08x\n", __func__, firewall_status);
 	
 	return rst;
 }
@@ -375,6 +431,10 @@ void finish_map()
 	reg_map_base_mmio = NULL;
 	munmap(reg_map_base, MMIO_TOTAL_SIZE);
 	reg_map_base = NULL;
+
+	firewall_map_base_mmio = NULL;
+	munmap(firewall_map_base, FIREWALL_SIZE);
+	firewall_map_base = NULL;
 
 	close(fd);
 }
@@ -489,8 +549,13 @@ int main(int argc, char *argv[])
 	/* resetting custom CPU */
 	reset(1);
 
+	/* AXI firewall operations */
+	axi_firewall_unblock();
+
 	/* loading target binary executable file to memory space of custom CPU */
+	printf("%s: before DDR accessing...\n", __func__);
 	loader(argv[1]);
+	printf("%s: DDR accessed...\n", __func__);
 
 	memdump(NULL);
 
