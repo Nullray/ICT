@@ -6,3 +6,11 @@
 &gem1 {
 	local-mac-address = [00 0a 35 01 00 06];
 };
+&i2c1 {
+	at24c32d@50 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "atmel,24c32";
+		reg = <0x50>;
+	};
+};
